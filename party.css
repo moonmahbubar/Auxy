@@ -1,0 +1,47 @@
+html, body, .container {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.column {
+    border: 1px solid black;
+    flex-grow: 1;
+    height: 100%;
+}
+
+.header {
+    display: flex;
+    font-size: 56pt;
+    border: 1px solid black;
+    justify-content: space-between;
+    align-items: stretch;
+}
+
+.logo {
+    border: 1px solid black;
+}
+
+#left {
+    flex-grow: 1;
+    width: 100px;
+}
+
+#right {
+    flex-grow: 1;
+    width: 100px;
+}
+
+#center {
+    flex-grow: 2;
+    text-align: center;
+}
+
+#queue {
+    overflow-y: auto;
+}
