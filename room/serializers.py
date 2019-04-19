@@ -6,3 +6,12 @@ class RoomSerializer(serializers.HyperlinkedModelSerializer):
         model = Room 
         fields = ('name', 'code')
 
+class HostSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Host 
+        fields = ('display_name', 'host_token', 'host_refresh_token', 'room')
+
+class UserSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User 
+        fields = ('display_name', 'room')

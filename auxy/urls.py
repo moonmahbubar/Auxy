@@ -24,6 +24,9 @@ from room import views
 
 router = routers.DefaultRouter()
 router.register(r'rooms', views.RoomViewSet)
+router.register(r'hosts', views.HostViewSet)
+router.register(r'users', views.UserViewSet)
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
