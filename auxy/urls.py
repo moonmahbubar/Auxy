@@ -22,6 +22,7 @@ from room import views
 
 
 
+
 router = routers.DefaultRouter()
 router.register(r'rooms', views.RoomViewSet)
 router.register(r'hosts', views.HostViewSet)
@@ -29,7 +30,10 @@ router.register(r'users', views.UserViewSet)
 
 
 urlpatterns = [
+    path(r'play_song/<str:token>', views.play_with_token),
+    path(r'play_room/<str:code>', views.play_room_song),
+    path(r'test/<str:code>', views.SpotifyTestView.as_view()),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('api', include('rest_framework.urls', namespace='rest_framework'))
+    path('api', include('rest_framework.urls', namespace='rest_framework')),
 ]
