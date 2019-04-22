@@ -28,8 +28,9 @@ class SpotifyTestView(APIView):
     def get(self, request, code, song):
         code = code.split('=')[1]
         song = song.split('=')[1]
+        ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
-        host = room.user_set[0]
+        host = room.host
         token = host.host_token
         play_song_test(token)
         return Response(data={"my_return_data":code})
@@ -41,7 +42,7 @@ class PlaySongView(APIView):
         song = song.split('=')[1]
         ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
-        host = room.user_set[0]
+        host = room.host
         token = host.host_token
         play_specific_song(token, song)
         return Response(data={"my_return_data":code, "current_song": song})
