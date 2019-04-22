@@ -30,8 +30,8 @@ router.register(r'users', views.UserViewSet)
 
 
 urlpatterns = [
-    path(r'play_song/<str:token>', views.play_with_token),
-    path(r'play_room/<str:code>', views.play_room_song),
+    # path(r'play_song/<str:token>', views.play_with_token),
+    # path(r'play_room/<str:code>', views.play_room_song),
     path(r'test/<str:code>', views.SpotifyTestView.as_view()),
     path(r'song/<str:code>/<str:song>', views.PlaySongView.as_view()),
     path('admin/', admin.site.urls),

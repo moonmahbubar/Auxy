@@ -1,5 +1,5 @@
 from django.db import models
-
+from random import randrange
 
 class Room(models.Model):
     """Model representing a room for users to join."""
@@ -32,6 +32,17 @@ class Host(models.Model):
 
 def get_room_users(room):
     """Returns a list of users for a given room."""
-    return User.objects.all().filter(room=room.name)
+    return room.user_set
 
 
+def generate_unique_code():
+    """Create a unique alpha numeric code"""
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    code = ""
+    while (code != ""):
+        for i in range(6):
+            letter_index = randrange(0, len(alphabet))
+            letter = alphabet[letter_index]
+            code += letter
+    
+    
