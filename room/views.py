@@ -23,29 +23,14 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-def play_with_token(request, token):
-    token = token.split('=')[1]
-    token = play_song_test(token)
-    html = "<html><body> Your token is %s</body></html>" % token
-    return HttpResponse(html)
-    
-def play_room_song(request, code):
-    code = code.split('=')[1]
-    room = Room.objects.all().filter(code=code)[0]
-    hosts = Host.objects.all().filter(room=room)
-    token = hosts[0].host_token
-    play_song_test(token)
-    html = "<html><body> Your token is %s</body></html>" % token
-    return HttpResponse(html)
-
 
 class SpotifyTestView(APIView):
     def get(self, request, code, song):
         code = code.split('=')[1]
         song = song.split('=')[1]
         room = Room.objects.all().filter(code=code)[0]
-        hosts = Host.objects.all().filter(room=room)
-        token = hosts[0].host_token
+        host = room.user_set[0]
+        token = host.host_token
         play_song_test(token)
         return Response(data={"my_return_data":code})
 
@@ -56,7 +41,7 @@ class PlaySongView(APIView):
         song = song.split('=')[1]
         ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
-        hosts = Host.objects.all().filter(room=room)
-        token = hosts[0].host_token
+        host = room.user_set[0]
+        token = host.host_token
         play_specific_song(token, song)
         return Response(data={"my_return_data":code, "current_song": song})
