@@ -44,5 +44,6 @@ def generate_unique_code():
             letter_index = randrange(0, len(alphabet))
             letter = alphabet[letter_index]
             code += letter
+    return code
     
     
