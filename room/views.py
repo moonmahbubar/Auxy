@@ -40,10 +40,23 @@ def play_room_song(request, code):
 
 
 class SpotifyTestView(APIView):
-    def get(self, request, code):
+    def get(self, request, code, song):
         code = code.split('=')[1]
+        song = song.split('=')[1]
         room = Room.objects.all().filter(code=code)[0]
         hosts = Host.objects.all().filter(room=room)
         token = hosts[0].host_token
         play_song_test(token)
         return Response(data={"my_return_data":code})
+
+
+class PlaySongView(APIView):
+    def get(self, request, code, song):
+        code = code.split('=')[1]
+        song = song.split('=')[1]
+        ##Modify to use reverse relation!!!!! IMPORTANT
+        room = Room.objects.all().filter(code=code)[0]
+        hosts = Host.objects.all().filter(room=room)
+        token = hosts[0].host_token
+        play_specific_song(token, song)
+        return Response(data={"my_return_data":code, "current_song": song})
