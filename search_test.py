@@ -3,22 +3,22 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import spotipy.util as util
 
 #Client ID
-cid ='f694f6f7a1584567948f99d653a9d070' 
+cid ='f694f6f7a1584567948f99d653a9d070'
 
 #Client Secret
-secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
+secret = '0e05c9eeee094a5d8d506d0435a18ee9'
 
 #Spotify Username
-username = '22supsxyw37giydcor4utlowq' 
+username = '22supsxyw37giydcor4utlowq'
 
 #For avaliable scopes see https://developer.spotify.com/web-api/using-scopes/
 #Current scope allows for modifying playback.
 scope = 'user-modify-playback-state'
 
 #Once you run the script, copy and paste the link you are redirected to into the terminal.
-redirect_uri='http://127.0.0.1:8000/catalog/'
+redirect_uri='https://developer.spotify.com/dashboard/applications/f694f6f7a1584567948f99d653a9d070'
 
-client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret) 
+client_credentials_manager = SpotifyClientCredentials(client_id=cid, client_secret=secret)
 
 ##Create spotify object.
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
@@ -32,7 +32,7 @@ if token:
     #Authorize
     sp = spotipy.Spotify(auth=token)
     #Store search results in a dictionary
-    song_directory = {}
+    song_results = []
     #Search query
     q = input("What song do you want to search? ")
     search_results = sp.search(q, type='track')
@@ -46,21 +46,22 @@ if token:
         track_name = tracks[id]['name']
         #Store track ID
         track_id = tracks[id]['id']
+        #Store song cover art
+        track_art = tracks[id]['album']['images'][0]['url']
         #Of type num: (id, name)
-        song_directory[id] = (track_id, artist_name + " - " + track_name)
-    
+        song_results.append({'track_id' : track_id, 'track_name' : track_name, 'track_artist' : artist_name, 'track_art' : track_art})
+
     #Print Results
-    for id in song_directory.keys():
-        print(str(id) + ": " + song_directory[id][1])
-    
+    print(song_results)
+    # for id in song_results:
+    #     print(str(id) + ": " + song_results[id]['track_name'])
+
     #Get which song number is being played
-    play_track_num = input("Which song you do want to play? (Enter the ID #):  ")
+    # play_track_num = input("Which song you do want to play? (Enter the ID #):  ")
     #Lookup ID
-    play_track_id = song_directory[int(play_track_num)][0]
-    print(play_track_id)
-    #Play song
-    tracks = []
-    tracks.append("spotify:track:" + play_track_id)
-    sp.start_playback(uris = tracks)
-
-
+    # play_track_id = song_directory[int(play_track_num)][0]
+    # print(play_track_id)
+    # #Play song
+    # tracks = []
+    # tracks.append("spotify:track:" + play_track_id)
+    # sp.start_playback(uris = tracks)
