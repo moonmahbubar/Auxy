@@ -1,10 +1,11 @@
 from django.db import models
 from random import randrange
+from django.utils.crypto import get_random_string
 
 class Room(models.Model):
     """Model representing a room for users to join."""
     name = models.CharField(max_length=200, help_text='Enter a room name.')
-    code = models.CharField(max_length=6, default="000000")
+    code = models.CharField(max_length=6, default=get_random_string)
 
     def __str__(self):
         """String for representing the room Model object."""
@@ -35,15 +36,15 @@ def get_room_users(room):
     return room.user_set
 
 
-def generate_unique_code():
-    """Create a unique alpha numeric code"""
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    code = ""
-    while (code != ""):
-        for i in range(6):
-            letter_index = randrange(0, len(alphabet))
-            letter = alphabet[letter_index]
-            code += letter
-    return code
+# def generate_unique_code():
+#     """Create a unique alpha numeric code"""
+#     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+#     code = ""
+#     while (code != ""):
+#         for i in range(6):
+#             letter_index = randrange(0, len(alphabet))
+#             letter = alphabet[letter_index]
+#             code += letter
+#     return code
     
     
