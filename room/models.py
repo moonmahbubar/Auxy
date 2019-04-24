@@ -19,6 +19,12 @@ class User(models.Model):
         """String for representing the user Model object."""
         return self.display_name
 
+    #  @classmethod
+    # def create(cls, display_name, code):
+    #     book = cls(title=title)
+    #     # do something with the book
+    #     return book
+
 
 class Host(models.Model):
     display_name = models.CharField(max_length=200, help_text='Enter a your display name.')
@@ -29,6 +35,7 @@ class Host(models.Model):
     def __str__(self):
         """String for representing the host Model object."""
         return self.display_name
+
 
 
 def get_room_users(room):

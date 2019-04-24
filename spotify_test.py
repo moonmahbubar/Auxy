@@ -21,7 +21,6 @@ def play_song_test(token):
         return token
 
 
-
 def play_specific_song(token, song):
     if token:
         #Authorize
