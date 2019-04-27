@@ -29,8 +29,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class SpotifyTestView(APIView):
     def get(self, request, code, song):
-        code = code.split('=')[1]
-        song = song.split('=')[1]
         ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
         host = room.host
@@ -41,9 +39,6 @@ class SpotifyTestView(APIView):
 
 class PlaySongView(APIView):
     def get(self, request, code, song):
-        code = code.split('=')[1]
-        song = song.split('=')[1]
-        ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
         host = room.host
         token = host.host_token
@@ -52,9 +47,6 @@ class PlaySongView(APIView):
 
 class SearchSongView(APIView):
     def get(self, request, code, song):
-        code = code.split('=')[1]
-        song = song.split('=')[1]
-        ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
         host = room.host
         token = host.host_token
