@@ -26,18 +26,14 @@ const hash = window.location.search
       initial[parts[0]] = decodeURIComponent(parts[1]);
     }
     if (initial['code'] != undefined) {
-      console.log(initial['code'])
       authCode = initial['code']
-      // dc.createRoom(partyName, displayName, initial['code']);
     }
-    console.log(initial)
     return initial;
   }, {});
 
 interface IState {
   partyName: string,
   displayName: string,
-  token: string
 }
 
 interface IProps {}
@@ -48,23 +44,11 @@ class App extends Component<IProps, IState> {
     this.state = {
       partyName: '',
       displayName: '',
-      token: '',
     };
 
     this.setPartyName = this.setPartyName.bind(this);
     this.setDisplayName = this.setDisplayName.bind(this);
   }
-
-  // componentDidMount = () => {
-  //   // Set token
-  //   let _token = hash.access_token;
-  //   if (_token) {
-  //     // Set token
-  //     this.setState({
-  //       token: _token
-  //     });
-  //   }
-  // }
 
   setPartyName = (event: any) => {
     this.setState({partyName: event.target.value});
@@ -79,57 +63,22 @@ class App extends Component<IProps, IState> {
       sp.getAuthCode();
     }
 
-    // let playSong = () => {
-    //   dc.playSong('123456', this.state.value)
-    // }
-
     return(
       <div className = "title">
           <h1>Welcome to Auxy</h1>
 
           <span>
             <button type = "button" onClick={login}>
-              {/* <Link to="/create_party"> */}
               Host
-              {/* </Link> */}
             </button>
             <button type = "button">Join</button>
           </span>
       </div>
-      // <div className="App">
-      //   <header className="App-header">
-      //     <img src={logo} className="App-logo" alt="logo" />
-      //     <p>
-      //       Edit <code>src/App.tsx</code> and save to reload.
-      //     </p>
-      //     {!this.state.token && (
-      //       <button onClick={login}>
-      //         Spotify Login
-      //       </button>
-      //     )}
-      //     {this.state.token && (
-      //       <p>{this.state.token}</p>
-      //     )}
-      //     <a
-      //       className="App-link"
-      //       href="https://reactjs.org"
-      //       target="_blank"
-      //       rel="noopener noreferrer"
-      //     >
-      //       Learn React
-      //     </a>
-      //   </header>
-      // </div>
     );
   }
 
   CallBack = () => {
-    let extractToken = () => {
-      // let token = window.location.hash;
-      // token = token.substring(token.indexOf("=")+1, token.indexOf("&"));
-      // // Send token to backend to create a new room OR add to state?
-      // // Close the window
-      // alert(token);
+    let sendPartyInfo = () => {
       dc.createRoom(this.state.partyName, this.state.displayName, authCode)
     }
 
@@ -140,28 +89,17 @@ class App extends Component<IProps, IState> {
         <input type='text' value={this.state.partyName} onChange={this.setPartyName}></input>
         Display name:
         <input type='text' value={this.state.displayName} onChange={this.setDisplayName}></input>
-        <button onClick={extractToken}>party time B-)</button>
+        <button onClick={sendPartyInfo}>party time B-)</button>
       </div>
     )
   }
 
-  CreateParty = () => {
-    let sendPartyInfo = () => {
-      partyName = this.state.partyName;
-      displayName = this.state.displayName;
-      console.log(partyName)
-      sp.getAuthCode();
-    }
-
+  PartyRoom = () => {
     return(
       <div>
-        Party name:
-        <input type='text' value={this.state.partyName} onChange={this.setPartyName}></input>
-        Display name:
-        <input type='text' value={this.state.displayName} onChange={this.setDisplayName}></input>
-        <button onClick={sendPartyInfo}>Make a party :-)</button>
+        its a party
       </div>
-    );
+    )
   }
 
   render() {
@@ -169,7 +107,7 @@ class App extends Component<IProps, IState> {
       <Router>
         <Route exact path="/" component={this.Landing} />
         <Route exact path="/callback" component={this.CallBack} />
-        <Route exact path="/create_party" component={this.CreateParty}></Route>
+        <Route exact path="/party" component={this.PartyRoom} />
       </Router>
     );
   }
