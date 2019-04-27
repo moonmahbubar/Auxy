@@ -27,8 +27,12 @@ const scopes = [
   "user-library-modify",
   "user-read-private"
 ];
+
+let sp = new SpotifyLogin()
+let dc = new DjangoCalls()
+
 // Get the hash of the url
-const hash = window.location.hash
+const hash = window.location.search
   .substring(1)
   .split("&")
   .reduce(function(initial: any, item) {
@@ -36,6 +40,10 @@ const hash = window.location.hash
       var parts = item.split("=");
       initial[parts[0]] = decodeURIComponent(parts[1]);
     }
+    if (initial['code'] != undefined) {
+      dc.sendAuthCode(window.location.href)
+    }
+    console.log(initial)
     return initial;
   }, {});
 window.location.hash = "";
@@ -75,15 +83,13 @@ class App extends Component<IProps, IState> {
 
   Landing = () => {
     let login = () => {
-      let sp = new SpotifyLogin()
       // When the token comes, move to next page
-      let tokenSub = sp.getToken().subscribe(token => console.log(token));
-      sp.login();
-      setTimeout(() => console.log(sp.token), 15000)
+      // let tokenSub = sp.getToken().subscribe(token => console.log(token));
+      sp.getAuthCode();
+      // setTimeout(() => console.log(sp.token), 15000)
     }
 
     let playSong = () => {
-      let dc = new DjangoCalls()
       dc.playSong('123456', this.state.value)
     }
 
@@ -95,10 +101,8 @@ class App extends Component<IProps, IState> {
             Edit <code>src/App.tsx</code> and save to reload.
           </p>
           {!this.state.token && (
-            <button>
-              <a href={`${authEndpoint}client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scopes.join("%20")}&response_type=token&show_dialog=true`}>
+            <button onClick={login}>
               Spotify Login
-              </a>
             </button>
           )}
           {this.state.token && (
