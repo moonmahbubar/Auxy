@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from django.http import HttpRequest, HttpResponse
 from search_test import *
 from django.utils.crypto import get_random_string
+from authorization_flow import *
 
 # Create your views here.
 
@@ -29,8 +30,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class SpotifyTestView(APIView):
     def get(self, request, code, song):
-        code = code.split('=')[1]
-        song = song.split('=')[1]
         ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
         host = room.host
@@ -41,9 +40,6 @@ class SpotifyTestView(APIView):
 
 class PlaySongView(APIView):
     def get(self, request, code, song):
-        code = code.split('=')[1]
-        song = song.split('=')[1]
-        ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
         host = room.host
         token = host.host_token
@@ -52,9 +48,6 @@ class PlaySongView(APIView):
 
 class SearchSongView(APIView):
     def get(self, request, code, song):
-        code = code.split('=')[1]
-        song = song.split('=')[1]
-        ##Modify to use reverse relation!!!!! IMPORTANT
         room = Room.objects.all().filter(code=code)[0]
         host = room.host
         token = host.host_token
@@ -71,4 +64,7 @@ class CreateHostView(APIView):
         return Response(data={"created_host": HostSerializer(host, context={'request': request}).data})
 
 
-    
+class UpdateTokensView(APIView):
+    def get(self, request, code):
+        tokens = get_tokens(code)
+        return Response(data={"results":tokens})
