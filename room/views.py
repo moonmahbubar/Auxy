@@ -98,7 +98,7 @@ class CreateHostView(APIView):
         refresh_token = tokens['refresh_token']
         host = Host(display_name=display_name, host_token=host_token, host_refresh_token=refresh_token, room=room)
         host.save()
-        return Response(data={"created_room": RoomSerializer(room, context={'request': request}).data})
+        return Response(data={"created_room_code": code})
 
 class UpdateTokensView(APIView):
     def get(self, request, url):
