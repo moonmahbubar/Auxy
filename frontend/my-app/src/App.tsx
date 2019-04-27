@@ -9,24 +9,6 @@ import SpotifyLogin from './SpotifyLogin';
 import DjangoCalls from './DjangoCalls';
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize?';
-// Replace with your app's client ID, redirect URI and desired scopes
-const clientId = "f694f6f7a1584567948f99d653a9d070";
-const redirectUri = "http://localhost:3000/callback";
-const scopes = [
-  "user-read-currently-playing",
-  "user-read-playback-state",
-  "user-read-email",
-  "user-read-birthdate",
-  "user-follow-modify",
-  "user-follow-read",
-  "playlist-read-private",
-  "playlist-read-collaborative",
-  "playlist-modify-public",
-  "playlist-modify-private",
-  "user-library-read",
-  "user-library-modify",
-  "user-read-private"
-];
 
 let sp = new SpotifyLogin()
 let dc = new DjangoCalls()
@@ -41,12 +23,11 @@ const hash = window.location.search
       initial[parts[0]] = decodeURIComponent(parts[1]);
     }
     if (initial['code'] != undefined) {
-      dc.sendAuthCode(window.location.href)
+      dc.sendAuthCode(initial['code'])
     }
     console.log(initial)
     return initial;
   }, {});
-window.location.hash = "";
 
 interface IState {
   value: string,
@@ -83,10 +64,7 @@ class App extends Component<IProps, IState> {
 
   Landing = () => {
     let login = () => {
-      // When the token comes, move to next page
-      // let tokenSub = sp.getToken().subscribe(token => console.log(token));
       sp.getAuthCode();
-      // setTimeout(() => console.log(sp.token), 15000)
     }
 
     let playSong = () => {
@@ -108,8 +86,6 @@ class App extends Component<IProps, IState> {
           {this.state.token && (
             <p>{this.state.token}</p>
           )}
-          {/* <input type='text' value={this.state.value} onChange={this.handleChange}></input>
-          <button onClick={playSong}>Play a song</button> */}
           <a
             className="App-link"
             href="https://reactjs.org"

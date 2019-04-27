@@ -11,7 +11,7 @@ export default class DjangoCalls {
 
     public sendAuthCode(code: string) {
         fetch('http://localhost:8000/send_auth_code/' + code)
-            .then(response => console.log(response))
+            .then(response => console.log(response.text()))
     }
 
     // public createRoom(roomName: string, hostDisplayName: string, )
