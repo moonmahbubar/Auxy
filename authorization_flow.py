@@ -16,7 +16,6 @@ def get_tokens(url):
     redirect_uri='http://localhost:3000/callback' 
 
     sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
-    #code = sp.parse_response_code(url)
     token = sp.get_access_token(url)
 
     return token
