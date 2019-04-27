@@ -76,8 +76,8 @@ class CreateHostView(APIView):
         code = get_random_string(length=6, allowed_chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
         room = Room(name=room_name, code=code)
         room.save()
-        response = get_tokens(auth_code)
-        tokens = json.loads(response)
+        tokens = get_tokens(auth_code)
+        #tokens = json.loads(response)
         host_token = tokens['access_token']
         refresh_token = tokens['refresh_token']
         host = Host(display_name=display_name, host_token=host_token, host_refresh_token=refresh_token, room=room)
