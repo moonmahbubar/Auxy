@@ -1,10 +1,11 @@
 from django.db import models
 from random import randrange
+from django.utils.crypto import get_random_string
 
 class Room(models.Model):
     """Model representing a room for users to join."""
     name = models.CharField(max_length=200, help_text='Enter a room name.')
-    code = models.CharField(max_length=6, default="000000")
+    code = models.CharField(max_length=6, default=get_random_string)
 
     def __str__(self):
         """String for representing the room Model object."""
@@ -18,6 +19,12 @@ class User(models.Model):
         """String for representing the user Model object."""
         return self.display_name
 
+    #  @classmethod
+    # def create(cls, display_name, code):
+    #     book = cls(title=title)
+    #     # do something with the book
+    #     return book
+
 
 class Host(models.Model):
     display_name = models.CharField(max_length=200, help_text='Enter a your display name.')
@@ -30,20 +37,21 @@ class Host(models.Model):
         return self.display_name
 
 
+
 def get_room_users(room):
     """Returns a list of users for a given room."""
     return room.user_set
 
 
-def generate_unique_code():
-    """Create a unique alpha numeric code"""
-    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-    code = ""
-    while (code != ""):
-        for i in range(6):
-            letter_index = randrange(0, len(alphabet))
-            letter = alphabet[letter_index]
-            code += letter
-    return code
+# def generate_unique_code():
+#     """Create a unique alpha numeric code"""
+#     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+#     code = ""
+#     while (code != ""):
+#         for i in range(6):
+#             letter_index = randrange(0, len(alphabet))
+#             letter = alphabet[letter_index]
+#             code += letter
+#     return code
     
     
