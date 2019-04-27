@@ -55,14 +55,17 @@ class SearchSongView(APIView):
         return Response(data={"search_result":result})
 
 class CreateHostView(APIView):
-    def get(self, request, room_name, display_name, token, refresh_token):
+    def get(self, request, room_name, display_name, auth_code):
         code = get_random_string(length=6, allowed_chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
         room = Room(name=room_name, code=code)
         room.save()
-        host = Host(display_name=display_name, host_token=token, host_refresh_token=refresh_token, room=room)
+        response = get_tokens(auth_code)
+        tokens = json.loads(response)
+        host_token = tokens['access_token']
+        refresh_token = tokens['refresh_token']
+        host = Host(display_name=display_name, host_token=host_token, host_refresh_token=refresh_token, room=room)
         host.save()
         return Response(data={"created_host": HostSerializer(host, context={'request': request}).data})
-
 
 class UpdateTokensView(APIView):
     def get(self, request, url):

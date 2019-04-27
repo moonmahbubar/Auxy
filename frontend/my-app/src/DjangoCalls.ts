@@ -14,5 +14,8 @@ export default class DjangoCalls {
             .then(response => console.log(response.text()))
     }
 
-    // public createRoom(roomName: string, hostDisplayName: string, )
+    public createRoom(roomName: string, hostDisplayName: string, authCode: string) {
+        fetch('http://localhost:8000/create_host/' + roomName + '/' + hostDisplayName + '/' + authCode)
+            .then(response => console.log(response))
+    }
 }
