@@ -1,0 +1,34 @@
+html,body {
+    padding: 0;
+    height: 100%;
+    margin: 0px;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    font-family: "Courier New";
+}
+
+header {
+    background-color: #8aace2;
+    flex: 0 0 0px;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    font-family: "Courier New";
+}
+
+h5 {
+    text-align: center;
+    margin: auto;
+    font-family: "Courier New";
+    padding-top: 10px;
+}
+
+section {
+    text-align: center;
+    margin: auto;
+    font-family: "Courier New";
+    padding-top: 10px;
+}
