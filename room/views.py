@@ -65,6 +65,6 @@ class CreateHostView(APIView):
 
 
 class UpdateTokensView(APIView):
-    def get(self, request, code):
-        tokens = get_tokens(code)
+    def get(self, request, url):
+        tokens = get_tokens(url)
         return Response(data={"results":tokens})
