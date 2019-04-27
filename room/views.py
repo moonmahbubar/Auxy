@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from django.http import HttpRequest, HttpResponse
 from search_test import *
 from django.utils.crypto import get_random_string
+from authorization_flow import *
 
 # Create your views here.
 
@@ -63,4 +64,7 @@ class CreateHostView(APIView):
         return Response(data={"created_host": HostSerializer(host, context={'request': request}).data})
 
 
-    
+class UpdateTokensView(APIView):
+    def get(self, request, code):
+        tokens = get_tokens(code)
+        return Response(data={"results":tokens})
