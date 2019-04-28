@@ -104,3 +104,11 @@ class UpdateTokensView(APIView):
     def get(self, request, url):
         tokens = get_tokens(url)
         return Response(data={"results":tokens})
+
+
+class GetRoomUsersView(APIView):
+    def get(self, request, code):
+        room = Room.objects.all().filter(code=code)[0]
+        users = room.user_set.all()
+        serializer = UserSerializer(users, many=True, context={'request': request})    
+        return Response(data = {"users": serializer.data})

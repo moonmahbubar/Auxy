@@ -37,6 +37,7 @@ urlpatterns = [
     path(r'search/<str:code>/<str:song>', views.SearchSongView.as_view()),
     path(r'create_host/<str:room_name>/<str:display_name>/<str:auth_code>', views.CreateHostView.as_view()),
     path(r'send_auth_code/<str:url>', views.UpdateTokensView.as_view()),
+    path(r'get_room_users/<str:code>', views.GetRoomUsersView.as_view()),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api', include('rest_framework.urls', namespace='rest_framework')),
