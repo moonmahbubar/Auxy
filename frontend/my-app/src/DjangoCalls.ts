@@ -1,4 +1,6 @@
 export default class DjangoCalls {
+    // public evtSource = new EventSource("/path/to/endpoint", { withCredentials: true } );
+
     public playSong(room: string, songID: string) {
         fetch('http://moonmahbubar.pythonanywhere.com/song/' + room + '/' + songID)
             .then(response => console.log(response))
