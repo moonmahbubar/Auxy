@@ -1,20 +1,31 @@
 <!DOCTYPE html>
+
 <html>
-    <head>
-            <link rel = "stylesheet" type = "text/css" href = "party.css">
-        <title>Auxy Party (NAME)</title>
-    </head>
 
-    <body>
-        <div class = "header">
-            <span class = "logo" id = "left">Logo</span>
-            <span class = "logo" id = "center">PARTY NAME</span>
-            <span class = "logo" id = "right">Settings</span>
-        </div>
+<head>
+    <link rel="stylesheet" type="text/css" href="party.css">
+    <title>Auxy Party (NAME)</title>
+</head>
 
-        <div class = "container">
-            <div class = "column">album art</div>
-            <div class = "column" id = "queue">queue list</div>
-        </div>
-    </body>
+<body>
+    <div class="header">
+        <span class="logo" id="left">Logo</span>
+        <span class="logo" id="center">PARTY NAME</span>
+        <span class="logo" id="right">Settings</span>
+    </div>
+
+    <div class="container">
+        <div class="column">album art</div>
+        <div class="column" id="root"></div>
+    </div>
+
+    <!-- Load React. -->
+    <!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+    <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- Load our React component. -->
+    <script type="text/jsx" src="queuelist.js"></script>
+</body>
+
 </html>
