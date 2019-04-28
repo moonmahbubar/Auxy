@@ -52,7 +52,7 @@ class PlaySongView(APIView):
         #Current scope allows for modifying playback.
         scope = 'user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
+        redirect_uri='http://auxy.netlify.com/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
@@ -76,7 +76,7 @@ class SearchSongView(APIView):
         #Current scope allows for modifying playback.
         scope = 'user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
+        redirect_uri='http://auxy.netlify.com/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
