@@ -47,6 +47,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,10 +59,7 @@ MIDDLEWARE = [
     'auxy.middleware.dev_cors_middleware'
 ]
 
-MIDDLEWARE_CLASSES = [
-    'corsheaders.middleware.CorsMiddleware',  
-    'django.middleware.common.CommonMiddleware',  
-]
+
 
 ROOT_URLCONF = 'auxy.urls'
 
