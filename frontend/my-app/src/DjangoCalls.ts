@@ -1,6 +1,6 @@
 export default class DjangoCalls {
     public playSong(room: string, songID: string) {
-        fetch('http://localhost:8000/song/' + room + '/' + songID)
+        fetch('http://moonmahbubar.pythonanywhere.com/song/' + room + '/' + songID)
             .then(response => console.log(response))
     }
 
@@ -15,8 +15,10 @@ export default class DjangoCalls {
     }
 
     public createRoom(roomName: string, hostDisplayName: string, authCode: string) {
-        fetch('http://localhost:8000/create_host/' + roomName + '/' + hostDisplayName + '/' + authCode)
+        return fetch('http://localhost:8000/create_host/' + roomName + '/' + hostDisplayName + '/' + authCode)
             .then(response => response.json())
-            .then(data => console.log(data))
+            // .then(data => {
+            //     console.log(data['created_room_code'])
+            // })
     }
 }

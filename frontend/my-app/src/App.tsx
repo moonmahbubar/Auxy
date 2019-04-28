@@ -12,8 +12,6 @@ export const authEndpoint = 'https://accounts.spotify.com/authorize?';
 
 let sp = new SpotifyLogin()
 let dc = new DjangoCalls()
-let partyName = ''
-let displayName = ''
 let authCode = ''
 
 // Get the hash of the url
@@ -34,6 +32,9 @@ const hash = window.location.search
 interface IState {
   partyName: string,
   displayName: string,
+  roomCode: string,
+  inRoom: string[],
+  queue: string[]
 }
 
 interface IProps {}
@@ -44,10 +45,16 @@ class App extends Component<IProps, IState> {
     this.state = {
       partyName: '',
       displayName: '',
+      roomCode: '',
+      inRoom: ['salad'],
+      queue: []
     };
 
     this.setPartyName = this.setPartyName.bind(this);
     this.setDisplayName = this.setDisplayName.bind(this);
+    this.setRoomCode = this.setRoomCode.bind(this);
+    this.setInRoom = this.setInRoom.bind(this);
+    this.setQueue = this.setQueue.bind(this)
   }
 
   setPartyName = (event: any) => {
@@ -58,9 +65,34 @@ class App extends Component<IProps, IState> {
     this.setState({displayName: event.target.value})
   }
 
+  setRoomCode = (code: string) => {
+    this.setState({roomCode: code})
+  }
+
+  setInRoom = (userList: string[]) => {
+    this.setState({inRoom: userList})
+  }
+
+  setQueue = (q: string[]) => {
+    this.setState({queue: q})
+  }
+
+  componentDidUpdate = (prevProps: any, prevState: any) => {
+    if (window.location.pathname === '/party' && 
+        document.getElementById("inRoom") !== null &&
+        this.state.inRoom !== prevState.inRoom) {
+      console.log(this.state.inRoom)
+      document.getElementById("inRoom")!.innerHTML = this.state.inRoom.join(" ");
+    }
+  }
+
   Landing = () => {
     let login = () => {
       sp.getAuthCode();
+    }
+
+    let playSong = () => {
+      dc.playSong('123456', 'gods plan')
     }
 
     return(
@@ -71,7 +103,7 @@ class App extends Component<IProps, IState> {
             <button type = "button" onClick={login}>
               Host
             </button>
-            <button type = "button">Join</button>
+            <button type = "button" onClick={playSong}>Join</button>
           </span>
       </div>
     );
@@ -80,6 +112,13 @@ class App extends Component<IProps, IState> {
   CallBack = () => {
     let sendPartyInfo = () => {
       dc.createRoom(this.state.partyName, this.state.displayName, authCode)
+        .then(data => {
+          this.setRoomCode(data['created_room_code']);
+          let population = this.state.inRoom
+          population.push(this.state.displayName)
+          this.setInRoom(population)
+          console.log(this.state.roomCode)
+        })
     }
 
     return(
@@ -89,7 +128,9 @@ class App extends Component<IProps, IState> {
         <input type='text' value={this.state.partyName} onChange={this.setPartyName}></input>
         Display name:
         <input type='text' value={this.state.displayName} onChange={this.setDisplayName}></input>
-        <button onClick={sendPartyInfo}>party time B-)</button>
+        <button onClick={sendPartyInfo}><Link to='/party'>
+          party time B-)
+        </Link></button>
       </div>
     )
   }
@@ -98,6 +139,8 @@ class App extends Component<IProps, IState> {
     return(
       <div>
         its a party
+        <br />
+        <p id='inRoom'>{this.state.inRoom.join(" ")}</p>
       </div>
     )
   }
