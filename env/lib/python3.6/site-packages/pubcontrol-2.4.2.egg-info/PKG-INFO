@@ -1,0 +1,12 @@
+Metadata-Version: 1.1
+Name: pubcontrol
+Version: 2.4.2
+Summary: EPCP library
+Home-page: https://github.com/fanout/pypubcontrol
+Author: Justin Karneges
+Author-email: justin@fanout.io
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Topic :: Utilities
+Classifier: License :: OSI Approved :: MIT License

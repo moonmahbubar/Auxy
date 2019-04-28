@@ -1,0 +1,12 @@
+Metadata-Version: 1.1
+Name: django-grip
+Version: 2.0.1
+Summary: Django GRIP library
+Home-page: https://github.com/fanout/django-grip
+Author: Justin Karneges
+Author-email: justin@fanout.io
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Topic :: Utilities
+Classifier: License :: OSI Approved :: MIT License

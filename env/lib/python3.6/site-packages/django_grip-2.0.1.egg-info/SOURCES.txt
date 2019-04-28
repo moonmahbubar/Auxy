@@ -1,0 +1,8 @@
+django_grip.py
+setup.cfg
+setup.py
+django_grip.egg-info/PKG-INFO
+django_grip.egg-info/SOURCES.txt
+django_grip.egg-info/dependency_links.txt
+django_grip.egg-info/requires.txt
+django_grip.egg-info/top_level.txt
