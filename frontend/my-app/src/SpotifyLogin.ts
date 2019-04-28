@@ -43,7 +43,7 @@ export default class SpotifyLogin {
     private config: SpotifyConfig = {
         clientId: "f694f6f7a1584567948f99d653a9d070",
         clientSecret: "0e05c9eeee094a5d8d506d0435a18ee9",
-        redirectUri: "http://localhost:3000/callback",
+        redirectUri: "http://auxy.netlify.com/callback",
         scope: "user-modify-playback-state",
         authToken: "",
         apiBase: ""

@@ -109,6 +109,8 @@ class App extends Component<IProps, IState> {
     );
   }
 
+  // Promts host for party name and display name
+  // 
   CallBack = () => {
     let sendPartyInfo = () => {
       dc.createRoom(this.state.partyName, this.state.displayName, authCode)
