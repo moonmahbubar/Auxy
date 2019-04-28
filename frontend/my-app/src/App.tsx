@@ -14,7 +14,7 @@ let sp = new SpotifyLogin()
 let dc = new DjangoCalls()
 let authCode = ''
 
-// Get the hash of the url
+// Retrieves autorization code after spotify authorization flow callback and saves in variable authCode
 const hash = window.location.search
   .substring(1)
   .split("&")
@@ -29,6 +29,8 @@ const hash = window.location.search
     return initial;
   }, {});
 
+
+// Interface for state of component (needed to make typescript work)
 interface IState {
   partyName: string,
   displayName: string,
@@ -37,11 +39,13 @@ interface IState {
   queue: string[]
 }
 
+// Interace for properties of component (needed to make typescript work)
 interface IProps {}
 
 class App extends Component<IProps, IState> {
   constructor(props: any) {
     super(props);
+    // Set initial state
     this.state = {
       partyName: '',
       displayName: '',
@@ -50,6 +54,7 @@ class App extends Component<IProps, IState> {
       queue: []
     };
 
+    // Bind class methods
     this.setPartyName = this.setPartyName.bind(this);
     this.setDisplayName = this.setDisplayName.bind(this);
     this.setRoomCode = this.setRoomCode.bind(this);
@@ -57,6 +62,7 @@ class App extends Component<IProps, IState> {
     this.setQueue = this.setQueue.bind(this)
   }
 
+  // Setters
   setPartyName = (event: any) => {
     this.setState({partyName: event.target.value});
   }
@@ -77,6 +83,7 @@ class App extends Component<IProps, IState> {
     this.setState({queue: q})
   }
 
+  // Supposedly updates display of members in the room when the state updates
   componentDidUpdate = (prevProps: any, prevState: any) => {
     if (window.location.pathname === '/party' && 
         document.getElementById("inRoom") !== null &&
@@ -86,11 +93,15 @@ class App extends Component<IProps, IState> {
     }
   }
 
+  // Code for landing page (where you pick host or join party)
   Landing = () => {
+    // Initializes sportify authorization flow by prompting user to approve the app to use their
+    // Spotify account
     let login = () => {
       sp.getAuthCode();
     }
 
+    // take out later
     let playSong = () => {
       dc.playSong('123456', 'gods plan')
     }
@@ -109,6 +120,8 @@ class App extends Component<IProps, IState> {
     );
   }
 
+  // Where ther user is returned after approving the app to use theri Spotify account.
+  // Host names their party and chooses their display name
   CallBack = () => {
     let sendPartyInfo = () => {
       dc.createRoom(this.state.partyName, this.state.displayName, authCode)
@@ -135,6 +148,7 @@ class App extends Component<IProps, IState> {
     )
   }
 
+  // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
     return(
       <div>
