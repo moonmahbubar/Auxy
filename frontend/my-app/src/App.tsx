@@ -108,6 +108,11 @@ class App extends Component<IProps, IState> {
 
   // Code for landing page (where you pick host or join party)
   Landing = () => {
+    fetch('http://localhost:8000/events/?channel=test', {headers: { 
+      'Accept' : 'text/event-stream',
+      'Host' : '7b1bca3e.fanoutcdn.com'
+    }}).then(result => console.log(result))
+
     // Initializes sportify authorization flow by prompting user to approve the app to use their
     // Spotify account
     let login = () => {
