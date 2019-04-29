@@ -36,14 +36,13 @@ interface IState {
   roomCode: string,
   inRoom: string[],
   queue: string[],
-  partyCode: string
+  joinPartyCode: string
 }
 
 // Interace for properties of component (needed to make typescript work)
 interface IProps {}
 
 class App extends Component<IProps, IState> {
-  // evtSource: EventSource
 
   constructor(props: any) {
     super(props);
@@ -54,13 +53,8 @@ class App extends Component<IProps, IState> {
       roomCode: '',
       inRoom: ['salad'],
       queue: [],
-      partyCode: ''
+      joinPartyCode: ''
     };
-
-    // this.evtSource = dc.getEventSource()
-    // this.evtSource.onmessage = (e) => {
-    //   // Update the state on recieving info from server
-    // }
 
     // Bind class methods
     this.setPartyName = this.setPartyName.bind(this);
@@ -68,7 +62,7 @@ class App extends Component<IProps, IState> {
     this.setRoomCode = this.setRoomCode.bind(this);
     this.setInRoom = this.setInRoom.bind(this);
     this.setQueue = this.setQueue.bind(this)
-    this.setPartyCode = this.setPartyCode.bind(this);
+    this.setJoinPartyCode = this.setJoinPartyCode.bind(this);
   }
 
   // Setters
@@ -92,19 +86,19 @@ class App extends Component<IProps, IState> {
     this.setState({queue: q})
   }
 
-  setPartyCode = (event: any) => {
-    this.setState({partyCode: event.target.value})
+  setJoinPartyCode = (event: any) => {
+    this.setState({joinPartyCode: event.target.value})
   }
 
   // Supposedly updates display of members in the room when the state updates
-  componentDidUpdate = (prevProps: any, prevState: any) => {
-    if (window.location.pathname === '/party' && 
-        document.getElementById("inRoom") !== null &&
-        this.state.inRoom !== prevState.inRoom) {
-      console.log(this.state.inRoom)
-      document.getElementById("inRoom")!.innerHTML = this.state.inRoom.join(" ");
-    }
-  }
+  // componentDidUpdate = (prevProps: any, prevState: any) => {
+  //   if (window.location.pathname === '/party' && 
+  //       document.getElementById("inRoom") !== null &&
+  //       this.state.inRoom !== prevState.inRoom) {
+  //     console.log(this.state.inRoom)
+  //     // document.getElementById("inRoom")!.innerHTML = this.state.inRoom.join(" ");
+  //   }
+  // }
 
   // Code for landing page (where you pick host or join party)
   Landing = () => {
@@ -177,6 +171,22 @@ class App extends Component<IProps, IState> {
 
   // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
+    setInterval(() => {
+      if (this.state.roomCode !== "") {
+        dc.getRoomUsers(this.state.roomCode)
+        .then(data => {
+          console.log(data)
+          var userList = data['users']
+          let displaynames = []
+          for (var i = 0; i < userList.length; i++) {
+            displaynames.push(userList[i]['display_name'])
+          }
+          console.log(displaynames)
+          this.setInRoom(displaynames)
+        })
+      }
+    }, 1000)
+
     return(
       <div>
         its a party
@@ -202,7 +212,7 @@ class App extends Component<IProps, IState> {
             </section>
             <h5> Party code </h5>
             <section>
-                <input type="text" value={this.state.partyCode} onChange={this.setPartyCode} name="partycode" className="inp" placeholder="Party Code" />
+                <input type="text" value={this.state.joinPartyCode} onChange={this.setJoinPartyCode} name="partycode" className="inp" placeholder="Party Code" />
             </section>
             <section>
               <button onClick={attemptToJoin}>

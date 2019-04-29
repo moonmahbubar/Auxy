@@ -3,21 +3,6 @@ from random import randrange
 from django.utils.crypto import get_random_string
 from django.utils import timezone
 
-class Song(models.Model):
-    """Model representing a song to be played."""
-    track_id =  models.CharField(max_length=200)
-    track_name =  models.CharField(max_length=200)
-    track_artist = models.CharField(max_length=200)
-    track_art =  models.CharField(max_length=200)
-    track_length = models.IntegerField()
-    date_added = models.DateTimeField(default=timezone.now)
-    votes = models.IntegerField(default=0)
-
-
-    def __str__(self):
-        """String for representing the song object"""
-        return self.track_id
-
 class Room(models.Model):
     """Model representing a room for users to join."""
     name = models.CharField(max_length=200, help_text='Enter a room name.')
@@ -31,9 +16,23 @@ class Room(models.Model):
         """Returns a list of users of the room."""
         return self.user_set
     
-    def get_queue(self):
-        """Returns a list of songs of the room."""
-        return self.song_set
+
+class Song(models.Model):
+    """Model representing a song to be played."""
+    track_id =  models.CharField(max_length=200)
+    track_name =  models.CharField(max_length=200)
+    track_artist = models.CharField(max_length=200)
+    track_art =  models.CharField(max_length=200)
+    track_length = models.IntegerField()
+    date_added = models.DateTimeField(default=timezone.now)
+    votes = models.IntegerField(default=0)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, default=None)
+
+
+    def __str__(self):
+        """String for representing the song object"""
+        return self.track_name
+    
 
 class User(models.Model):
     display_name = models.CharField(max_length=200, help_text='Enter a your display name.')

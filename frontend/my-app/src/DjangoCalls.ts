@@ -2,7 +2,7 @@ export default class DjangoCalls {
     // private evtSource: EventSource
 
     constructor() {
-        // this.evtSource = new EventSource("/path/to/endpoint", { withCredentials: true } );
+
     }
 
     // public getEventSource() {
@@ -30,5 +30,10 @@ export default class DjangoCalls {
             // .then(data => {
             //     console.log(data['created_room_code'])
             // })
+    }
+
+    public getRoomUsers(roomCode: string) {
+        return fetch('http://localhost:8000/get_room_users/' + roomCode)
+            .then(response => response.json())
     }
 }
