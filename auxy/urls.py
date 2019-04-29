@@ -27,6 +27,7 @@ router = routers.DefaultRouter()
 router.register(r'rooms', views.RoomViewSet)
 router.register(r'hosts', views.HostViewSet)
 router.register(r'users', views.UserViewSet)
+router.register(r'songs', views.SongViewSet)
 
 
 urlpatterns = [
