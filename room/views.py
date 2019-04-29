@@ -129,3 +129,39 @@ class JoinRoomView(APIView):
             return Response(data={"created_user": serializer.data})
         else:
             return Response(data={"Room not found."})
+
+class PushSongView(APIView):
+    def get(self, request, song, code):
+        room = Room.objects.all().filter(code=code)[0]
+        song = Song(track_id="", track_name=song, track_artist="", track_art="", track_length=0, votes=0, room=room)
+        song.save()
+        #serializer = SongSerializer(Song, context={'request': request})    
+        return Response(data={"pushed_song": "success"})
+
+class PopSongView(APIView):
+    def get(self, request, code):
+        room = Room.objects.all().filter(code=code)[0]
+        song = room.song_set.all().order_by('date_added')[0]
+        host = room.host
+        token = host.host_token
+        refresh_token = host.host_refresh_token
+        #Client Token
+        cid ='f694f6f7a1584567948f99d653a9d070' 
+        #Client Secret
+        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
+        #Current scope allows for modifying playback.
+        scope = 'user-modify-playback-state'
+        #Once you run the script, copy and paste the link you are redirected to into the terminal.
+        redirect_uri='http://auxy.netlify.com/callback' 
+        #Create OAuth2 object
+        sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
+        #Refresh token
+        response = sp.refresh_access_token(refresh_token)
+        token = response["access_token"]
+        host.token = token
+        host.save()
+        play_specific_song(token, song.track_name)
+        song.delete()
+        return Response(data={"popped_song": "success"})
+
+
