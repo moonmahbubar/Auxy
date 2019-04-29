@@ -24,8 +24,10 @@ def search_song(token, q):
             track_id = tracks[id]['id']
             #Store song cover art
             track_art = tracks[id]['album']['images'][0]['url']
+            #Store the length of song in ms
+            track_length = tracks[id]['duration_ms']
             #Of type num: (id, name)
-            song_results.append({'track_id' : track_id, 'track_name' : track_name, 'track_artist' : artist_name, 'track_art' : track_art})
+            song_results.append({'track_id' : track_id, 'track_name' : track_name, 'track_artist' : artist_name, 'track_art' : track_art, 'track_length' : track_length})
 
         #Return Results
         return(song_results)
