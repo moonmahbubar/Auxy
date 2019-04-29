@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Spotify Web Playback SDK Quick Start Tutorial</title>
+  <title>Auxy Room</title>
 </head>
 <body>
-  <h1>Spotify Web Playback SDK Quick Start Tutorial</h1>
-  <h2>Open your console log: <code>View > Developer > JavaScript Console</code></h2>
+  <h1>Hye!</h1>
+  <h2>IDK <code>View > Developer > JavaScript Console</code></h2>
 
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
   <!-- We will insert our code here. -->
   <script>
   window.onSpotifyWebPlaybackSDKReady = () => {
-  const token = 'BQBFK21sSi67STAdOAQcZvbrscr_1Be2wMPV2RqULs-DB0tyn8Pk-QWVo1JckppCZso_iF9gPIchdszfdSeEJwd3417WoiumbUKhGlGBgIp09wNRO_n3wCkEexc-9EDuFmoJtv-guKwN8orYaPRP_B-hDaLFIvAt6pWHa81WhZBY3mUCuiB5kHJu2lgP9ERn0pi4HKW8BezCibXTvODY';
+  const token = 'BQCpOBJN0swg0u4_8MQLvY9zLuYIRooKHunR11Ug-Ve15ucXZTr5jZwEwttkt3nogqMhVV0YsBGwA7Zo7ojJnACsqDIZfW8QPUl70jijPBWcQByfEu03n77P8Ew3CKJub_Bi5-h6bdY4hs1CB1ON0Oq-L_dUhMrLPxXjin-TOj_SCH_mrc-PAg_iTBwF-SZCszs9j2V73gmHDBLmCIkTWrtgtX_HFCTxpDnhWXSgsVHoPbaRLHbg7Ty-kh5xPqcBl_9p-v9tZlQhGW830jovvJchGKvx6817G86mnaQ';
   const player = new Spotify.Player({
-    name: 'Im fast as fuck boy',
+    name: 'AUXY',
     getOAuthToken: cb => { cb(token); }
   });
 
@@ -24,7 +24,7 @@
   player.addListener('playback_error', ({ message }) => { console.error(message); });
 
   // Playback status updates
-  player.addListener('player_state_changed', state => { console.log(state); });
+//   player.addListener('player_state_changed', state => { console.log(state); });
 
   // Ready
   player.addListener('ready', ({ device_id }) => {
@@ -38,13 +38,13 @@
 
   //listener for checking when a song has ended
   player.addListener(
-    'player_song_ended',
+    'player_state_changed',
     state =>
     {
       console.log(state);
-      if(this.state && !this.state.paused && state.paused && state.position === 0) {
+      if(this.state && ! this.state.paused && state.paused && state.position === 0) {
         fetch('http://moonmahbubar.pythonanywhere.com/song/' + room + '/' + songID).then(response => console.log('Track ended'));
-        this.setTrackEnd(true);
+        // setTrackEnd(true);
       }
       this.state = state;
     }
