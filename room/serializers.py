@@ -19,5 +19,5 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class SongSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Song
-        fields = ('track_id', 'track_name', 'track_artist', 'track_art', 'track_length', 'date_added', 'votes')
+        fields = ('track_id', 'track_name', 'track_artist', 'track_art', 'track_length', 'date_added', 'votes', 'room')
     
