@@ -111,4 +111,16 @@ class GetRoomUsersView(APIView):
         room = Room.objects.all().filter(code=code)[0]
         users = room.user_set.all()
         serializer = UserSerializer(users, many=True, context={'request': request})    
-        return Response(data = {"users": serializer.data})
+        return Response(data={"users": serializer.data})
+
+class JoinRoomView(APIView):
+    def get(self, request, display_name, code):
+        rooms = Room.objects.all().filter(code=code)
+        if rooms:
+            room = rooms[0]
+            user = User(display_name=display_name,room=room)
+            user.save()
+            serializer = UserSerializer(user, context={'request': request})  
+            return Response(data={"created_user": serializer.data})
+        else:
+            return Response(data={"Room not found."})
