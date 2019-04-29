@@ -9,16 +9,16 @@
   <form>
     Song name:<br>
     <input type="text" name="songname"><br>
-    <input type="button" value="Play God's Plan" onclick="fetch('localhost:8000/push_song/123456/gods plan')"/>
-    <input type="button" value="Play Luv Bug" onclick="fetch('localhost:8000/push_song/123456/luv bug')"/>
-    <input type="button" value="Play Loving is Easy" onclick="fetch('localhost:8000/push_song/123456/loving is easy')"/>
+    <input type="button" value="Play God's Plan" onclick="fetch('http://localhost:8000/push_song/123456/gods plan')"/>
+    <input type="button" value="Play Luv Bug" onclick="fetch('http://localhost:8000/push_song/123456/luv bug')"/>
+    <input type="button" value="Play Loving is Easy" onclick="fetch('http://localhost:8000/push_song/123456/loving is easy')"/>
   </form>
 
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
   <!-- We will insert our code here. -->
   <script>
   window.onSpotifyWebPlaybackSDKReady = () => {
-  const token = 'BQCpOBJN0swg0u4_8MQLvY9zLuYIRooKHunR11Ug-Ve15ucXZTr5jZwEwttkt3nogqMhVV0YsBGwA7Zo7ojJnACsqDIZfW8QPUl70jijPBWcQByfEu03n77P8Ew3CKJub_Bi5-h6bdY4hs1CB1ON0Oq-L_dUhMrLPxXjin-TOj_SCH_mrc-PAg_iTBwF-SZCszs9j2V73gmHDBLmCIkTWrtgtX_HFCTxpDnhWXSgsVHoPbaRLHbg7Ty-kh5xPqcBl_9p-v9tZlQhGW830jovvJchGKvx6817G86mnaQ';
+  const token = 'BQAjTzSsTAZBLI_fqQn7J0zbzf5GvEjb4vwDXhIeP3IoSqWlVel86ewT1QkCwALez4jOvVWpLySjZfNOSIHdkP7WXykj1k5NFgOUJbj4S12eWJta9Ul82SJF82hhFguCp_GzNtk_4fGHDnQjKyYxHT2DqRV6blBpt6EmFF1scexdMZ22igvYuV7RFZstWAopUMqPwFoekW96CbtXNZw1wPdgBPUFWULuq_qppLpe8rOC9M6C8Ko0p9MRtDYcdsBRqPukvinoiwi26EgsEyQc7wSnVO0OX9A1Yjal2AY';
   const player = new Spotify.Player({
     name: 'AUXY',
     getOAuthToken: cb => { cb(token); }
@@ -50,7 +50,7 @@
     {
       console.log(state);
       if(this.state && ! this.state.paused && state.paused && state.position === 0) {
-        fetch('http://moonmahbubar.pythonanywhere.com/song/' + room + '/' + songID).then(response => console.log('Track ended'));
+        fetch('http://localhost:8000/pop_song/123456').then(response => console.log('Track ended'));
         // setTrackEnd(true);
       }
       this.state = state;
