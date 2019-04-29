@@ -36,6 +36,20 @@
     console.log('Device ID has gone offline', device_id);
   });
 
+  //listener for checking when a song has ended
+  player.addListener(
+    'player_song_ended',
+    state =>
+    {
+      console.log(state);
+      if(this.state && !this.state.paused && state.paused && state.position === 0) {
+        fetch('http://moonmahbubar.pythonanywhere.com/song/' + room + '/' + songID).then(response => console.log('Track ended'));
+        this.setTrackEnd(true);
+      }
+      this.state = state;
+    }
+  );
+
   // Connect to the player!
   player.connect();
 };</script>
