@@ -44,9 +44,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'room.apps.RoomConfig',
     'rest_framework',
+    'django_eventstream',
 ]
 
 MIDDLEWARE = [
+    'django_grip.GripMiddleware',
     'corsheaders.middleware.CorsMiddleware',  
     'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -140,3 +142,12 @@ CORS_ORIGIN_REGEX_WHITELIST = (
     'auxy.netlify.com',
 )
 
+
+# --- Add Fanout Butt configuration ---
+from base64 import b64decode
+
+GRIP_PROXIES = [{
+    'control_uri': 'http://api.fanout.io/realm/7b1bca3e',
+    'control_iss': '7b1bca3e',
+    'key': b64decode('c5fTHsR7MEZiZbayuo5mjA==')
+}]

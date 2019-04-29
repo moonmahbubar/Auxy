@@ -8,7 +8,6 @@ from django.http import HttpRequest, HttpResponse
 from search_test import *
 from django.utils.crypto import get_random_string
 from authorization_flow import *
-import json
 
 
 
@@ -251,6 +250,8 @@ class GetRoomQueueView(APIView):
     """Returns the list of songs associated with a room."""
     def get(self, request, code):
         #Get room.
+        from django_eventstream import send_event
+        send_event('test', 'message', {'text': 'hello world'})
         room = Room.objects.all().filter(code=code)[0]
         #Get songs ordered by date.
         songs = room.song_set.all().order_by('date_added')
