@@ -3,7 +3,6 @@
 
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import logo from './logo.svg';
 import './App.css';
 import SpotifyLogin from './SpotifyLogin';
 import DjangoCalls from './DjangoCalls';
@@ -14,7 +13,7 @@ let sp = new SpotifyLogin()
 let dc = new DjangoCalls()
 let authCode = ''
 
-// Get the hash of the url
+// Retrieves autorization code after spotify authorization flow callback and saves in variable authCode
 const hash = window.location.search
   .substring(1)
   .split("&")
@@ -29,34 +28,50 @@ const hash = window.location.search
     return initial;
   }, {});
 
+
+// Interface for state of component (needed to make typescript work)
 interface IState {
   partyName: string,
   displayName: string,
   roomCode: string,
   inRoom: string[],
-  queue: string[]
+  queue: string[],
+  partyCode: string
 }
 
+// Interace for properties of component (needed to make typescript work)
 interface IProps {}
 
 class App extends Component<IProps, IState> {
+  // evtSource: EventSource
+
   constructor(props: any) {
     super(props);
+    // Set initial state
     this.state = {
       partyName: '',
       displayName: '',
       roomCode: '',
       inRoom: ['salad'],
-      queue: []
+      queue: [],
+      partyCode: ''
     };
 
+    // this.evtSource = dc.getEventSource()
+    // this.evtSource.onmessage = (e) => {
+    //   // Update the state on recieving info from server
+    // }
+
+    // Bind class methods
     this.setPartyName = this.setPartyName.bind(this);
     this.setDisplayName = this.setDisplayName.bind(this);
     this.setRoomCode = this.setRoomCode.bind(this);
     this.setInRoom = this.setInRoom.bind(this);
     this.setQueue = this.setQueue.bind(this)
+    this.setPartyCode = this.setPartyCode.bind(this);
   }
 
+  // Setters
   setPartyName = (event: any) => {
     this.setState({partyName: event.target.value});
   }
@@ -77,6 +92,11 @@ class App extends Component<IProps, IState> {
     this.setState({queue: q})
   }
 
+  setPartyCode = (event: any) => {
+    this.setState({partyCode: event.target.value})
+  }
+
+  // Supposedly updates display of members in the room when the state updates
   componentDidUpdate = (prevProps: any, prevState: any) => {
     if (window.location.pathname === '/party' && 
         document.getElementById("inRoom") !== null &&
@@ -86,31 +106,41 @@ class App extends Component<IProps, IState> {
     }
   }
 
+  // Code for landing page (where you pick host or join party)
   Landing = () => {
+    // Initializes sportify authorization flow by prompting user to approve the app to use their
+    // Spotify account
     let login = () => {
       sp.getAuthCode();
     }
 
+    let toJoinParty = () => {
+      // this.context.router.history.push('/join_party')
+    }
+
+    // take out later
     let playSong = () => {
       dc.playSong('123456', 'gods plan')
     }
 
     return(
-      <div className = "title">
+      <div className = "main-title">
           <h1>Welcome to Auxy</h1>
 
           <span>
-            <button type = "button" onClick={login}>
+            <button className="main" type = "button" onClick={login}>
               Host
             </button>
-            <button type = "button" onClick={playSong}>Join</button>
+            <button className="main" type = "button" onClick={toJoinParty}>
+              Join
+            </button>
           </span>
       </div>
     );
   }
 
-  // Promts host for party name and display name
-  // 
+  // Where ther user is returned after approving the app to use theri Spotify account.
+  // Host names their party and chooses their display name
   CallBack = () => {
     let sendPartyInfo = () => {
       dc.createRoom(this.state.partyName, this.state.displayName, authCode)
@@ -124,19 +154,29 @@ class App extends Component<IProps, IState> {
     }
 
     return(
-      <div className="App">
-        <h2>Congratualation, you signed into spotify!</h2>
-        Party name:
-        <input type='text' value={this.state.partyName} onChange={this.setPartyName}></input>
-        Display name:
-        <input type='text' value={this.state.displayName} onChange={this.setDisplayName}></input>
-        <button onClick={sendPartyInfo}><Link to='/party'>
-          party time B-)
-        </Link></button>
+      <div className="host">
+        <header>Welcome to AUXY!</header>
+        <form method="POST" action="php/zhuce.php">
+            <h5> Please input your name </h5>
+            <section>
+                <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
+            </section>
+            <h5> What do you want to name your party? </h5>
+            <section>
+                <input type="text" value={this.state.partyName} onChange={this.setPartyName} name="partyname" className="inp" placeholder="Party Name" />
+            </section>
+            <section>
+              <button onClick={sendPartyInfo}><Link to='/party'>
+                party time B-)
+              </Link></button>
+            </section>
+        </form>
       </div>
-    )
+    );
   }
 
+
+  // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
     return(
       <div>
@@ -147,15 +187,46 @@ class App extends Component<IProps, IState> {
     )
   }
 
+  // Page for a user to join a party via room code
+  JoinParty = () => {
+    let attemptToJoin = () => {
+      // this.context.history.push('/party')
+    }
+
+    return(
+      <div className='host'>
+        <header>Welcome to AUXY!</header>
+        <form method="POST" action="php/zhuce.php">
+            <h5> Please input your name </h5>
+            <section>
+                <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
+            </section>
+            <h5> Party code </h5>
+            <section>
+                <input type="text" value={this.state.partyCode} onChange={this.setPartyCode} name="partycode" className="inp" placeholder="Party Code" />
+            </section>
+            <section>
+              <button onClick={attemptToJoin}>
+                Join Party
+              </button>
+            </section>
+        </form>
+      </div>
+    )
+  }
+
   render() {
     return (
       <Router>
-        <Route exact path="/" component={this.Landing} />
-        <Route exact path="/callback" component={this.CallBack} />
-        <Route exact path="/party" component={this.PartyRoom} />
+        <div>
+          <Route exact path="/" component={this.Landing} />
+          <Route exact path="/callback" component={this.CallBack} />
+          <Route exact path="/party" component={this.PartyRoom} />
+          <Route exact path="/join_party" component={this.JoinParty} />
+        </div>
       </Router>
     );
   }
 }
 
-export default App;
+export default (App);
