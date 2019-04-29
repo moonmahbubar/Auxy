@@ -255,9 +255,9 @@ class App extends Component<IProps, IState> {
           </button>
           <input type="text" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" className="inp" placeholder="" />
         </form>
-        // <div>
-        //   {this.state.searchResults.map(r => <button type = "button" onClick={search}>{r['']}</button>)}
-        // </div>
+        <div>
+          {this.state.searchResults.map(r => <button type = "button" onClick={search}></button>)}
+        </div>
       </div>
     )
   }
