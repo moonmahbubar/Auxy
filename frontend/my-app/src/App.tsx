@@ -36,7 +36,9 @@ interface IState {
   roomCode: string,
   inRoom: string[],
   queue: string[],
-  partyCode: string
+  partyCode: string,
+  searchTerm: string,
+  searchResults: Object[]
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -54,7 +56,9 @@ class App extends Component<IProps, IState> {
       roomCode: '',
       inRoom: ['salad'],
       queue: [],
-      partyCode: ''
+      partyCode: '',
+      searchTerm: '',
+      searchResults: []
     };
 
     // this.evtSource = dc.getEventSource()
@@ -69,6 +73,7 @@ class App extends Component<IProps, IState> {
     this.setInRoom = this.setInRoom.bind(this);
     this.setQueue = this.setQueue.bind(this)
     this.setPartyCode = this.setPartyCode.bind(this);
+    this.setSearchResults = this.setSearchResults.bind(this);
   }
 
   // Setters
@@ -96,9 +101,17 @@ class App extends Component<IProps, IState> {
     this.setState({partyCode: event.target.value})
   }
 
+  setSearchTerm = (event: any) => {
+    this.setState({searchTerm: event.target.value})
+  }
+
+  setSearchResults = (results: any) => {
+    this.setState({searchResults: results})
+  }
+
   // Supposedly updates display of members in the room when the state updates
   componentDidUpdate = (prevProps: any, prevState: any) => {
-    if (window.location.pathname === '/party' && 
+    if (window.location.pathname === '/party' &&
         document.getElementById("inRoom") !== null &&
         this.state.inRoom !== prevState.inRoom) {
       console.log(this.state.inRoom)
@@ -214,6 +227,41 @@ class App extends Component<IProps, IState> {
     )
   }
 
+  // Page for a user to join a party via room code
+  Playback = () => {
+    let addToQueue = () => {
+      fetch('http://localhost:8000/push_song/123456/gods plan')
+    }
+
+    let search = () => {
+      fetch('http://localhost:8000/search/123456/' + this.state.searchTerm)
+        .then(response => response.json())
+        .then(data => {
+          this.setSearchResults(data['search_result'])
+        })
+    }
+
+    return(
+      <div className='playback'>
+        <h1>Hye!</h1>
+        <h2>IDK <code>View > Developer > JavaScript Console</code></h2>
+        <form>
+          Song name:<br/>
+          <button type = "button" onClick={addToQueue}>
+            Play God's Plan
+          </button>
+          <button type = "button" onClick={search}>
+            Search
+          </button>
+          <input type="text" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" className="inp" placeholder="" />
+        </form>
+        // <div>
+        //   {this.state.searchResults.map(r => <button type = "button" onClick={search}>{r['']}</button>)}
+        // </div>
+      </div>
+    )
+  }
+
   render() {
     return (
       <Router>
@@ -222,6 +270,7 @@ class App extends Component<IProps, IState> {
           <Route exact path="/callback" component={this.CallBack} />
           <Route exact path="/party" component={this.PartyRoom} />
           <Route exact path="/join_party" component={this.JoinParty} />
+          <Route exact path="/playback" component={this.Playback} />
         </div>
       </Router>
     );
