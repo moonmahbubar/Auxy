@@ -7,7 +7,11 @@
   <h1>Hye!</h1>
   <h2>IDK <code>View > Developer > JavaScript Console</code></h2>
   <form>
-  <input type="button" value="Play Song One" onclick="fetch('http://moonmahbubar.pythonanywhere.com/song/' + '123456' + '/' + 'gods plan')"/>
+    Song name:<br>
+    <input type="text" name="songname"><br>
+    <input type="button" value="Play God's Plan" onclick="fetch('localhost:8000/push_song/123456/gods plan')"/>
+    <input type="button" value="Play Luv Bug" onclick="fetch('localhost:8000/push_song/123456/luv bug')"/>
+    <input type="button" value="Play Loving is Easy" onclick="fetch('localhost:8000/push_song/123456/loving is easy')"/>
   </form>
 
   <script src="https://sdk.scdn.co/spotify-player.js"></script>
