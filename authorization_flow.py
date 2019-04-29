@@ -13,7 +13,7 @@ def get_tokens(url):
     scope = 'user-modify-playback-state'
 
     #Once you run the script, copy and paste the link you are redirected to into the terminal.
-    redirect_uri='http://localhost:3000/callback' 
+    redirect_uri="http://auxy.netlify.com/callback"
 
     sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
     token = sp.get_access_token(url)

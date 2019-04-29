@@ -42,16 +42,4 @@ def get_room_users(room):
     """Returns a list of users for a given room."""
     return room.user_set
 
-
-# def generate_unique_code():
-#     """Create a unique alpha numeric code"""
-#     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-#     code = ""
-#     while (code != ""):
-#         for i in range(6):
-#             letter_index = randrange(0, len(alphabet))
-#             letter = alphabet[letter_index]
-#             code += letter
-#     return code
-    
     
