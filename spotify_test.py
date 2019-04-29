@@ -38,3 +38,15 @@ def play_specific_song(token, song):
         #Start playing the songs.
         sp.start_playback(uris=tracks)
         return token
+
+def play_song_id(token, track_id):
+    if token:
+        #Authorize
+        sp = spotipy.Spotify(auth=token)
+        #List of tracks to be added to the playback
+        tracks = []
+        #Add track_id to list of tracks being added to playback
+        tracks.append("spotify:track:" + track_id)
+        #Start playing the songs.
+        sp.start_playback(uris=tracks)
+        return token

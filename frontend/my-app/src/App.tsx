@@ -176,11 +176,15 @@ class App extends Component<IProps, IState> {
         dc.getRoomUsers(this.state.roomCode)
         .then(data => {
           console.log(data)
-          var userList = data['users']
           let displaynames = []
+
+          displaynames.push(data['host']['display_name'])
+
+          var userList = data['users']
           for (var i = 0; i < userList.length; i++) {
             displaynames.push(userList[i]['display_name'])
           }
+
           console.log(displaynames)
           this.setInRoom(displaynames)
         })
