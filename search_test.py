@@ -30,4 +30,5 @@ def search_song(token, q):
             song_results.append({'track_id' : track_id, 'track_name' : track_name, 'track_artist' : artist_name, 'track_art' : track_art, 'track_length' : track_length})
 
         #Return Results
+        print(song_results)
         return(song_results)
