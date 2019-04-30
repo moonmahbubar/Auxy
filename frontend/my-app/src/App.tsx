@@ -158,16 +158,18 @@ class App extends Component<IProps, IState> {
 
     return(
       <div className = "main-title">
-          <h1>Welcome to Auxy</h1>
-
+        <div className = "box">
+          <h1 className="hero-title">Welcome to Auxy!</h1>
+          <p className="hero-paragraph">With Auxy, you can collaborate on Spotify queues with your friends! </p>
           <span>
             <button className="main" type = "button" onClick={login}>
-              Host
+            Host
             </button>
             <button className="main" type = "button" onClick={toJoinParty}>
-              Join
+            Join
             </button>
           </span>
+        </div>
       </div>
     );
   }
