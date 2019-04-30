@@ -38,7 +38,7 @@ interface IState {
   queue: string[],
   partyCode: string,
   searchTerm: string,
-  searchResults: Object[]
+  searchResults: any
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -229,8 +229,9 @@ class App extends Component<IProps, IState> {
 
   // Page for a user to join a party via room code
   Playback = () => {
-    let addToQueue = () => {
-      fetch('http://localhost:8000/push_song/123456/gods plan')
+    let addToQueue = (trackId: string) => {
+      console.log(trackId)
+      fetch('http://localhost:8000/push_song/123456/' + trackId)
     }
 
     let search = () => {
@@ -247,7 +248,7 @@ class App extends Component<IProps, IState> {
         <h2>IDK <code>View > Developer > JavaScript Console</code></h2>
         <form>
           Song name:<br/>
-          <button type = "button" onClick={addToQueue}>
+          <button type = "button" onClick={() => addToQueue('gods plan')}>
             Play God's Plan
           </button>
           <button type = "button" onClick={search}>
@@ -256,7 +257,7 @@ class App extends Component<IProps, IState> {
           <input type="text" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" className="inp" placeholder="" />
         </form>
         <div>
-          {this.state.searchResults.map(r => <button type = "button" onClick={search}></button>)}
+          {this.state.searchResults.map((r: any) => <button type = "button" onClick={() => addToQueue(r['track_id'])} key={r['track_id']}>{r['track_name']}</button>)}
         </div>
       </div>
     )
