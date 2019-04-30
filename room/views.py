@@ -196,7 +196,7 @@ class PopSongView(APIView):
         #Client Secret
         secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
         #Current scope allows for modifying playback.
-        scope = 'user-modify-playback-state'
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
         redirect_uri='http://auxy.netlify.com/callback' 
         #Create OAuth2 object.
@@ -230,7 +230,7 @@ class PlayIDView(APIView):
         #Client Secret
         secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
         #Current scope allows for modifying playback.
-        scope = 'user-modify-playback-state'
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
         redirect_uri='http://auxy.netlify.com/callback' 
         #Create OAuth2 object
@@ -258,4 +258,43 @@ class GetRoomQueueView(APIView):
         serializer = SongSerializer(songs, many=True, context={'request': request})  
         #Return as json format.
         return Response(data={"songs":serializer.data})
-        
+
+
+class DeleteSongView(APIView):
+    """Deletes a song."""
+    def get(self, request, auto_increment_id):
+        #Get song with the unique id 
+        songs = Song.objects.all().filter(auto_increment_id=auto_increment_id)
+        #If a song is found.
+        if songs:
+            song = songs[0]
+            song.delete()
+            return Response(data="succesfully deleted!")
+        else:
+            return Response(data="Error! Song not found.")
+
+class RefreshTokenView(APIView):
+    """Refresh a token for a host."""
+    def get(self, request, code):
+        room = Room.objects.all().filter(code=code)[0]
+        #Get host.
+        host = room.host
+        #Get tokens.
+        refresh_token = host.host_refresh_token
+        #Client Token
+        cid ='f694f6f7a1584567948f99d653a9d070' 
+        #Client Secret
+        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
+        #Current scope allows for modifying playback.
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
+        #Once you run the script, copy and paste the link you are redirected to into the terminal.
+        redirect_uri='http://auxy.netlify.com/callback' 
+        #Create OAuth2 object
+        sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
+        #Refresh token
+        response = sp.refresh_access_token(refresh_token)
+        token = response["access_token"]
+        host.token = token
+        #Update host.
+        host.save()
+        return Response(data={"new_token": token})
