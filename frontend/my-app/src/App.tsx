@@ -171,25 +171,25 @@ class App extends Component<IProps, IState> {
 
   // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
-    setInterval(() => {
-      if (this.state.roomCode !== "") {
-        dc.getRoomUsers(this.state.roomCode)
-        .then(data => {
-          console.log(data)
-          let displaynames = []
+    // setInterval(() => {
+    //   if (this.state.roomCode !== "") {
+    //     dc.getRoomUsers(this.state.roomCode)
+    //     .then(data => {
+    //       console.log(data)
+    //       let displaynames = []
 
-          displaynames.push(data['host']['display_name'])
+    //       displaynames.push(data['host']['display_name'])
 
-          var userList = data['users']
-          for (var i = 0; i < userList.length; i++) {
-            displaynames.push(userList[i]['display_name'])
-          }
+    //       var userList = data['users']
+    //       for (var i = 0; i < userList.length; i++) {
+    //         displaynames.push(userList[i]['display_name'])
+    //       }
 
-          console.log(displaynames)
-          this.setInRoom(displaynames)
-        })
-      }
-    }, 1000)
+    //       console.log(displaynames)
+    //       this.setInRoom(displaynames)
+    //     })
+    //   }
+    // }, 1000)
 
     return(
       <div>
