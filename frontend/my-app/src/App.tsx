@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import './App.css';
 import SpotifyLogin from './SpotifyLogin';
 import DjangoCalls from './DjangoCalls';
+import { Redirect } from 'react-router-dom'
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize?';
 declare global {
@@ -42,7 +43,12 @@ interface IState {
   searchTerm: string,
   searchResults: any,
   queue: any
+<<<<<<< HEAD
   hostToken: string
+=======
+  attempt: any,
+  redirect: boolean
+>>>>>>> 028db9f1ffade50b146682783094a403f0074846
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -62,7 +68,12 @@ class App extends Component<IProps, IState> {
       searchTerm: '',
       searchResults: [],
       queue: [],
+<<<<<<< HEAD
       hostToken: ''
+=======
+      attempt: [],
+      redirect: false
+>>>>>>> 028db9f1ffade50b146682783094a403f0074846
     };
 
     // Bind class methods
@@ -73,7 +84,22 @@ class App extends Component<IProps, IState> {
     this.setJoinPartyCode = this.setJoinPartyCode.bind(this);
     this.setSearchResults = this.setSearchResults.bind(this);
     this.setQueue = this.setQueue.bind(this);
+<<<<<<< HEAD
     this.setHostToken = this.setHostToken.bind(this);
+=======
+    this.setAttempt = this.setAttempt.bind(this)
+  }
+
+  setRedirect = () => {
+    this.setState({
+      redirect: true
+    })
+  }
+  renderRedirect = () => {
+    if (this.state.redirect) {
+      return <Redirect to='/party' />
+    }
+>>>>>>> 028db9f1ffade50b146682783094a403f0074846
   }
 
   // Setters
@@ -93,8 +119,17 @@ class App extends Component<IProps, IState> {
     this.setState({inRoom: userList})
   }
 
+<<<<<<< HEAD
   setJoinPartyCode = (event: any) => {
     this.setState({joinPartyCode: event.target.value})
+=======
+  setAttempt = (event: any) => {
+    this.setState({attempt: event})
+  }
+
+  setPartyCode = (event: any) => {
+    this.setState({partyCode: event.target.value})
+>>>>>>> 028db9f1ffade50b146682783094a403f0074846
   }
 
   setSearchTerm = (event: any) => {
@@ -190,7 +225,6 @@ class App extends Component<IProps, IState> {
     }
 
     let toJoinParty = () => {
-      // this.context.router.history.push('/join_party')
     }
 
     // take out later
@@ -200,16 +234,18 @@ class App extends Component<IProps, IState> {
 
     return(
       <div className = "main-title">
-          <h1>Welcome to Auxy</h1>
-
+        <div className = "box">
+          <h1 className="hero-title">Welcome to Auxy!</h1>
+          <p className="hero-paragraph">With Auxy, you can collaborate on Spotify queues with your friends! </p>
           <span>
             <button className="main" type = "button" onClick={login}>
-              Host
+            Host
             </button>
             <button className="main" type = "button" onClick={toJoinParty}>
-              Join
+            Join
             </button>
           </span>
+        </div>
       </div>
     );
   }
@@ -231,7 +267,7 @@ class App extends Component<IProps, IState> {
     return(
       <div className="host">
         <header>Welcome to AUXY!</header>
-        <form method="POST" action="php/zhuce.php">
+        <form method="submit" action="php/zhuce.php">
             <h5> Please input your name </h5>
             <section>
                 <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
@@ -286,14 +322,36 @@ class App extends Component<IProps, IState> {
 
   // Page for a user to join a party via room code
   JoinParty = () => {
+    var count = 0;
     let attemptToJoin = () => {
-      // this.context.history.push('/party')
+      fetch('http://localhost:8000/join_room/' + this.state.displayName + '/' + this.state.partyCode)
+        .then(response => response.json())
+        .then(data => {
+          this.setAttempt(data['created_user'])
+          count = Object.keys(this.state.attempt).length;
+          console.log(this.state.attempt)
+          console.log(count)
+        if(count === 2){
+          console.log("link")
+          console.log(count)    
+          this.setRedirect()
+        }
+        else{
+          console.log("room empt")
+          console.log(count)
+          return (
+            alert("Room does not exsist.")        
+          )
+          
+        }
+      })
     }
 
     return(
-      <div className='host'>
+      <div className='host'>{
+        this.state.redirect === true ? <Redirect to='/party' push /> : 
+        <div>
         <header>Welcome to AUXY!</header>
-        <form method="POST" action="php/zhuce.php">
             <h5> Please input your name </h5>
             <section>
                 <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
@@ -304,10 +362,12 @@ class App extends Component<IProps, IState> {
             </section>
             <section>
               <button onClick={attemptToJoin}>
-                Join Party
+              Join Party
               </button>
             </section>
-        </form>
+        </div>
+      }
+    
       </div>
     )
   }

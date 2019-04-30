@@ -164,7 +164,7 @@ class JoinRoomView(APIView):
             return Response(data={"created_user": serializer.data})
         #Otherwise, return room not found.
         else:
-            return Response(data={"Room not found."})
+            return Response(data={"created_user": ["Room not found!"]})
 
 class PushSongView(APIView):
     """Call for adding a song to the queue."""
