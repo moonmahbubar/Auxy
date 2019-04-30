@@ -168,11 +168,11 @@ class JoinRoomView(APIView):
 
 class PushSongView(APIView):
     """Call for adding a song to the queue."""
-    def get(self, request, song, code):
+    def get(self, request, code, track_id, track_name, track_artist, track_art, track_length, votes):
         #Get room.
         room = Room.objects.all().filter(code=code)[0]
         #Create song object. Make sure to update attributes.
-        song = Song(track_id="", track_name=song, track_artist="", track_art="", track_length=0, votes=0, room=room)
+        song = Song(track_id=track_id, track_name=track_name, track_artist=track_artist, track_art=track_art, track_length=track_length, votes=votes, room=room)
         song.save()
         #Serialize the content.
         serializer = SongSerializer(song, context={'request': request})    

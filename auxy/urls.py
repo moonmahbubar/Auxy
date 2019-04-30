@@ -40,7 +40,7 @@ urlpatterns = [
     path(r'send_auth_code/<str:url>', views.UpdateTokensView.as_view()),
     path(r'get_room_users/<str:code>', views.GetRoomUsersView.as_view()),
     path(r'join_room/<str:display_name>/<str:code>', views.JoinRoomView.as_view()),
-    path(r'push_song/<str:code>/<str:song>', views.PushSongView.as_view()),
+    path(r'push_song/<str:code>/<str:track_id>/<str:track_name>/<str:track_artist>/<str:track_art>/<int:track_length>/<int:votes>', views.PushSongView.as_view()),
     path(r'pop_song/<str:code>', views.PopSongView.as_view()),
     path(r'play_id/<str:code>/<str:id>', views.PlayIDView.as_view()),
     path(r'get_room_queue/<str:code>', views.GetRoomQueueView.as_view()),
