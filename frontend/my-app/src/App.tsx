@@ -132,7 +132,10 @@ class App extends Component<IProps, IState> {
         const token = '${this.state.hostToken}';
         const player = new Spotify.Player({
           name: 'AUXY',
-          getOAuthToken: cb => { cb(token); }
+          getOAuthToken: cb => { 
+            fetch('http://localhost:8000/refresh_token/${this.state.roomCode}').then(response => console.log('Token refreshed'));
+            cb(token); 
+          }
         });
       
         // Error handling
@@ -269,7 +272,6 @@ class App extends Component<IProps, IState> {
           })
       }
     }
-    
 
     refreshUsers()
 
