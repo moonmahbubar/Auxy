@@ -8,6 +8,9 @@ import SpotifyLogin from './SpotifyLogin';
 import DjangoCalls from './DjangoCalls';
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize?';
+declare global {
+  interface Window { onSpotifyWebPlaybackSDKReady: any; }
+}
 
 let sp = new SpotifyLogin()
 let dc = new DjangoCalls()
@@ -39,6 +42,7 @@ interface IState {
   searchTerm: string,
   searchResults: any,
   queue: any
+  hostToken: string
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -57,7 +61,8 @@ class App extends Component<IProps, IState> {
       joinPartyCode: '',
       searchTerm: '',
       searchResults: [],
-      queue: []
+      queue: [],
+      hostToken: ''
     };
 
     // Bind class methods
@@ -68,6 +73,7 @@ class App extends Component<IProps, IState> {
     this.setJoinPartyCode = this.setJoinPartyCode.bind(this);
     this.setSearchResults = this.setSearchResults.bind(this);
     this.setQueue = this.setQueue.bind(this);
+    this.setHostToken = this.setHostToken.bind(this);
   }
 
   // Setters
@@ -103,15 +109,74 @@ class App extends Component<IProps, IState> {
     this.setState({queue: newQueue})
   }
 
-  // Supposedly updates display of members in the room when the state updates
-  // componentDidUpdate = (prevProps: any, prevState: any) => {
-  //   if (window.location.pathname === '/party' && 
-  //       document.getElementById("inRoom") !== null &&
-  //       this.state.inRoom !== prevState.inRoom) {
-  //     console.log(this.state.inRoom)
-  //     // document.getElementById("inRoom")!.innerHTML = this.state.inRoom.join(" ");
-  //   }
-  // }
+  setHostToken = (token: string) => {
+    this.setState({hostToken: token})
+  }
+
+  // Sets up spotify web player when a new host token is recieved
+  componentDidUpdate(prevProps: any, prevState: any) {
+    if (window.location.pathname === '/party' && 
+        this.state.hostToken !== prevState.hostToken &&
+        prevState.hostToken === "") {
+      console.log(this.state.hostToken)
+      // Import Spotify Web Player SDK module
+      const moduleScript = document.createElement("script");
+      moduleScript.src = "https://sdk.scdn.co/spotify-player.js";
+      moduleScript.async = true;
+
+      // Create script element for setting up the spotify web player
+      const script = document.createElement("script");
+      script.async = true;
+      script.innerHTML = `
+      window.onSpotifyWebPlaybackSDKReady = () => {
+        const token = '${this.state.hostToken}';
+        const player = new Spotify.Player({
+          name: 'AUXY',
+          getOAuthToken: cb => { cb(token); }
+        });
+      
+        // Error handling
+        player.addListener('initialization_error', ({ message }) => { console.error(message); });
+        player.addListener('authentication_error', ({ message }) => { console.error(message); });
+        player.addListener('account_error', ({ message }) => { console.error(message); });
+        player.addListener('playback_error', ({ message }) => { console.error(message); });
+      
+        // Playback status updates
+        // player.addListener('player_state_changed', state => { console.log(state); });
+      
+        // Ready
+        player.addListener('ready', ({ device_id }) => {
+          console.log('Ready with Device ID', device_id);
+        });
+      
+        // Not Ready
+        player.addListener('not_ready', ({ device_id }) => {
+          console.log('Device ID has gone offline', device_id);
+        });
+      
+        //listener for checking when a song has ended
+        player.addListener(
+          'player_state_changed',
+          state =>
+          {
+            console.log(state);
+            if(this.state && ! this.state.paused && state.paused && state.position === 0) {
+              fetch('http://localhost:8000/pop_song/${this.state.roomCode}').then(response => console.log('Track ended'));
+              // setTrackEnd(true);
+            }
+            this.state = state;
+          }
+        );
+      
+        // Connect to the player!
+        player.connect();
+      };`;
+    
+      // Append elements to HTML body
+      document.body.appendChild(script);
+      document.body.appendChild(moduleScript);
+    }
+  }
 
   // Code for landing page (where you pick host or join party)
   Landing = () => {
@@ -184,25 +249,29 @@ class App extends Component<IProps, IState> {
 
   // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
-    // setInterval(() => {
-    //   if (this.state.roomCode !== "") {
-    //     dc.getRoomUsers(this.state.roomCode)
-    //     .then(data => {
-    //       console.log(data)
-    //       let displaynames = []
+    let refreshUsers = () => {
+      if (this.state.roomCode !== "") {
+        fetch('http://localhost:8000/get_room_users/' + this.state.roomCode)
+          .then(response => response.json())
+          .then(data => {
+            let displaynames = []
 
-    //       displaynames.push(data['host']['display_name'])
+            displaynames.push(data['host']['display_name'])
+            this.setHostToken(data['host']['host_token'])
 
-    //       var userList = data['users']
-    //       for (var i = 0; i < userList.length; i++) {
-    //         displaynames.push(userList[i]['display_name'])
-    //       }
+            var userList = data['users']
+            for (var i = 0; i < userList.length; i++) {
+              displaynames.push(userList[i]['display_name'])
+            }
 
-    //       console.log(displaynames)
-    //       this.setInRoom(displaynames)
-    //     })
-    //   }
-    // }, 1000)
+            console.log(displaynames)
+            this.setInRoom(displaynames)
+          })
+      }
+    }
+    
+
+    refreshUsers()
 
     return(
       <div>
@@ -260,6 +329,7 @@ class App extends Component<IProps, IState> {
       fetch('http://localhost:8000/get_room_queue/123456')
         .then(response => response.json())
         .then(data => {
+          console.log(data['songs'])
           this.setQueue(data['songs'])
         })
     }

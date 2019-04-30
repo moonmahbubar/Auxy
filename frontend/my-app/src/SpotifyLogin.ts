@@ -39,12 +39,14 @@ interface SpotifyConfig {
 //     headers?: Headers,
 // }
 
+// "streaming", "user-read-birthdate", "user-read-email", "user-read-private"
+
 export default class SpotifyLogin {
     private config: SpotifyConfig = {
         clientId: "f694f6f7a1584567948f99d653a9d070",
         clientSecret: "0e05c9eeee094a5d8d506d0435a18ee9",
         redirectUri: "http://localhost:3000/callback",
-        scope: "user-modify-playback-state",
+        scope: "user-modify-playback-state streaming user-read-birthdate user-read-email user-read-private",
         authToken: "",
         apiBase: ""
     };
