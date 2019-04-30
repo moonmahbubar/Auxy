@@ -39,13 +39,13 @@ interface IState {
   displayName: string,
   roomCode: string,
   inRoom: string[],
-  // joinPartyCode: string
   searchTerm: string,
   searchResults: any,
   queue: any
   hostToken: string
   attempt: any,
-  redirect: boolean
+  redirect: boolean,
+  redirectToJoinPartyPage: boolean
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -61,13 +61,13 @@ class App extends Component<IProps, IState> {
       displayName: '',
       roomCode: '',
       inRoom: ['salad'],
-      // joinPartyCode: '',
       searchTerm: '',
       searchResults: [],
       queue: [],
       hostToken: '',
       attempt: [],
-      redirect: false
+      redirect: false,
+      redirectToJoinPartyPage: false
     };
 
     // Bind class methods
@@ -75,7 +75,6 @@ class App extends Component<IProps, IState> {
     this.setDisplayName = this.setDisplayName.bind(this);
     this.setRoomCode = this.setRoomCode.bind(this);
     this.setInRoom = this.setInRoom.bind(this);
-    // this.setJoinPartyCode = this.setJoinPartyCode.bind(this);
     this.setSearchResults = this.setSearchResults.bind(this);
     this.setQueue = this.setQueue.bind(this);
     this.setHostToken = this.setHostToken.bind(this);
@@ -91,6 +90,10 @@ class App extends Component<IProps, IState> {
     if (this.state.redirect) {
       return <Redirect to='/party' />
     }
+  }
+
+  setRedirectoToJoinPartyPage = () => {
+    this.setState({redirectToJoinPartyPage: true})
   }
 
   // Setters
@@ -114,16 +117,9 @@ class App extends Component<IProps, IState> {
     this.setState({inRoom: userList})
   }
 
-  // setJoinPartyCode = (event: any) => {
-  //   this.setState({joinPartyCode: event.target.value})
-  // }
   setAttempt = (event: any) => {
     this.setState({attempt: event})
   }
-
-  // setPartyCode = (event: any) => {
-  //   this.setState({joinPartyCode: event.target.value})
-  // }
 
   setSearchTerm = (event: any) => {
     this.setState({searchTerm: event.target.value})
@@ -139,6 +135,29 @@ class App extends Component<IProps, IState> {
 
   setHostToken = (token: string) => {
     this.setState({hostToken: token})
+  }
+
+  componentDidMount() {
+    setInterval(() => {
+      if (window.location.pathname === "/party" && this.state.roomCode !== "") {
+        fetch('http://localhost:8000/get_room_users/' + this.state.roomCode)
+          .then(response => response.json())
+          .then(data => {
+            let displaynames = []
+
+            displaynames.push(data['host']['display_name'])
+            this.setHostToken(data['host']['host_token'])
+
+            var userList = data['users']
+            for (var i = 0; i < userList.length; i++) {
+              displaynames.push(userList[i]['display_name'])
+            }
+
+            console.log(displaynames)
+            this.setInRoom(displaynames)
+          })
+      }
+    }, 1000)
   }
 
   // Sets up spotify web player when a new host token is recieved
@@ -211,6 +230,7 @@ class App extends Component<IProps, IState> {
 
   // Code for landing page (where you pick host or join party)
   Landing = () => {
+
     // Initializes sportify authorization flow by prompting user to approve the app to use their
     // Spotify account
     let login = () => {
@@ -218,6 +238,7 @@ class App extends Component<IProps, IState> {
     }
 
     let toJoinParty = () => {
+      this.setRedirectoToJoinPartyPage()
     }
 
     // take out later
@@ -226,19 +247,24 @@ class App extends Component<IProps, IState> {
     }
 
     return(
-      <div className = "main-title">
-        <div className = "box">
-          <h1 className="hero-title">Welcome to Auxy!</h1>
-          <p className="hero-paragraph">With Auxy, you can collaborate on Spotify queues with your friends! </p>
-          <span>
-            <button className="main" type = "button" onClick={login}>
-            Host
-            </button>
-            <button className="main" type = "button" onClick={toJoinParty}>
-            Join
-            </button>
-          </span>
-        </div>
+      <div>
+        {
+          this.state.redirectToJoinPartyPage ? <Redirect to='/join_party' push /> :
+          <div className = "main-title">
+            <div className = "box">
+              <h1 className="hero-title">Welcome to Auxy!</h1>
+              <p className="hero-paragraph">With Auxy, you can collaborate on Spotify queues with your friends! </p>
+              <span>
+                <button className="main" type = "button" onClick={login}>
+                Host
+                </button>
+                <button className="main" type = "button" onClick={toJoinParty}>
+                Join
+                </button>
+              </span>
+            </div>
+          </div>
+        }
       </div>
     );
   }
@@ -281,29 +307,6 @@ class App extends Component<IProps, IState> {
 
   // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
-    let refreshUsers = () => {
-      if (this.state.roomCode !== "") {
-        fetch('http://localhost:8000/get_room_users/' + this.state.roomCode)
-          .then(response => response.json())
-          .then(data => {
-            let displaynames = []
-
-            displaynames.push(data['host']['display_name'])
-            this.setHostToken(data['host']['host_token'])
-
-            var userList = data['users']
-            for (var i = 0; i < userList.length; i++) {
-              displaynames.push(userList[i]['display_name'])
-            }
-
-            console.log(displaynames)
-            this.setInRoom(displaynames)
-          })
-      }
-    }
-
-    refreshUsers()
-
     return(
       <div>
         its a party
