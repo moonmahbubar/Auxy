@@ -39,16 +39,13 @@ interface IState {
   displayName: string,
   roomCode: string,
   inRoom: string[],
-  joinPartyCode: string
+  // joinPartyCode: string
   searchTerm: string,
   searchResults: any,
   queue: any
-<<<<<<< HEAD
   hostToken: string
-=======
   attempt: any,
   redirect: boolean
->>>>>>> 028db9f1ffade50b146682783094a403f0074846
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -64,16 +61,13 @@ class App extends Component<IProps, IState> {
       displayName: '',
       roomCode: '',
       inRoom: ['salad'],
-      joinPartyCode: '',
+      // joinPartyCode: '',
       searchTerm: '',
       searchResults: [],
       queue: [],
-<<<<<<< HEAD
-      hostToken: ''
-=======
+      hostToken: '',
       attempt: [],
       redirect: false
->>>>>>> 028db9f1ffade50b146682783094a403f0074846
     };
 
     // Bind class methods
@@ -81,13 +75,11 @@ class App extends Component<IProps, IState> {
     this.setDisplayName = this.setDisplayName.bind(this);
     this.setRoomCode = this.setRoomCode.bind(this);
     this.setInRoom = this.setInRoom.bind(this);
-    this.setJoinPartyCode = this.setJoinPartyCode.bind(this);
+    // this.setJoinPartyCode = this.setJoinPartyCode.bind(this);
     this.setSearchResults = this.setSearchResults.bind(this);
     this.setQueue = this.setQueue.bind(this);
-<<<<<<< HEAD
     this.setHostToken = this.setHostToken.bind(this);
-=======
-    this.setAttempt = this.setAttempt.bind(this)
+    this.setAttempt = this.setAttempt.bind(this);
   }
 
   setRedirect = () => {
@@ -99,7 +91,6 @@ class App extends Component<IProps, IState> {
     if (this.state.redirect) {
       return <Redirect to='/party' />
     }
->>>>>>> 028db9f1ffade50b146682783094a403f0074846
   }
 
   // Setters
@@ -115,22 +106,24 @@ class App extends Component<IProps, IState> {
     this.setState({roomCode: code})
   }
 
+  setRoomCodeFromEvent = (event: any) => {
+    this.setState({roomCode: event.target.value})
+  }
+
   setInRoom = (userList: string[]) => {
     this.setState({inRoom: userList})
   }
 
-<<<<<<< HEAD
-  setJoinPartyCode = (event: any) => {
-    this.setState({joinPartyCode: event.target.value})
-=======
+  // setJoinPartyCode = (event: any) => {
+  //   this.setState({joinPartyCode: event.target.value})
+  // }
   setAttempt = (event: any) => {
     this.setState({attempt: event})
   }
 
-  setPartyCode = (event: any) => {
-    this.setState({partyCode: event.target.value})
->>>>>>> 028db9f1ffade50b146682783094a403f0074846
-  }
+  // setPartyCode = (event: any) => {
+  //   this.setState({joinPartyCode: event.target.value})
+  // }
 
   setSearchTerm = (event: any) => {
     this.setState({searchTerm: event.target.value})
@@ -324,7 +317,7 @@ class App extends Component<IProps, IState> {
   JoinParty = () => {
     var count = 0;
     let attemptToJoin = () => {
-      fetch('http://localhost:8000/join_room/' + this.state.displayName + '/' + this.state.partyCode)
+      fetch('http://localhost:8000/join_room/' + this.state.displayName + '/' + this.state.roomCode)
         .then(response => response.json())
         .then(data => {
           this.setAttempt(data['created_user'])
@@ -358,7 +351,7 @@ class App extends Component<IProps, IState> {
             </section>
             <h5> Party code </h5>
             <section>
-                <input type="text" value={this.state.joinPartyCode} onChange={this.setJoinPartyCode} name="partycode" className="inp" placeholder="Party Code" />
+                <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
             </section>
             <section>
               <button onClick={attemptToJoin}>

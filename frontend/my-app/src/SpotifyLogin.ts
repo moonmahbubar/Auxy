@@ -39,7 +39,6 @@ interface SpotifyConfig {
 //     headers?: Headers,
 // }
 
-// "streaming", "user-read-birthdate", "user-read-email", "user-read-private"
 
 export default class SpotifyLogin {
     private config: SpotifyConfig = {
