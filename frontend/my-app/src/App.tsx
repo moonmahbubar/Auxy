@@ -35,10 +35,10 @@ interface IState {
   displayName: string,
   roomCode: string,
   inRoom: string[],
-  queue: string[],
   partyCode: string,
   searchTerm: string,
-  searchResults: any
+  searchResults: any,
+  queue: any
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -55,10 +55,10 @@ class App extends Component<IProps, IState> {
       displayName: '',
       roomCode: '',
       inRoom: ['salad'],
-      queue: [],
       partyCode: '',
       searchTerm: '',
-      searchResults: []
+      searchResults: [],
+      queue: []
     };
 
     // this.evtSource = dc.getEventSource()
@@ -71,9 +71,9 @@ class App extends Component<IProps, IState> {
     this.setDisplayName = this.setDisplayName.bind(this);
     this.setRoomCode = this.setRoomCode.bind(this);
     this.setInRoom = this.setInRoom.bind(this);
-    this.setQueue = this.setQueue.bind(this)
     this.setPartyCode = this.setPartyCode.bind(this);
     this.setSearchResults = this.setSearchResults.bind(this);
+    this.setQueue = this.setQueue.bind(this);
   }
 
   // Setters
@@ -93,10 +93,6 @@ class App extends Component<IProps, IState> {
     this.setState({inRoom: userList})
   }
 
-  setQueue = (q: string[]) => {
-    this.setState({queue: q})
-  }
-
   setPartyCode = (event: any) => {
     this.setState({partyCode: event.target.value})
   }
@@ -107,6 +103,10 @@ class App extends Component<IProps, IState> {
 
   setSearchResults = (results: any) => {
     this.setState({searchResults: results})
+  }
+
+  setQueue = (newQueue: any) => {
+    this.setState({queue: newQueue})
   }
 
   // Supposedly updates display of members in the room when the state updates
@@ -229,9 +229,9 @@ class App extends Component<IProps, IState> {
 
   // Page for a user to join a party via room code
   Playback = () => {
-    let addToQueue = (trackId: string) => {
-      console.log(trackId)
-      fetch('http://localhost:8000/push_song/123456/' + trackId)
+    let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
+      trackArt = trackArt.slice(24)
+      fetch('http://localhost:8000/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
     }
 
     let search = () => {
@@ -242,22 +242,32 @@ class App extends Component<IProps, IState> {
         })
     }
 
+    let refreshQueue = () => {
+      fetch('http://localhost:8000/get_room_queue/123456')
+        .then(response => response.json())
+        .then(data => {
+          this.setQueue(data['songs'])
+        })
+    }
+
+    refreshQueue();
     return(
       <div className='playback'>
-        <h1>Hye!</h1>
-        <h2>IDK <code>View > Developer > JavaScript Console</code></h2>
+        <h1>Technical Demo of Search and Queue!</h1>
         <form>
           Song name:<br/>
-          <button type = "button" onClick={() => addToQueue('gods plan')}>
-            Play God's Plan
-          </button>
           <button type = "button" onClick={search}>
             Search
           </button>
           <input type="text" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" className="inp" placeholder="" />
         </form>
         <div>
-          {this.state.searchResults.map((r: any) => <button type = "button" onClick={() => addToQueue(r['track_id'])} key={r['track_id']}>{r['track_name']}</button>)}
+          {this.state.searchResults.map((r: any) => <button type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)} key={r['track_id']}>{r['track_name']}</button>)}
+        </div>
+        <br/>
+        <h3>Queue:</h3>
+        <div>
+          {this.state.queue.map((q: any) => <button type = "button" key={q['track_id']}>{q['track_name']}</button>)}
         </div>
       </div>
     )
