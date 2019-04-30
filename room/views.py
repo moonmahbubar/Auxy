@@ -258,4 +258,20 @@ class GetRoomQueueView(APIView):
         serializer = SongSerializer(songs, many=True, context={'request': request})  
         #Return as json format.
         return Response(data={"songs":serializer.data})
+
+
+class DeleteSongView(APIView):
+    """Deletes a song."""
+    def get(self, request, auto_increment_id):
+        #Get song with the unique id 
+        songs = Song.objects.all().filter(auto_increment_id=auto_increment_id)
+        #If a song is found.
+        if songs:
+            song = songs[0]
+            song.delete()
+            return Response(data="succesfully deleted!")
+        else:
+            return Response(data="Error! Song not found.")
+
         
+       

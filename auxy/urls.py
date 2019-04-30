@@ -44,6 +44,7 @@ urlpatterns = [
     path(r'pop_song/<str:code>', views.PopSongView.as_view()),
     path(r'play_id/<str:code>/<str:id>', views.PlayIDView.as_view()),
     path(r'get_room_queue/<str:code>', views.GetRoomQueueView.as_view()),
+    path(r'remove_song/<int:auto_increment_id>', views.DeleteSongView.as_view()),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api', include('rest_framework.urls', namespace='rest_framework')),

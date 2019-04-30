@@ -19,6 +19,7 @@ class Room(models.Model):
 
 class Song(models.Model):
     """Model representing a song to be played."""
+    auto_increment_id = models.AutoField(primary_key=True)
     track_id =  models.CharField(max_length=200)
     track_name =  models.CharField(max_length=200)
     track_artist = models.CharField(max_length=200)
