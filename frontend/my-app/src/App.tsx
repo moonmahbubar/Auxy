@@ -143,7 +143,7 @@ class App extends Component<IProps, IState> {
   componentDidMount() {
     setInterval(() => {
       if (window.location.pathname === "/party" && this.state.roomCode !== "") {
-        fetch('http://localhost:8000/get_room_users/' + this.state.roomCode)
+        fetch('http://localhost:8000/get_room_info/' + this.state.roomCode)
           .then(response => response.json())
           .then(data => {
             let displaynames = []
@@ -330,18 +330,18 @@ class App extends Component<IProps, IState> {
           count = Object.keys(this.state.attempt).length;
           console.log(this.state.attempt)
           console.log(count)
-        if(count === 2){
-          console.log("link")
-          console.log(count)    
-          this.setRedirect()
-        }
-        else{
+        if(count === 1){
           console.log("room empt")
           console.log(count)
           return (
             alert("Room does not exsist.")        
           )
           
+        }
+        else{
+          console.log("link")
+          console.log(count)    
+          this.setRedirect()
         }
       })
     }
