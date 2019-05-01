@@ -134,9 +134,11 @@ STATIC_URL = '/static/'
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_WHITELIST = (
-    'auxy.netlify.com',
+    'auxy.localhost:3000.com',
+    'localhost:3000'
 )
 CORS_ORIGIN_REGEX_WHITELIST = (
-    'auxy.netlify.com',
+    'auxy.localhost:3000.com',
+    'localhost:3000'
 )
 

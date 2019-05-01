@@ -64,7 +64,7 @@ class PlaySongView(APIView):
         #Current scope allows for modifying playback.
         scope = 'user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://auxy.netlify.com/callback' 
+        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object.
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token.
@@ -95,7 +95,7 @@ class SearchSongView(APIView):
         #Current scope allows for modifying playback.
         scope = 'user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://auxy.netlify.com/callback' 
+        redirect_uri='http://auxy.localhost:3000.com/callback' 
         #Create OAuth2 object.
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token.
@@ -198,7 +198,7 @@ class PopSongView(APIView):
         #Current scope allows for modifying playback.
         scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://auxy.netlify.com/callback' 
+        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object.
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token.
@@ -232,7 +232,7 @@ class PlayIDView(APIView):
         #Current scope allows for modifying playback.
         scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://auxy.netlify.com/callback' 
+        redirect_uri='http://auxy.localhost:3000.com/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
@@ -288,7 +288,7 @@ class RefreshTokenView(APIView):
         #Current scope allows for modifying playback.
         scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://auxy.netlify.com/callback' 
+        redirect_uri='http://auxy.localhost:3000.com/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token

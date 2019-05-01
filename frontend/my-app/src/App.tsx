@@ -44,8 +44,10 @@ interface IState {
   queue: any
   hostToken: string
   attempt: any,
+  isHost: boolean,
   redirect: boolean,
-  redirectToJoinPartyPage: boolean
+  redirectToJoinPartyPage: boolean,
+  redirectToLanding: boolean, 
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -66,19 +68,21 @@ class App extends Component<IProps, IState> {
       queue: [],
       hostToken: '',
       attempt: [],
+      isHost: false,
       redirect: false,
-      redirectToJoinPartyPage: false
+      redirectToJoinPartyPage: false,
+      redirectToLanding: false,
     };
 
     // Bind class methods
-    this.setPartyName = this.setPartyName.bind(this);
-    this.setDisplayName = this.setDisplayName.bind(this);
-    this.setRoomCode = this.setRoomCode.bind(this);
-    this.setInRoom = this.setInRoom.bind(this);
-    this.setSearchResults = this.setSearchResults.bind(this);
-    this.setQueue = this.setQueue.bind(this);
-    this.setHostToken = this.setHostToken.bind(this);
-    this.setAttempt = this.setAttempt.bind(this);
+    // this.setPartyName = this.setPartyName.bind(this);
+    // this.setDisplayName = this.setDisplayName.bind(this);
+    // this.setRoomCode = this.setRoomCode.bind(this);
+    // this.setInRoom = this.setInRoom.bind(this);
+    // this.setSearchResults = this.setSearchResults.bind(this);
+    // this.setQueue = this.setQueue.bind(this);
+    // this.setHostToken = this.setHostToken.bind(this);
+    // this.setAttempt = this.setAttempt.bind(this);
   }
 
   setRedirect = () => {
@@ -94,6 +98,10 @@ class App extends Component<IProps, IState> {
 
   setRedirectoToJoinPartyPage = () => {
     this.setState({redirectToJoinPartyPage: true})
+  }
+
+  setRedirectToLanding = () => {
+    this.setState({redirectToLanding: true})
   }
 
   // Setters
@@ -137,7 +145,12 @@ class App extends Component<IProps, IState> {
     this.setState({hostToken: token})
   }
 
+  setAsHost = () => {
+    this.setState({isHost: true})
+  }
+
   componentDidMount() {
+    // If on the party page, fetch room updates every second
     setInterval(() => {
       if (window.location.pathname === "/party" && this.state.roomCode !== "") {
         fetch('http://localhost:8000/get_room_users/' + this.state.roomCode)
@@ -153,7 +166,7 @@ class App extends Component<IProps, IState> {
               displaynames.push(userList[i]['display_name'])
             }
 
-            console.log(displaynames)
+            // console.log(displaynames)
             this.setInRoom(displaynames)
           })
       }
@@ -161,11 +174,26 @@ class App extends Component<IProps, IState> {
   }
 
   // Sets up spotify web player when a new host token is recieved
+  // Handles user warning
   componentDidUpdate(prevProps: any, prevState: any) {
+    // Perform when party page is loaded
     if (window.location.pathname === '/party' && 
         this.state.hostToken !== prevState.hostToken &&
         prevState.hostToken === "") {
-      console.log(this.state.hostToken)
+      
+      // Warn host that they will lose host priviledges if they leave the room
+        if (this.state.isHost) {
+          window.addEventListener('beforeunload', function (e) {
+          // Cancel the event
+          e.preventDefault();
+          // Show confirmation message
+          confirm('If you leave the room, you will lose host priviledges')
+          // Chrome requires returnValue to be set
+          e.returnValue = '';
+        });
+      }
+
+      // console.log(this.state.hostToken)
       // Import Spotify Web Player SDK module
       const moduleScript = document.createElement("script");
       moduleScript.src = "https://sdk.scdn.co/spotify-player.js";
@@ -230,7 +258,6 @@ class App extends Component<IProps, IState> {
 
   // Code for landing page (where you pick host or join party)
   Landing = () => {
-
     // Initializes sportify authorization flow by prompting user to approve the app to use their
     // Spotify account
     let login = () => {
@@ -276,10 +303,11 @@ class App extends Component<IProps, IState> {
       dc.createRoom(this.state.partyName, this.state.displayName, authCode)
         .then(data => {
           this.setRoomCode(data['created_room_code']);
+          this.setAsHost()
+          
           let population = this.state.inRoom
           population.push(this.state.displayName)
           this.setInRoom(population)
-          console.log(this.state.roomCode)
         })
     }
 
@@ -307,12 +335,23 @@ class App extends Component<IProps, IState> {
 
   // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
+    // Redirect user to landing page and call endpoint to update backend
+    let leaveRoom = () => {
+      // Call endpoint to update backend
+
+      // Redirect
+      window.location.href = 'https://auxy.netlify.com/'
+    }
+
+    console.log(this.state)
     return(
-      <div>
-        its a party
-        <br />
-        <p id='inRoom'>{this.state.inRoom.join(" ")}</p>
-      </div>
+        <div>
+          its a party
+          {console.log(this.state.roomCode)}
+          <br />
+          <p id='inRoom'>{this.state.inRoom.join(" ")}</p>
+          <button onClick={leaveRoom}>Leave Room</button>
+        </div>
     )
   }
 
