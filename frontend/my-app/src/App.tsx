@@ -335,8 +335,12 @@ class App extends Component<IProps, IState> {
           console.log(count)
           return (
             alert("Room does not exsist.")        
-          )
-          
+          )          
+        }
+        else{
+          console.log("link")
+          console.log(count)    
+          this.setRedirect()
         }
         else{
           console.log("link")
