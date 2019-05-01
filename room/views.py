@@ -62,7 +62,7 @@ class PlaySongView(APIView):
         #Client Secret
         secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
         #Current scope allows for modifying playback.
-        scope = 'user-modify-playback-state'
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
         redirect_uri='http://auxy.netlify.com/callback' 
         #Create OAuth2 object.
@@ -93,7 +93,7 @@ class SearchSongView(APIView):
         #Client Secret
         secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
         #Current scope allows for modifying playback.
-        scope = 'user-modify-playback-state'
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
         redirect_uri='http://auxy.netlify.com/callback' 
         #Create OAuth2 object.
@@ -275,15 +275,15 @@ class GetRoomQueueView(APIView):
 class DeleteSongView(APIView):
     """Deletes a song."""
     def get(self, request, auto_increment_id):
-        #Get song with the unique id 
+        #Get song with the unique id
         songs = Song.objects.all().filter(auto_increment_id=auto_increment_id)
         #If a song is found.
         if songs:
             song = songs[0]
             song.delete()
-            return Response(data="succesfully deleted!")
+            return Response(data={"response": ["Song deleted!", "Successfully!"]})
         else:
-            return Response(data="Error! Song not found.")
+            return Response(data={"response": ["Song not found!"]})
 
 class RefreshTokenView(APIView):
     """Refresh a token for a host."""
@@ -333,7 +333,7 @@ class DeactivateRoomView(APIView):
         room = Room.objects.all().filter(code=code)[0]
         #Get host and delete.
         host = room.host
-        host.delete()
+        #host.delete()
         #Deactivate room.
         room.is_active = False
         room.save()
