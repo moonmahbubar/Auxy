@@ -9,9 +9,6 @@ import DjangoCalls from './DjangoCalls';
 import { Redirect } from 'react-router-dom'
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize?';
-declare global {
-  interface Window { onSpotifyWebPlaybackSDKReady: any; }
-}
 
 let sp = new SpotifyLogin()
 let dc = new DjangoCalls()
@@ -52,6 +49,7 @@ interface IState {
 interface IProps {}
 
 class App extends Component<IProps, IState> {
+  // evtSource: EventSource
 
   constructor(props: any) {
     super(props);
@@ -69,6 +67,11 @@ class App extends Component<IProps, IState> {
       redirect: false,
       redirectToJoinPartyPage: false
     };
+
+    // this.evtSource = dc.getEventSource()
+    // this.evtSource.onmessage = (e) => {
+    //   // Update the state on recieving info from server
+    // }
 
     // Bind class methods
     this.setPartyName = this.setPartyName.bind(this);
@@ -140,7 +143,7 @@ class App extends Component<IProps, IState> {
   componentDidMount() {
     setInterval(() => {
       if (window.location.pathname === "/party" && this.state.roomCode !== "") {
-        fetch('https://moonmahbubar.pythonanywhere.com/get_room_users/' + this.state.roomCode)
+        fetch('http://localhost:8000/get_room_users/' + this.state.roomCode)
           .then(response => response.json())
           .then(data => {
             let displaynames = []
@@ -180,7 +183,7 @@ class App extends Component<IProps, IState> {
         const player = new Spotify.Player({
           name: 'AUXY',
           getOAuthToken: cb => { 
-            fetch('https://moonmahbubar.pythonanywhere.com/refresh_token/${this.state.roomCode}').then(response => console.log('Token refreshed'));
+            fetch('http://localhost:8000/refresh_token/${this.state.roomCode}').then(response => console.log('Token refreshed'));
             cb(token); 
           }
         });
@@ -211,7 +214,7 @@ class App extends Component<IProps, IState> {
           {
             console.log(state);
             if(this.state && ! this.state.paused && state.paused && state.position === 0) {
-              fetch('https://moonmahbubar.pythonanywhere.com/pop_song/${this.state.roomCode}').then(response => console.log('Track ended'));
+              fetch('http://localhost:8000/pop_song/${this.state.roomCode}').then(response => console.log('Track ended'));
               // setTrackEnd(true);
             }
             this.state = state;
@@ -255,10 +258,10 @@ class App extends Component<IProps, IState> {
               <h1 className="hero-title">Welcome to Auxy!</h1>
               <p className="hero-paragraph">With Auxy, you can collaborate on Spotify queues with your friends! </p>
               <span>
-                <button className="main" type = "button" onClick={login}>
+                <button className="main1" type = "button" onClick={login}>
                 Host
                 </button>
-                <button className="main" type = "button" onClick={toJoinParty}>
+                <button className="main2" type = "button" onClick={toJoinParty}>
                 Join
                 </button>
               </span>
@@ -320,7 +323,7 @@ class App extends Component<IProps, IState> {
   JoinParty = () => {
     var count = 0;
     let attemptToJoin = () => {
-      fetch('https://moonmahbubar.pythonanywhere.com/join_room/' + this.state.displayName + '/' + this.state.roomCode)
+      fetch('http://localhost:8000/join_room/' + this.state.displayName + '/' + this.state.roomCode)
         .then(response => response.json())
         .then(data => {
           this.setAttempt(data['created_user'])
@@ -372,22 +375,35 @@ class App extends Component<IProps, IState> {
   Playback = () => {
     let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
       trackArt = trackArt.slice(24)
-      fetch('https://moonmahbubar.pythonanywhere.com/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
+      fetch('http://localhost:8000/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
+    }
+
+    let removeFromQueue = (auto_increment_id: string) => {
+      fetch('http://localhost:8000/remove_song/' + auto_increment_id)
+        .then(response => response.json())
+        .then(data => {
+          console.log(auto_increment_id)
+        })
+      fetch('http://localhost:8000/songs')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+        })
     }
 
     let search = () => {
-      fetch('https://moonmahbubar.pythonanywhere.com/search/123456/' + this.state.searchTerm)
+      fetch('http://localhost:8000/search/123456/' + this.state.searchTerm)
         .then(response => response.json())
         .then(data => {
           this.setSearchResults(data['search_result'])
+          console.log(data['search_result'])
         })
     }
 
     let refreshQueue = () => {
-      fetch('https://moonmahbubar.pythonanywhere.com/get_room_queue/123456')
+      fetch('http://localhost:8000/get_room_queue/123456')
         .then(response => response.json())
         .then(data => {
-          console.log(data['songs'])
           this.setQueue(data['songs'])
         })
     }
@@ -395,22 +411,57 @@ class App extends Component<IProps, IState> {
     refreshQueue();
     return(
       <div className='playback'>
-        <h1>Technical Demo of Search and Queue!</h1>
-        <form>
-          Song name:<br/>
-          <button type = "button" onClick={search}>
-            Search
-          </button>
-          <input type="text" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" className="inp" placeholder="" />
-        </form>
-        <div>
-          {this.state.searchResults.map((r: any) => <button type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)} key={r['track_id']}>{r['track_name']}</button>)}
+
+        <div className="dropdown">
+            <form className="searchbar" onSubmit={search}>
+              <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
+              <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
+            </form>
+            <div className="spoop">
+            <table className= "searchR">
+              {this.state.searchResults.map((r: any) => 
+              <tbody>
+                <tr key={r['track_id']}>
+                    <td>
+                      <img src ={r['track_art']} />
+                    </td>
+                    <td>
+                      <p className= "song">{r['track_name']}</p>
+                      <p className = "artist">{r['track_artist']}</p>
+                    </td>
+                    <td className="searchRcol"> 
+                    <button className="addBtn" type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)}> + </button>
+                  </td>
+                </tr>
+              </tbody>
+              )}
+            </table>
+          </div>
         </div>
-        <br/>
+      
+
         <h3>Queue:</h3>
         <div>
-          {this.state.queue.map((q: any) => <button type = "button" key={q['track_id']}>{q['track_name']}</button>)}
+          <table>
+          {this.state.queue.map((q: any) =>
+          <tbody>
+            <tr key={q['track_id']}>
+                  <td>
+                    <img src ={"https://i.scdn.co/image/"+q['track_art']} />
+                  </td>
+                  <td>
+                    <p className= "song">{q['track_name']}</p>
+                    <p className = "artist">{q['track_artist']}</p>
+                  </td>
+                  <td>
+                  <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button> 
+                  </td>
+              </tr>
+              </tbody>
+          )}
+          </table>
         </div>
+
       </div>
     )
   }

@@ -16,7 +16,7 @@ body.main, html.main {
   background-color: black;
   width: 100%;
   height: 100%;
-  background: url("image.svg") rgb(0, 13, 26) 85% 0% no-repeat;
+  background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
 /*  background: url("image3.svg") transparent 0% 100% no-repeat;*/
   position: absolute;
   top: 0;
@@ -35,7 +35,13 @@ body.main, html.main {
     padding-right: 10%;
 }
 
-button.main {
+/* colors=
+ .button-primary{background: #f94763}.before{box-shadow:0 4px 16px rgba(249,66,95,0.35)}
+.hi{border-color:#273C5A;color:#7487A3;}
+.input{color:#556B8B} */ 
+
+
+button.main1 {
   font-family:sans-serif;
   font-size:14px;
   letter-spacing:0px;
@@ -43,7 +49,7 @@ button.main {
   line-height:16px;
   text-decoration:none !important;
   text-transform:uppercase;
-  background-color:#273C5A;
+  background-color:#f94763;
   color:#fff !important;
   border-radius:4px;
   cursor:pointer;
@@ -54,11 +60,36 @@ button.main {
   white-space:nowrap;
   margin-right: 15px;
 }
-
+button.main2 {
+  font-family:sans-serif;
+  font-size:14px;
+  letter-spacing:0px;
+  font-weight:700;
+  line-height:16px;
+  text-decoration:none !important;
+  text-transform:uppercase;
+  background-color: #556B8B;
+  color:#fff !important;
+  border-radius:4px;
+  cursor:pointer;
+  justify-content:center;
+  padding:16px 32px;
+  height:48px;
+  text-align:center;
+  white-space:nowrap;
+  margin-right: 15px;
+}
 .button{display:inline-flex;font-size:14px;letter-spacing:0px;font-weight:700;line-height:16px;text-decoration:none !important;text-transform:uppercase;background-color:#273C5A;color:#fff !important;border:none;border-radius:2px;cursor:pointer;justify-content:center;padding:16px 32px;height:48px;text-align:center;white-space:nowrap}
+button:hover.main1 {
+  background-color: rgb(131, 11, 167);
+  color: black;
+  transition-duration: 0.4s;
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+  cursor: pointer;
+}
 
-button:hover.main {
-  background-color: #999ea7;
+button:hover.main2 {
+  background-color: rgba(249,66,95,0.35);
   transition-duration: 0.4s;
   color: black;
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
@@ -101,7 +132,6 @@ div.host header {
   text-align: center;
   font-family: "Courier New";
 }
-
 div.host h5 {
   text-align: center;
   margin: auto;
@@ -114,4 +144,153 @@ div.host section {
   margin: auto;
   font-family: "Courier New";
   padding-top: 10px;
+}
+
+
+
+
+.playback{  
+  font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;  color: white;
+  /* background: linear-gradient(to bottom, black 50%, #f85971 100%); */
+  background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
+  height: 750px;
+  width: 600px;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s ease-in-out 0s;
+    color: white;
+    border: none;
+    -webkit-text-fill-color: white !important;
+}
+
+
+form.searchbar input[type=text] {
+  font-size: 17px;
+  float: left;
+  width: 80%;
+  margin-left: 5px;
+  background-color: transparent;
+  border-bottom: 1px solid #f94763;
+  box-shadow: 0 1px 0 0 #f48fb1;
+  margin-top: .5rem!important;
+}
+input:focus {
+  outline:none;
+}
+form.searchbar button {
+  float: left;
+  width: 10%;
+  height: 43px;
+  padding: 10px;
+  background: #f94763 url("search.png") center no-repeat;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  border-left: none;
+  cursor: pointer;
+}
+
+form.searchbar button:hover {
+  background: #5444af url("search.png") center no-repeat;
+}
+
+form.searchbar::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+.search_input {
+  color: white;
+  background-color: transparent;
+  padding-left: 5px;
+  height: 30px;
+  width: 100%;
+  border: 0;
+}
+img{
+	height: 50px;
+  width: 50px;
+}
+
+table {
+	font-family: "proxima-nova", sans-serif;
+  overflow: scroll;
+  position: absolute;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 80%;
+}
+.searchR{  
+  background-color: black;
+  z-index: 6;
+  font-family: "proxima-nova", sans-serif;
+  overflow: scroll;
+  margin-left:5px;
+  position: absolute;
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 80%;
+}
+td, th, tr {
+  background-color: transparent;
+  text-align: left;
+  padding: 8px;
+}
+td:first-child{
+  width: 40px;
+}
+td.searchRcol:last-child{
+  text-align: right;
+  width: 30px;
+}
+
+.dropdown {
+  width: 100%;
+  position: relative;
+  display: inline-block;
+}
+p {
+    margin: 0;
+    padding: 0;
+}
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 300px;
+  overflow: auto;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 4;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+.addBtn{
+  font-size: 16px;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius:20px;
+  background-color: #556B8B;
+}
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+.song{
+	font-size: 17px;
+}
+.artist{
+	font-size: 10px;
+}
+.spoop{
+  color:white;
 }
