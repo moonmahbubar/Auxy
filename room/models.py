@@ -7,6 +7,7 @@ class Room(models.Model):
     """Model representing a room for users to join."""
     name = models.CharField(max_length=200, help_text='Enter a room name.')
     code = models.CharField(max_length=6, default=get_random_string)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         """String for representing the room Model object."""
