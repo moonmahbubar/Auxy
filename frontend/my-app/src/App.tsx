@@ -330,18 +330,17 @@ class App extends Component<IProps, IState> {
           count = Object.keys(this.state.attempt).length;
           console.log(this.state.attempt)
           console.log(count)
-        if(count === 2){
-          console.log("link")
-          console.log(count)    
-          this.setRedirect()
-        }
-        else{
+        if(count === 1){
           console.log("room empt")
           console.log(count)
           return (
             alert("Room does not exsist.")        
-          )
-          
+          )          
+        }
+        else{
+          console.log("link")
+          console.log(count)    
+          this.setRedirect()
         }
       })
     }
