@@ -10,7 +10,7 @@ def get_tokens(url):
 
     #For avaliable scopes see https://developer.spotify.com/web-api/using-scopes/
     #Current scope allows for modifying playback.
-    scope = 'user-modify-playback-state'
+    scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
 
     #Once you run the script, copy and paste the link you are redirected to into the terminal.
     redirect_uri="http://localhost:3000/callback"

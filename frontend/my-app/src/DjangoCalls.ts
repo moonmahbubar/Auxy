@@ -10,22 +10,22 @@ export default class DjangoCalls {
     // }
 
     public playSong(room: string, songID: string) {
-        fetch('https://moonmahbubar.pythonanywhere.com/song/' + room + '/' + songID)
+        fetch('http://localhost:8000/song/' + room + '/' + songID)
             .then(response => console.log(response))
     }
 
     public search(room: string, query: string) {
-        fetch('https://moonmahbubar.pythonanywhere.com/' + room + '/' + query)
+        fetch('http://localhost:8000/' + room + '/' + query)
             .then(response => console.log(response))
     }
 
     public sendAuthCode(code: string) {
-        fetch('https://moonmahbubar.pythonanywhere.com/send_auth_code/' + code)
+        fetch('http://localhost:8000/send_auth_code/' + code)
             .then(response => console.log(response.text()))
     }
 
     public createRoom(roomName: string, hostDisplayName: string, authCode: string) {
-        return fetch('https://moonmahbubar.pythonanywhere.com/create_host/' + roomName + '/' + hostDisplayName + '/' + authCode)
+        return fetch('http://localhost:8000/create_host/' + roomName + '/' + hostDisplayName + '/' + authCode)
             .then(response => response.json())
             // .then(data => {
             //     console.log(data['created_room_code'])
@@ -33,7 +33,7 @@ export default class DjangoCalls {
     }
 
     public getRoomUsers(roomCode: string) {
-        return fetch('https://moonmahbubar.pythonanywhere.com/get_room_users/' + roomCode)
+        return fetch('localhost:8000/get_room_users/' + roomCode)
             .then(response => response.json())
     }
 }
