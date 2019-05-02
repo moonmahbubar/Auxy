@@ -141,7 +141,27 @@ class GetRoomInfoView(APIView):
         #Get room associated with the code.
         room = Room.objects.all().filter(code=code)[0]
         #Get host associated with the room.
-        host = room.host
+        host = room.host 
+        #Get room token.
+        token = host.host_token
+        #Get tokens.
+        refresh_token = host.host_refresh_token
+        #Client Token
+        cid ='f694f6f7a1584567948f99d653a9d070' 
+        #Client Secret
+        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
+        #Current scope allows for modifying playback.
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
+        #Once you run the script, copy and paste the link you are redirected to into the terminal.
+        redirect_uri='http://localhost:3000/callback' 
+        #Create OAuth2 object
+        sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
+        #Refresh token
+        response = sp.refresh_access_token(refresh_token)
+        token = response["access_token"]
+        host.host_token = token
+        #Update host.
+        host.save()
         #Get users associated with the room using reverse lookup.
         users = room.user_set.all()
         #Serialize the queryset of users.
@@ -151,9 +171,13 @@ class GetRoomInfoView(APIView):
         #Return the list of users in json format.
         songs = room.song_set.all().order_by('date_added')
         #Serialize the songs.
-        songs_serializer = SongSerializer(songs, many=True, context={'request': request})  
+        songs_serializer = SongSerializer(songs, many=True, context={'request': request})
+        #Serialize the room.
+        room_serializer = RoomSerializer(room, context={'request': request})
+        #Get current playback information.
+        current_playback = get_current_playback(token)
         #Return as json format.
-        return Response(data={"users": users_serializer.data, "host": host_serializer.data, "queue": songs_serializer.data, "room_active": room.is_active})
+        return Response(data={"users": users_serializer.data, "host": host_serializer.data, "queue": songs_serializer.data, "room": room_serializer.data, "current_playback": current_playback})
 
 class JoinRoomView(APIView):
     """Call for adding a user to a room."""
@@ -331,18 +355,6 @@ class RefreshTokenView(APIView):
 
 class DeleteUserView(APIView):
     """Delete a user from a room."""
-    # def get(self, request, code, display_name):
-    #     #Get room.
-    #     room = Room.objects.all().filter(code=code)[0]
-    #     #Get user with display name.
-    #     users = room.user_set.all().filter(display_name=display_name)
-    #     #If one or more user is found:
-    #     if users:
-    #         #Delete users and return response.
-    #         users.delete()
-    #         return Response(data="Found user and deleted!")
-    #     else:
-    #         return Response(data="User not found!")
     def post(self, request, *args, **kwargs):
         # data = dict(parse_qs(request.body))
         #Get room code.
@@ -364,19 +376,8 @@ class DeleteUserView(APIView):
 
 
         
-
 class DeactivateRoomView(APIView):
     """Deactivate a room and delete its host."""
-    # def get(self, request, code):
-    #     #Get room.
-    #     room = Room.objects.all().filter(code=code)[0]
-    #     #Get host and delete.
-    #     host = room.host
-    #     #host.delete()
-    #     #Deactivate room.
-    #     room.is_active = False
-    #     room.save()
-    #     return Response(data="Host and room deactivated!")
     def post(self, request, *args, **kwargs):
         #Get room code.
         code = request.data['code']
@@ -387,6 +388,7 @@ class DeactivateRoomView(APIView):
         room.save()
         return Response(data="Room deactivated!")    
     
+
 class GetCurrentPlaybackView(APIView):
     def get(self, request, code):
         #Get room.
@@ -395,6 +397,24 @@ class GetCurrentPlaybackView(APIView):
         host = room.host 
         #Get room token.
         token = host.host_token
+        #Get tokens.
+        refresh_token = host.host_refresh_token
+        #Client Token
+        cid ='f694f6f7a1584567948f99d653a9d070' 
+        #Client Secret
+        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
+        #Current scope allows for modifying playback.
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
+        #Once you run the script, copy and paste the link you are redirected to into the terminal.
+        redirect_uri='http://localhost:3000/callback' 
+        #Create OAuth2 object
+        sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
+        #Refresh token
+        response = sp.refresh_access_token(refresh_token)
+        token = response["access_token"]
+        host.host_token = token
+        #Update host.
+        host.save()
         #Get current playback information.
         current_playback = get_current_playback(token)
         return Response(data={"response": current_playback})

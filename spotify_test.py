@@ -60,6 +60,8 @@ def get_current_playback(token):
     sp = spotipy.Spotify(auth=token)
     #Make spotify call to get current playback information.
     current_playback = sp.current_playback()
+    if not current_playback:
+            return "None"
     #Create dictionary to return.
     current_playback_parsed = {}
     #Add all the requried values.
