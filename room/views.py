@@ -9,6 +9,7 @@ from search_test import *
 from django.utils.crypto import get_random_string
 from authorization_flow import *
 import json
+from urllib.parse import parse_qs
 
 
 
@@ -326,9 +327,10 @@ class DeleteUserView(APIView):
     #     else:
     #         return Response(data="User not found!")
     def post(self, request, *args, **kwargs):
+        # data = dict(parse_qs(request.body))
         #Get room code.
-        code = request.data['code']
-        display_name = request.data['display_name']
+        code = request.POST.get('code')
+        display_name = request.POST.get('display_name')
         #Get room.
         room = Room.objects.get(code=code)
         #Get user with display name.

@@ -197,26 +197,26 @@ class App extends Component<IProps, IState> {
         prevState.hostToken === "") {
       
       // Warn host that they will lose host priviledges if they leave the room
-        if (this.state.isHost) {
+      if (this.state.isHost) {
           window.addEventListener('beforeunload', (e) => {
-          // Cancel the event
-          e.preventDefault();
+              // Cancel the event
+              e.preventDefault();
 
-          // Chrome requires returnValue to be set
-          e.returnValue = '';
+            // Chrome requires returnValue to be set
+            e.returnValue = 'leave page?';
         });
       }
+      
 
       // Delete user or room depending on if leaving user is the host or not
-      window.addEventListener('onunload', (e) => {
+      window.addEventListener('unload', (e) => {
         // Call endpoint to update backend
         if (this.state.isHost) {
-          dc.hostLeaveRoom(this.state.roomCode).then(data=>console.log(data))
+          dc.hostLeaveRoom(this.state.roomCode)
           this.deactivateRoom()
         } else {
           dc.userLeaveRoom(this.state.roomCode, this.state.displayName)
         }
-        setTimeout(()=>{}, 2000)
       })
 
       // console.log(this.state.hostToken)
@@ -363,8 +363,7 @@ class App extends Component<IProps, IState> {
   PartyRoom = () => {
     // Redirect user to landing page
     let leaveRoom = () => {
-      // window.location.href = 'https://auxy.netlify.com/'
-      dc.userLeaveRoom(this.state.roomCode, this.state.displayName)
+      window.location.href = 'https://auxy.netlify.com/'
     }
 
     // If the room becomes inactive due to the host leaving, alert users and navigate

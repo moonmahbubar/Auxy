@@ -38,17 +38,20 @@ export default class DjangoCalls {
     }
 
     public userLeaveRoom(roomCode: string, displayName: string) {
-        let data = JSON.stringify({
-            code: roomCode,
-            display_name: displayName
-          });
-        
-        console.log(1)
-        navigator.sendBeacon('http://localhost:8000/delete_user/?', data);
+        let data = 'code=' + roomCode + '&display_name=' + displayName;
+        let headers = {
+            type: 'application/x-www-form-urlencoded'
+        };
+        let blob = new Blob([data], headers)
+        navigator.sendBeacon('http://localhost:8000/delete_user/', blob)
     }
 
     public hostLeaveRoom(roomCode: string) {
-        return fetch('http://localhost:8000/deactivate_room/' + roomCode)
-            .then(response => response.json())
+        let data = 'code=' + roomCode
+        let headers = {
+            type: 'application/x-www-form-urlencoded'
+        };
+        let blob = new Blob([data], headers)
+        navigator.sendBeacon('http://localhost:8000/deactivate_room/', blob)
     }
 }
