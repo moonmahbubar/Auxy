@@ -165,7 +165,7 @@ class App extends Component<IProps, IState> {
         fetch('http://localhost:8000/get_room_info/' + this.state.roomCode)
           .then(response => response.json())
           .then(data => {
-            console.log(data)
+            //console.log(data)
             let displaynames = []
 
             displaynames.push(data['host']['display_name'])
@@ -277,9 +277,11 @@ class App extends Component<IProps, IState> {
         player.connect();
       };`;
     
-      // Append elements to HTML body
-      document.body.appendChild(script);
-      document.body.appendChild(moduleScript);
+      if (this.state.isHost) {
+        // Append elements to HTML body
+        document.body.appendChild(script);
+        document.body.appendChild(moduleScript);
+      }
     }
   }
 
@@ -409,7 +411,7 @@ class App extends Component<IProps, IState> {
       leaveRoom()
     }
 
-    console.log(this.state)
+    //console.log(this.state)
     return(
         <div className='playback'>
           <b>{this.state.partyName}</b> {this.state.roomCode}

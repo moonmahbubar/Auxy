@@ -184,13 +184,29 @@ class PushSongView(APIView):
     def get(self, request, code, track_id, track_name, track_artist, track_art, track_length, votes):
         #Get room.
         room = Room.objects.all().filter(code=code)[0]
+        songs = room.song_set.all()
+        if songs:
+            #Create song object. Make sure to update attributes.
+            song = Song(track_id=track_id, track_name=track_name, track_artist=track_artist, track_art=track_art, track_length=track_length, votes=votes, room=room)
+            song.save()
+            #Serialize the content.
+            serializer = SongSerializer(song, context={'request': request})    
+            #Return data in json format.
+            return Response(data={"pushed_song": serializer.data})
         #Create song object. Make sure to update attributes.
-        song = Song(track_id=track_id, track_name=track_name, track_artist=track_artist, track_art=track_art, track_length=track_length, votes=votes, room=room)
-        song.save()
-        #Serialize the content.
-        serializer = SongSerializer(song, context={'request': request})    
-        #Return data in json format.
-        return Response(data={"pushed_song": serializer.data})
+        host = room.host
+        token = host.host_token
+        if not is_song_playing(token):
+            play_song_id(token, track_id)
+            return Response(data={"pushed_song": "queue is empty"})
+        else:
+            song = Song(track_id=track_id, track_name=track_name, track_artist=track_artist, track_art=track_art, track_length=track_length, votes=votes, room=room)
+            song.save()
+            #Serialize the content.
+            serializer = SongSerializer(song, context={'request': request})    
+            #Return data in json format.
+            return Response(data={"pushed_song": serializer.data})
+
 
 class PopSongView(APIView):
     """Call for playing a song from the queue, and updating the queue by removing it."""
@@ -220,8 +236,9 @@ class PopSongView(APIView):
         #Update host attributes.
         host.host_token = token
         host.save()
-        #Play the song.
-        play_specific_song(token, song.track_name)
+        #Play the song by id.
+        song_id = song.track_id
+        play_song_id(token, song_id)
         #Delete the song.
         song.delete()
         #Return if song was successfully played.
