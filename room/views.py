@@ -62,7 +62,7 @@ class PlaySongView(APIView):
         #Client Secret
         secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
         #Current scope allows for modifying playback.
-        scope = 'user-modify-playback-state'
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
         redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object.
@@ -93,9 +93,9 @@ class SearchSongView(APIView):
         #Client Secret
         secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
         #Current scope allows for modifying playback.
-        scope = 'user-modify-playback-state'
+        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://auxy.localhost:3000.com/callback' 
+        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object.
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token.
@@ -134,8 +134,8 @@ class UpdateTokensView(APIView):
         return Response(data={"results":tokens})
 
 
-class GetRoomUsersView(APIView):
-    """Get the Users that belong to a room."""
+class GetRoomInfoView(APIView):
+    """Get the Users, Host, queue and activity of a room."""
     def get(self, request, code):
         #Get room associated with the code.
         room = Room.objects.all().filter(code=code)[0]
@@ -148,20 +148,32 @@ class GetRoomUsersView(APIView):
         #Serialize the host.
         host_serializer = HostSerializer(host, context={'request': request})
         #Return the list of users in json format.
-        return Response(data={"users": users_serializer.data, "host": host_serializer.data})
+        songs = room.song_set.all().order_by('date_added')
+        #Serialize the songs.
+        songs_serializer = SongSerializer(songs, many=True, context={'request': request})  
+        #Return as json format.
+        return Response(data={"users": users_serializer.data, "host": host_serializer.data, "queue": songs_serializer.data, "room_active": room.is_active})
 
 class JoinRoomView(APIView):
     """Call for adding a user to a room."""
     def get(self, request, display_name, code):
         #Get room associated with the room code.
         rooms = Room.objects.all().filter(code=code)
-        #If room exists, add user.
-        if rooms:
+        #If room exists
+        room_exists = bool(rooms)
+        if room_exists:
             room = rooms[0]
+            #Get all the users
+            users = room.user_set.all()
+            #Check if diplay name is available
+            display_name_available = not bool(users.filter(display_name=display_name))
+            if not display_name_available:
+                return Response(data={"created_user": ["Display name is not available!"]})
+            #Otherwise create the user.
             user = User(display_name=display_name, room=room)
             user.save()
-            serializer = UserSerializer(user, context={'request': request})  
-            return Response(data={"created_user": serializer.data})
+            users_serializer = UserSerializer(users, many=True, context={'request': request})  
+            return Response(data={"created_user": users_serializer.data})
         #Otherwise, return room not found.
         else:
             return Response(data={"created_user": ["Room not found!"]})
@@ -232,7 +244,7 @@ class PlayIDView(APIView):
         #Current scope allows for modifying playback.
         scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://auxy.localhost:3000.com/callback' 
+        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
@@ -288,7 +300,7 @@ class RefreshTokenView(APIView):
         #Current scope allows for modifying playback.
         scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://auxy.localhost:3000.com/callback' 
+        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
@@ -298,3 +310,36 @@ class RefreshTokenView(APIView):
         #Update host.
         host.save()
         return Response(data={"new_token": token})
+
+class DeleteUserView(APIView):
+    """Delete a user from a room."""
+    def get(self, request, code, display_name):
+        #Get room.
+        room = Room.objects.all().filter(code=code)[0]
+        #Get user with display name.
+        users = room.user_set.all().filter(display_name=display_name)
+        #If one or more user is found:
+        if users:
+            #Delete users and return response.
+            users.delete()
+            return Response(data="Found user and deleted!")
+        else:
+            return Response(data="User not found!")
+
+class DeactivateRoomView(APIView):
+    """Deactivate a room and delete its host."""
+    def get(self, request, code):
+        #Get room.
+        room = Room.objects.all().filter(code=code)[0]
+        #Get host and delete.
+        host = room.host
+        host.delete()
+        #Deactivate room.
+        room.is_active = False
+        room.save()
+        return Response(data="Host and room deactivated!")
+
+
+
+
+

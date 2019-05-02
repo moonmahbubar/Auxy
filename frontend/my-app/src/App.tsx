@@ -45,6 +45,7 @@ interface IState {
   hostToken: string
   attempt: any,
   isHost: boolean,
+  roomActive: boolean,
   redirect: boolean,
   redirectToJoinPartyPage: boolean,
   redirectToLanding: boolean, 
@@ -69,6 +70,7 @@ class App extends Component<IProps, IState> {
       hostToken: '',
       attempt: [],
       isHost: false,
+      roomActive: true,
       redirect: false,
       redirectToJoinPartyPage: false,
       redirectToLanding: false,
@@ -149,13 +151,18 @@ class App extends Component<IProps, IState> {
     this.setState({isHost: true})
   }
 
+  deactivateRoom = () => {
+    this.setState({roomActive: false})
+  }
+
   componentDidMount() {
     // If on the party page, fetch room updates every second
     setInterval(() => {
       if (window.location.pathname === "/party" && this.state.roomCode !== "") {
-        fetch('http://localhost:8000/get_room_users/' + this.state.roomCode)
+        fetch('http://localhost:8000/get_room_info/' + this.state.roomCode)
           .then(response => response.json())
           .then(data => {
+            console.log(data)
             let displaynames = []
 
             displaynames.push(data['host']['display_name'])
@@ -168,6 +175,11 @@ class App extends Component<IProps, IState> {
 
             // console.log(displaynames)
             this.setInRoom(displaynames)
+
+            //If room has become inactive, reflect in state
+            if (!data['room_active']) {
+              this.deactivateRoom()
+            }
           })
       }
     }, 1000)
@@ -183,15 +195,26 @@ class App extends Component<IProps, IState> {
       
       // Warn host that they will lose host priviledges if they leave the room
         if (this.state.isHost) {
-          window.addEventListener('beforeunload', function (e) {
+          window.addEventListener('beforeunload', (e) => {
           // Cancel the event
           e.preventDefault();
-          // Show confirmation message
-          confirm('If you leave the room, you will lose host priviledges')
+
           // Chrome requires returnValue to be set
           e.returnValue = '';
         });
       }
+
+      // Delete user or room depending on if leaving user is the host or not
+      window.addEventListener('onunload', (e) => {
+        // Call endpoint to update backend
+        if (this.state.isHost) {
+          dc.hostLeaveRoom(this.state.roomCode).then(data=>console.log(data))
+          this.deactivateRoom()
+        } else {
+          dc.userLeaveRoom(this.state.roomCode, this.state.displayName)
+        }
+        setTimeout(()=>{}, 2000)
+      })
 
       // console.log(this.state.hostToken)
       // Import Spotify Web Player SDK module
@@ -335,19 +358,23 @@ class App extends Component<IProps, IState> {
 
   // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
-    // Redirect user to landing page and call endpoint to update backend
+    // Redirect user to landing page
     let leaveRoom = () => {
-      // Call endpoint to update backend
+      // window.location.href = 'https://auxy.netlify.com/'
+    }
 
-      // Redirect
-      window.location.href = 'https://auxy.netlify.com/'
+    // If the room becomes inactive due to the host leaving, alert users and navigate
+    // to landing page
+    if (!this.state.roomActive) {
+      alert("The host has left the party :^(")
+      leaveRoom()
     }
 
     console.log(this.state)
     return(
         <div>
           its a party
-          {console.log(this.state.roomCode)}
+          {this.state.roomCode}
           <br />
           <p id='inRoom'>{this.state.inRoom.join(" ")}</p>
           <button onClick={leaveRoom}>Leave Room</button>
@@ -366,18 +393,22 @@ class App extends Component<IProps, IState> {
           count = Object.keys(this.state.attempt).length;
           console.log(this.state.attempt)
           console.log(count)
-        if(count === 2){
-          console.log("link")
-          console.log(count)    
+          console.log(typeof this.state.attempt[0])
+        if(typeof this.state.attempt[0] === 'object'){
+          // console.log("link")
+          // console.log(count)    
           this.setRedirect()
         }
-        else{
-          console.log("room empt")
-          console.log(count)
+        else if (this.state.attempt[0] === "Room not found!") {
+          // console.log("room empt")
+          // console.log(count)
           return (
             alert("Room does not exsist.")        
           )
           
+        }
+        else if (this.state.attempt[0] === "Display name is not available!") {
+          alert("This display name is in use at the party already.")
         }
       })
     }

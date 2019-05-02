@@ -33,7 +33,17 @@ export default class DjangoCalls {
     }
 
     public getRoomUsers(roomCode: string) {
-        return fetch('http://localhost:8000/get_room_users/' + roomCode)
+        return fetch('http://localhost:8000/get_room_info/' + roomCode)
+            .then(response => response.json())
+    }
+
+    public userLeaveRoom(roomCode: string, displayName: string) {
+        return fetch('http://localhost:8000/delete_user/' + roomCode + '/' + displayName)
+            .then(response => response.json())
+    }
+
+    public hostLeaveRoom(roomCode: string) {
+        return fetch('http://localhost:8000/deactivate_room/' + roomCode)
             .then(response => response.json())
     }
 }

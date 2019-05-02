@@ -4,7 +4,7 @@ from rest_framework import serializers
 class RoomSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Room 
-        fields = ('name', 'code')
+        fields = ('name', 'code', 'is_active')
 
 class HostSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
