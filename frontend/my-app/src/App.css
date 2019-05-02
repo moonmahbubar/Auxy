@@ -294,3 +294,8 @@ p {
 .spoop{
   color:white;
 }
+
+/* Progress Bar CSS */
+.progressBar {
+  flex-grow: 1;
+}

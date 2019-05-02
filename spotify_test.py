@@ -49,7 +49,9 @@ def play_song_id(token, track_id):
         # Add track_id to list of tracks being added to playback
         tracks.append("spotify:track:" + track_id)
         # Start playing the songs.
-        sp.start_playback(uris=tracks)
+        devices = sp.devices()
+        auxy_device_id = [device["id"]  for device in devices["devices"] if device["name"] == "AUXY"][0]
+        sp.start_playback(device_id=auxy_device_id, uris=tracks)
         return token
 
 
@@ -58,6 +60,8 @@ def get_current_playback(token):
     sp = spotipy.Spotify(auth=token)
     #Make spotify call to get current playback information.
     current_playback = sp.current_playback()
+    if not current_playback:
+            return "None"
     #Create dictionary to return.
     current_playback_parsed = {}
     #Add all the requried values.
@@ -69,3 +73,8 @@ def get_current_playback(token):
     #Return parsed data.
     return current_playback_parsed
 
+
+def is_song_playing(token):
+    #Authorize
+    sp = spotipy.Spotify(auth=token)
+    return bool(sp.current_playback())
