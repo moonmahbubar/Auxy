@@ -71,7 +71,7 @@ class PlaySongView(APIView):
         response = sp.refresh_access_token(refresh_token)
         token = response["access_token"]
         #Update host tokens.
-        host.token = token
+        host.host_token = token
         host.save()
         #Play the song.
         play_specific_song(token, song)
@@ -102,7 +102,7 @@ class SearchSongView(APIView):
         response = sp.refresh_access_token(refresh_token)
         #Update tokens.
         token = response["access_token"]
-        host.token = token
+        host.host_token = token
         host.save()
         #Get search results.
         result = search_song(token, song)
@@ -217,7 +217,7 @@ class PopSongView(APIView):
         response = sp.refresh_access_token(refresh_token)
         token = response["access_token"]
         #Update host attributes.
-        host.token = token
+        host.host_token = token
         host.save()
         #Play the song.
         play_specific_song(token, song.track_name)
@@ -250,7 +250,7 @@ class PlayIDView(APIView):
         #Refresh token
         response = sp.refresh_access_token(refresh_token)
         token = response["access_token"]
-        host.token = token
+        host.host_token = token
         #Update host.
         host.save()
         #Play song by id.
@@ -306,7 +306,7 @@ class RefreshTokenView(APIView):
         #Refresh token
         response = sp.refresh_access_token(refresh_token)
         token = response["access_token"]
-        host.token = token
+        host.host_token = token
         #Update host.
         host.save()
         return Response(data={"new_token": token})
@@ -366,6 +366,18 @@ class DeactivateRoomView(APIView):
         room.is_active = False
         room.save()
         return Response(data="Room deactivated!")    
+    
+class GetCurrentPlaybackView(APIView):
+    def get(self, request, code):
+        #Get room.
+        room = Room.objects.get(code=code)
+        #Get room host.
+        host = room.host 
+        #Get room token.
+        token = host.host_token
+        #Get current playback information.
+        current_playback = get_current_playback(token)
+        return Response(data={"response": current_playback})
 
 
 

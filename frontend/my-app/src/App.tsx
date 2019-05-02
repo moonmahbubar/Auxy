@@ -342,11 +342,6 @@ class App extends Component<IProps, IState> {
           console.log(count)    
           this.setRedirect()
         }
-        else{
-          console.log("link")
-          console.log(count)    
-          this.setRedirect()
-        }
       })
     }
 

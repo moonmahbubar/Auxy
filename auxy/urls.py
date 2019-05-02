@@ -45,6 +45,7 @@ urlpatterns = [
     path(r'refresh_token/<str:code>', views.RefreshTokenView.as_view()),
     path(r'delete_user/$', views.DeleteUserView.as_view()),
     path(r'deactivate_room/$', views.DeactivateRoomView.as_view()),
+    path(r'get_current_playback/<str:code>', views.GetCurrentPlaybackView.as_view()),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api', include('rest_framework.urls', namespace='rest_framework')),

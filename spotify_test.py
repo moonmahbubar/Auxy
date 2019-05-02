@@ -4,49 +4,68 @@ import spotipy.util as util
 
 def play_song_test(token):
     if token:
-        #Authorize
+        # Authorize
         sp = spotipy.Spotify(auth=token)
-        #List of tracks to be added to the playback
+        # List of tracks to be added to the playback
         tracks = []
-        #Search query
+        # Search query
         q = "feel the love"
-        #Make search queue
+        # Make search queue
         search_results = sp.search(q, limit=1, type='track')
-        #Get track id
+        # Get track id
         track_id = search_results['tracks']['items'][0]['id']
-        #Add track_id to list of tracks being added to playback
+        # Add track_id to list of tracks being added to playback
         tracks.append("spotify:track:" + track_id)
-        #Start playing the songs.
+        # Start playing the songs.
         sp.start_playback(uris=tracks)
         return token
 
 
 def play_specific_song(token, song):
     if token:
-        #Authorize
+        # Authorize
         sp = spotipy.Spotify(auth=token)
-        #List of tracks to be added to the playback
+        # List of tracks to be added to the playback
         tracks = []
-        #Search query
+        # Search query
         q = song
-        #Make search queue
+        # Make search queue
         search_results = sp.search(q, limit=1, type='track')
-        #Get track id
+        # Get track id
         track_id = search_results['tracks']['items'][0]['id']
-        #Add track_id to list of tracks being added to playback
+        # Add track_id to list of tracks being added to playback
         tracks.append("spotify:track:" + track_id)
-        #Start playing the songs.
+        # Start playing the songs.
         sp.start_playback(uris=tracks)
         return token
 
+
 def play_song_id(token, track_id):
     if token:
-        #Authorize
+        # Authorize
         sp = spotipy.Spotify(auth=token)
-        #List of tracks to be added to the playback
+        # List of tracks to be added to the playback
         tracks = []
-        #Add track_id to list of tracks being added to playback
+        # Add track_id to list of tracks being added to playback
         tracks.append("spotify:track:" + track_id)
-        #Start playing the songs.
+        # Start playing the songs.
         sp.start_playback(uris=tracks)
         return token
+
+
+def get_current_playback(token):
+    #Authorize
+    sp = spotipy.Spotify(auth=token)
+    #Make spotify call to get current playback information.
+    current_playback = sp.current_playback()
+    #Create dictionary to return.
+    current_playback_parsed = {}
+    #Add all the requried values.
+    current_playback_parsed['track_name'] = current_playback["item"]["name"]
+    current_playback_parsed['track_artist'] = current_playback["item"]["artists"][0]["name"]
+    current_playback_parsed['track_length'] =  current_playback["item"]["duration_ms"]
+    current_playback_parsed['track_progress'] = current_playback["progress_ms"]
+    current_playback_parsed['track_art'] = current_playback["item"]["album"]["images"][0]["url"]
+    #Return parsed data.
+    return current_playback_parsed
+
