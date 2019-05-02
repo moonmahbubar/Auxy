@@ -327,7 +327,8 @@ class DeleteUserView(APIView):
     #         return Response(data="User not found!")
     def post(self, request, *args, **kwargs):
         #Get room code.
-        code = request.code
+        code = request.data['code']
+        display_name = request.data['display_name']
         #Get room.
         room = Room.objects.get(code=code)
         #Get user with display name.
@@ -359,7 +360,7 @@ class DeactivateRoomView(APIView):
     #     return Response(data="Host and room deactivated!")
     def post(self, request, *args, **kwargs):
         #Get room code.
-        code = request.code
+        code = request.data['code']
         #Get room.
         room = Room.objects.get(code=code)
         #Deactivate room.
