@@ -170,6 +170,7 @@ class App extends Component<IProps, IState> {
 
             displaynames.push(data['host']['display_name'])
             this.setHostToken(data['host']['host_token'])
+            this.setQueue(data['queue'])
 
             var userList = data['users']
             for (var i = 0; i < userList.length; i++) {
@@ -361,6 +362,41 @@ class App extends Component<IProps, IState> {
 
   // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
+    let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
+      trackArt = trackArt.slice(24)
+      fetch('http://localhost:8000/push_song/' + this.state.roomCode + '/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
+    }
+
+    let removeFromQueue = (auto_increment_id: string) => {
+      fetch('http://localhost:8000/remove_song/' + auto_increment_id)
+        .then(response => response.json())
+        .then(data => {
+          console.log(auto_increment_id)
+        })
+      fetch('http://localhost:8000/songs')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+        })
+    }
+
+    let search = () => {
+      fetch('http://localhost:8000/search/'  + this.state.roomCode + '/' + this.state.searchTerm)
+        .then(response => response.json())
+        .then(data => {
+          this.setSearchResults(data['search_result'])
+          console.log(data['search_result'])
+        })
+    }
+
+    let refreshQueue = () => {
+      fetch('http://localhost:8000/get_room_queue/'  + this.state.roomCode)
+        .then(response => response.json())
+        .then(data => {
+          this.setQueue(data['songs'])
+        })
+    }
+
     // Redirect user to landing page
     let leaveRoom = () => {
       window.location.href = 'https://auxy.netlify.com/'
@@ -375,12 +411,61 @@ class App extends Component<IProps, IState> {
 
     console.log(this.state)
     return(
-        <div>
-          its a party
-          {this.state.roomCode}
+        <div className='playback'>
+          <b>{this.state.partyName}</b> {this.state.roomCode}
+          <button onClick={leaveRoom}>Leave Room</button>
           <br />
           <p id='inRoom'>{this.state.inRoom.join(" ")}</p>
-          <button onClick={leaveRoom}>Leave Room</button>
+
+          <div className="dropdown">
+            <form className="searchbar" onSubmit={search}>
+              <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
+              <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
+            </form>
+            <div className="spoop">
+            <table className= "searchR">
+              {this.state.searchResults.map((r: any) => 
+              <tbody>
+                <tr key={r['track_id']}>
+                    <td>
+                      <img src ={r['track_art']} />
+                    </td>
+                    <td>
+                      <p className= "song">{r['track_name']}</p>
+                      <p className = "artist">{r['track_artist']}</p>
+                    </td>
+                    <td className="searchRcol"> 
+                    <button className="addBtn" type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)}> + </button>
+                  </td>
+                </tr>
+              </tbody>
+              )}
+            </table>
+          </div>
+        </div>
+      
+
+        <h3>Queue:</h3>
+        <div>
+          <table>
+          {this.state.queue.map((q: any) =>
+          <tbody>
+            <tr key={q['track_id']}>
+                  <td>
+                    <img src ={"https://i.scdn.co/image/"+q['track_art']} />
+                  </td>
+                  <td>
+                    <p className= "song">{q['track_name']}</p>
+                    <p className = "artist">{q['track_artist']}</p>
+                  </td>
+                  <td>
+                  <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button> 
+                  </td>
+              </tr>
+              </tbody>
+          )}
+          </table>
+        </div>
         </div>
     )
   }
