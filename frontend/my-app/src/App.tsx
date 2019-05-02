@@ -9,9 +9,6 @@ import DjangoCalls from './DjangoCalls';
 import { Redirect } from 'react-router-dom'
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize?';
-declare global {
-  interface Window { onSpotifyWebPlaybackSDKReady: any; }
-}
 
 let sp = new SpotifyLogin()
 let dc = new DjangoCalls()
@@ -55,6 +52,7 @@ interface IState {
 interface IProps {}
 
 class App extends Component<IProps, IState> {
+  // evtSource: EventSource
 
   constructor(props: any) {
     super(props);
@@ -63,7 +61,7 @@ class App extends Component<IProps, IState> {
       partyName: '',
       displayName: '',
       roomCode: '',
-      inRoom: ['salad'],
+      inRoom: [],
       searchTerm: '',
       searchResults: [],
       queue: [],
@@ -75,6 +73,11 @@ class App extends Component<IProps, IState> {
       redirectToJoinPartyPage: false,
       redirectToLanding: false,
     };
+
+    // this.evtSource = dc.getEventSource()
+    // this.evtSource.onmessage = (e) => {
+    //   // Update the state on recieving info from server
+    // }
 
     // Bind class methods
     // this.setPartyName = this.setPartyName.bind(this);
@@ -305,10 +308,10 @@ class App extends Component<IProps, IState> {
               <h1 className="hero-title">Welcome to Auxy!</h1>
               <p className="hero-paragraph">With Auxy, you can collaborate on Spotify queues with your friends! </p>
               <span>
-                <button className="main" type = "button" onClick={login}>
+                <button className="main1" type = "button" onClick={login}>
                 Host
                 </button>
-                <button className="main" type = "button" onClick={toJoinParty}>
+                <button className="main2" type = "button" onClick={toJoinParty}>
                 Join
                 </button>
               </span>
@@ -361,6 +364,7 @@ class App extends Component<IProps, IState> {
     // Redirect user to landing page
     let leaveRoom = () => {
       // window.location.href = 'https://auxy.netlify.com/'
+      dc.userLeaveRoom(this.state.roomCode, this.state.displayName)
     }
 
     // If the room becomes inactive due to the host leaving, alert users and navigate
@@ -394,7 +398,7 @@ class App extends Component<IProps, IState> {
           console.log(this.state.attempt)
           console.log(count)
           console.log(typeof this.state.attempt[0])
-        if(typeof this.state.attempt[0] === 'object'){
+        if (typeof this.state.attempt[0] === 'object') {
           // console.log("link")
           // console.log(count)    
           this.setRedirect()
@@ -405,7 +409,6 @@ class App extends Component<IProps, IState> {
           return (
             alert("Room does not exsist.")        
           )
-          
         }
         else if (this.state.attempt[0] === "Display name is not available!") {
           alert("This display name is in use at the party already.")
@@ -445,11 +448,25 @@ class App extends Component<IProps, IState> {
       fetch('http://localhost:8000/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
     }
 
+    let removeFromQueue = (auto_increment_id: string) => {
+      fetch('http://localhost:8000/remove_song/' + auto_increment_id)
+        .then(response => response.json())
+        .then(data => {
+          console.log(auto_increment_id)
+        })
+      fetch('http://localhost:8000/songs')
+        .then(response => response.json())
+        .then(data => {
+          console.log(data)
+        })
+    }
+
     let search = () => {
       fetch('http://localhost:8000/search/123456/' + this.state.searchTerm)
         .then(response => response.json())
         .then(data => {
           this.setSearchResults(data['search_result'])
+          console.log(data['search_result'])
         })
     }
 
@@ -457,7 +474,6 @@ class App extends Component<IProps, IState> {
       fetch('http://localhost:8000/get_room_queue/123456')
         .then(response => response.json())
         .then(data => {
-          console.log(data['songs'])
           this.setQueue(data['songs'])
         })
     }
@@ -465,22 +481,57 @@ class App extends Component<IProps, IState> {
     refreshQueue();
     return(
       <div className='playback'>
-        <h1>Technical Demo of Search and Queue!</h1>
-        <form>
-          Song name:<br/>
-          <button type = "button" onClick={search}>
-            Search
-          </button>
-          <input type="text" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" className="inp" placeholder="" />
-        </form>
-        <div>
-          {this.state.searchResults.map((r: any) => <button type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)} key={r['track_id']}>{r['track_name']}</button>)}
+
+        <div className="dropdown">
+            <form className="searchbar" onSubmit={search}>
+              <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
+              <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
+            </form>
+            <div className="spoop">
+            <table className= "searchR">
+              {this.state.searchResults.map((r: any) => 
+              <tbody>
+                <tr key={r['track_id']}>
+                    <td>
+                      <img src ={r['track_art']} />
+                    </td>
+                    <td>
+                      <p className= "song">{r['track_name']}</p>
+                      <p className = "artist">{r['track_artist']}</p>
+                    </td>
+                    <td className="searchRcol"> 
+                    <button className="addBtn" type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)}> + </button>
+                  </td>
+                </tr>
+              </tbody>
+              )}
+            </table>
+          </div>
         </div>
-        <br/>
+      
+
         <h3>Queue:</h3>
         <div>
-          {this.state.queue.map((q: any) => <button type = "button" key={q['track_id']}>{q['track_name']}</button>)}
+          <table>
+          {this.state.queue.map((q: any) =>
+          <tbody>
+            <tr key={q['track_id']}>
+                  <td>
+                    <img src ={"https://i.scdn.co/image/"+q['track_art']} />
+                  </td>
+                  <td>
+                    <p className= "song">{q['track_name']}</p>
+                    <p className = "artist">{q['track_artist']}</p>
+                  </td>
+                  <td>
+                  <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button> 
+                  </td>
+              </tr>
+              </tbody>
+          )}
+          </table>
         </div>
+
       </div>
     )
   }

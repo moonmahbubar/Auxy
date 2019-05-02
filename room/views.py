@@ -275,15 +275,15 @@ class GetRoomQueueView(APIView):
 class DeleteSongView(APIView):
     """Deletes a song."""
     def get(self, request, auto_increment_id):
-        #Get song with the unique id 
+        #Get song with the unique id
         songs = Song.objects.all().filter(auto_increment_id=auto_increment_id)
         #If a song is found.
         if songs:
             song = songs[0]
             song.delete()
-            return Response(data="succesfully deleted!")
+            return Response(data={"response": ["Song deleted!", "Successfully!"]})
         else:
-            return Response(data="Error! Song not found.")
+            return Response(data={"response": ["Song not found!"]})
 
 class RefreshTokenView(APIView):
     """Refresh a token for a host."""
@@ -313,9 +313,24 @@ class RefreshTokenView(APIView):
 
 class DeleteUserView(APIView):
     """Delete a user from a room."""
-    def get(self, request, code, display_name):
+    # def get(self, request, code, display_name):
+    #     #Get room.
+    #     room = Room.objects.all().filter(code=code)[0]
+    #     #Get user with display name.
+    #     users = room.user_set.all().filter(display_name=display_name)
+    #     #If one or more user is found:
+    #     if users:
+    #         #Delete users and return response.
+    #         users.delete()
+    #         return Response(data="Found user and deleted!")
+    #     else:
+    #         return Response(data="User not found!")
+    def post(self, request, *args, **kwargs):
+        #Get room code.
+        code = request.code
+        display_name = request.display_name
         #Get room.
-        room = Room.objects.all().filter(code=code)[0]
+        room = Room.objects.get(code=code)
         #Get user with display name.
         users = room.user_set.all().filter(display_name=display_name)
         #If one or more user is found:
@@ -326,18 +341,33 @@ class DeleteUserView(APIView):
         else:
             return Response(data="User not found!")
 
+
+
+
+        
+
 class DeactivateRoomView(APIView):
     """Deactivate a room and delete its host."""
-    def get(self, request, code):
+    # def get(self, request, code):
+    #     #Get room.
+    #     room = Room.objects.all().filter(code=code)[0]
+    #     #Get host and delete.
+    #     host = room.host
+    #     #host.delete()
+    #     #Deactivate room.
+    #     room.is_active = False
+    #     room.save()
+    #     return Response(data="Host and room deactivated!")
+    def post(self, request, *args, **kwargs):
+        #Get room code.
+        code = request.code
         #Get room.
-        room = Room.objects.all().filter(code=code)[0]
-        #Get host and delete.
-        host = room.host
-        host.delete()
+        room = Room.objects.get(code=code)
         #Deactivate room.
         room.is_active = False
         room.save()
-        return Response(data="Host and room deactivated!")
+        return Response(data="Room deactivated!")    
+
 
 
 

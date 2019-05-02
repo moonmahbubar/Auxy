@@ -20,9 +20,6 @@ from room import views
 
 
 
-
-
-
 router = routers.DefaultRouter()
 router.register(r'rooms', views.RoomViewSet)
 router.register(r'hosts', views.HostViewSet)
@@ -46,8 +43,8 @@ urlpatterns = [
     path(r'get_room_queue/<str:code>', views.GetRoomQueueView.as_view()),
     path(r'remove_song/<int:auto_increment_id>', views.DeleteSongView.as_view()),
     path(r'refresh_token/<str:code>', views.RefreshTokenView.as_view()),
-    path(r'delete_user/<str:code>/<str:display_name>', views.DeleteUserView.as_view()),
-    path(r'deactivate_room/<str:code>', views.DeactivateRoomView.as_view()),
+    path(r'delete_user/$', views.DeleteUserView.as_view()),
+    path(r'deactivate_room/$', views.DeactivateRoomView.as_view()),
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
     path('api', include('rest_framework.urls', namespace='rest_framework')),
