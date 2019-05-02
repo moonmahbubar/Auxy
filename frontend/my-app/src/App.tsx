@@ -2,11 +2,11 @@
 // https://levelup.gitconnected.com/how-to-build-a-spotify-player-with-react-in-15-minutes-7e01991bc4b6
 
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 import './App.css';
 import SpotifyLogin from './SpotifyLogin';
 import DjangoCalls from './DjangoCalls';
-import { Redirect } from 'react-router-dom'
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize?';
 
