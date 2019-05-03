@@ -1,5 +1,6 @@
 // Spotify authorization functionality based on
 // https://levelup.gitconnected.com/how-to-build-a-spotify-player-with-react-in-15-minutes-7e01991bc4b6
+// https://developer.spotify.com/documentation/web-playback-sdk/quick-start/
 
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
@@ -56,10 +57,9 @@ interface IState {
 interface IProps {}
 
 class App extends Component<IProps, IState> {
-  // evtSource: EventSource
-
   constructor(props: any) {
     super(props);
+
     // Set initial state
     this.state = {
       partyName: '',
@@ -81,48 +81,33 @@ class App extends Component<IProps, IState> {
       redirectToLanding: false,
       redirectToPartyPage: false,
     };
-
-    // this.evtSource = dc.getEventSource()
-    // this.evtSource.onmessage = (e) => {
-    //   // Update the state on recieving info from server
-    // }
-
-    // Bind class methods
-    // this.setPartyName = this.setPartyName.bind(this);
-    // this.setDisplayName = this.setDisplayName.bind(this);
-    // this.setRoomCode = this.setRoomCode.bind(this);
-    // this.setInRoom = this.setInRoom.bind(this);
-    // this.setSearchResults = this.setSearchResults.bind(this);
-    // this.setQueue = this.setQueue.bind(this);
-    // this.setHostToken = this.setHostToken.bind(this);
-    // this.setAttempt = this.setAttempt.bind(this);
   }
 
   // State redirect setters
-  setRedirect = () => {
-    this.setState({
-      redirect: true
-    })
-  }
-  renderRedirect = () => {
-    if (this.state.redirect) {
-      return <Redirect to='/party' />
-    }
-  }
+  // setRedirect = () => {
+  //   this.setState({
+  //     redirect: true
+  //   })
+  // }
+  // renderRedirect = () => {
+  //   if (this.state.redirect) {
+  //     return <Redirect to='/party' />
+  //   }
+  // }
 
   setRedirectoToJoinPartyPage = () => {
     this.setState({redirectToJoinPartyPage: true})
   }
 
-  setRedirectToLanding = () => {
-    this.setState({redirectToLanding: true})
-  }
+  // setRedirectToLanding = () => {
+  //   this.setState({redirectToLanding: true})
+  // }
 
   setRedirectToParty = () => {
     this.setState({redirectToPartyPage: true})
   }
 
-  // Setters
+  // State Setters
   setPartyName = (name: string) => {
     this.setState({partyName: name});
   }
@@ -194,16 +179,14 @@ class App extends Component<IProps, IState> {
         fetch('http://localhost:8000/get_room_info/' + this.state.roomCode)
           .then(response => response.json())
           .then(data => {
-            // console.log(data)
+            // Process data
             let displaynames = []
-
-            // displaynames.push(data['host']['display_name'])
-
-            var userList = data['users']
+            let userList = data['users']
             for (var i = 0; i < userList.length; i++) {
               displaynames.push(userList[i]['display_name'])
             }
 
+            // Set state with data
             this.setInRoom(displaynames)
             this.setHostToken(data['host']['host_token'])
             this.setHostName(data['host']['display_name'])
@@ -214,6 +197,7 @@ class App extends Component<IProps, IState> {
             if (!data['room']['is_active']) {
               this.deactivateRoom()
             }
+            // Update the information about what's currently playing
             if (data['current_playback'] !== 'None') {
               this.setCurrentlyPlaying(data['current_playback'])
             } 
@@ -222,10 +206,9 @@ class App extends Component<IProps, IState> {
     }, 1000)
   }
 
-  // Sets up spotify web player when a new host token is recieved
   // Handles user warning
   componentDidUpdate(prevProps: any, prevState: any) {
-    // Perform when party page is loaded
+    // Perform when party page is loaded and host token is first set
     if (window.location.pathname === '/party' && 
         this.state.hostToken !== prevState.hostToken &&
         prevState.hostToken === "") {
@@ -242,7 +225,7 @@ class App extends Component<IProps, IState> {
       }
       
 
-      // Delete user or room depending on if leaving user is the host or not
+      // Delete user or room depending on if leaving user is the host or not when navigating away
       window.addEventListener('unload', (e) => {
         // Call endpoint to update backend
         if (this.state.isHost) {
@@ -253,7 +236,7 @@ class App extends Component<IProps, IState> {
         }
       })
 
-      // console.log(this.state.hostToken)
+      // Sets up spotify web player when a new host token is recieved
       // Import Spotify Web Player SDK module
       const moduleScript = document.createElement("script");
       moduleScript.src = "https://sdk.scdn.co/spotify-player.js";
@@ -389,8 +372,8 @@ class App extends Component<IProps, IState> {
       }
     }
 
+    // Displays an error message about empty fields
     let shameButton = () => {
-      // e.preventDefault()
       alert('Display name and party name are required :^|')
     } 
 
@@ -435,46 +418,46 @@ class App extends Component<IProps, IState> {
 
   // Main room where users in the room can see who's there, the queue, and search for songs (maybe)
   PartyRoom = () => {
+    // API call to add a song to the queue
     let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
       trackArt = trackArt.slice(24)
       fetch('http://localhost:8000/push_song/' + this.state.roomCode + '/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
     }
 
+    // API call to remove a song from the queue
     let removeFromQueue = (auto_increment_id: string) => {
       fetch('http://localhost:8000/remove_song/' + auto_increment_id)
         .then(response => response.json())
         .then(data => {
           console.log(auto_increment_id)
         })
-      fetch('http://localhost:8000/songs')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-        })
     }
 
+    // Retrieve spotify search results and sets state
     let search = () => {
       fetch('http://localhost:8000/search/'  + this.state.roomCode + '/' + this.state.searchTerm)
         .then(response => response.json())
         .then(data => {
           this.setSearchResults(data['search_result'])
-          console.log(data['search_result'])
+          // console.log(data['search_result'])
         })
     }
 
-    let refreshQueue = () => {
-      fetch('http://localhost:8000/get_room_queue/'  + this.state.roomCode)
-        .then(response => response.json())
-        .then(data => {
-          this.setQueue(data['songs'])
-        })
-    }
+    // 
+    // let refreshQueue = () => {
+    //   fetch('http://localhost:8000/get_room_queue/'  + this.state.roomCode)
+    //     .then(response => response.json())
+    //     .then(data => {
+    //       this.setQueue(data['songs'])
+    //     })
+    // }
 
     // Redirect user to landing page
     let leaveRoom = () => {
       window.location.href = 'https://auxy.netlify.com/'
     }
 
+    // Add event listener for clicking outside search results
     var searchTable = document.getElementById('searchTable')
     window.addEventListener('click', (e: any) => {
       if (searchTable !== null) {
@@ -497,6 +480,7 @@ class App extends Component<IProps, IState> {
     // If the room becomes inactive due to the host leaving, alert users and navigate
     // to landing page
     if (!this.state.roomActive) {
+      console.log(1)
       alert("The host has left the party :^(")
       leaveRoom()
     }
@@ -604,73 +588,6 @@ class App extends Component<IProps, IState> {
         </section>
        </section>
       </div>
-
-      // <body>
-      //   <div className='playback'>
-      //     <b>{this.state.partyName}</b> {this.state.roomCode}
-      //     <button onClick={leaveRoom}>Leave Room</button>
-      //     <br />
-      //     <p id='inRoom'>{this.state.inRoom.join(" ")}</p>
-
-      //     <div className="dropdown">
-      //       <form className="searchbar" onSubmit={search}>
-      //         <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
-      //         <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
-      //       </form>
-      //       <div className="spoop">
-      //       <table className= "searchR" id='searchTable'>
-      //         {this.state.searchResults.map((r: any) => 
-      //         <tbody>
-      //           <tr key={r['track_id']}>
-      //               <td>
-      //                 <img src ={r['track_art']} />
-      //               </td>
-      //               <td>
-      //                 <p className= "song">{r['track_name']}</p>
-      //                 <p className = "artist">{r['track_artist']}</p>
-      //               </td>
-      //               <td className="searchRcol"> 
-      //               <button className="addBtn" type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)}> + </button>
-      //             </td>
-      //           </tr>
-      //         </tbody>
-      //         )}
-      //       </table>
-      //     </div>
-      //   </div>
-      
-      //   <div className='progress-bar'>
-      //     <br />
-      //     <LinearProgress variant="determinate" value={percent} />
-      //     <br />
-      //   </div>
-
-      //   <h3>Queue:</h3>
-      //   <div>
-      //     <table className="scrollTable">
-      //     {this.state.queue.map((q: any) =>
-      //     <tbody>
-      //       <tr key={q['track_id']}>
-      //             <td>
-      //               <img src ={"https://i.scdn.co/image/"+q['track_art']} />
-      //             </td>
-      //             <td>
-      //               <p className= "song">{q['track_name']}</p>
-      //               <p className = "artist">{q['track_artist']}</p>
-      //             </td>
-      //             <td>
-      //             { this.state.isHost &&
-      //               <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button>
-      //             } 
-      //             </td>
-      //         </tr>
-      //         </tbody>
-      //     )}
-      //     </table>
-      //     {/* <img src ={this.state.currentlyPlaying['track_art']} /> */}
-      //   </div>
-      //   </div>
-      //   </body>
     )
   }
 
@@ -751,100 +668,101 @@ class App extends Component<IProps, IState> {
   }
 
   // Page for a user to join a party via room code
-  Playback = () => {
-    let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
-      trackArt = trackArt.slice(24)
-      fetch('http://localhost:8000/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
-    }
+  // Playback = () => {
+  //   let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
+  //     trackArt = trackArt.slice(24)
+  //     fetch('http://localhost:8000/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
+  //   }
 
-    let removeFromQueue = (auto_increment_id: string) => {
-      fetch('http://localhost:8000/remove_song/' + auto_increment_id)
-        .then(response => response.json())
-        .then(data => {
-          console.log(auto_increment_id)
-        })
-      fetch('http://localhost:8000/songs')
-        .then(response => response.json())
-        .then(data => {
-          console.log(data)
-        })
-    }
+  //   let removeFromQueue = (auto_increment_id: string) => {
+  //     fetch('http://localhost:8000/remove_song/' + auto_increment_id)
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         console.log(auto_increment_id)
+  //       })
+  //     fetch('http://localhost:8000/songs')
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         console.log(data)
+  //       })
+  //   }
 
-    let search = () => {
-      fetch('http://localhost:8000/search/123456/' + this.state.searchTerm)
-        .then(response => response.json())
-        .then(data => {
-          this.setSearchResults(data['search_result'])
-          console.log(data['search_result'])
-        })
-    }
+  //   let search = () => {
+  //     fetch('http://localhost:8000/search/123456/' + this.state.searchTerm)
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         this.setSearchResults(data['search_result'])
+  //         console.log(data['search_result'])
+  //       })
+  //   }
 
-    let refreshQueue = () => {
-      fetch('http://localhost:8000/get_room_queue/123456')
-        .then(response => response.json())
-        .then(data => {
-          this.setQueue(data['songs'])
-        })
-    }
+  //   let refreshQueue = () => {
+  //     fetch('http://localhost:8000/get_room_queue/123456')
+  //       .then(response => response.json())
+  //       .then(data => {
+  //         this.setQueue(data['songs'])
+  //       })
+  //   }
 
-    refreshQueue();
-    return(
-      <div className='playback'>
+  //   refreshQueue();
+  //   return(
+  //     <div className='playback'>
 
-        <div className="dropdown">
-            <form className="searchbar" onSubmit={search}>
-              <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
-              <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
-            </form>
-            <div className="spoop" id="searchTable">
-            <table className="searchR">
-              {this.state.searchResults.map((r: any) => 
-              <tbody>
-                <tr key={r['track_id']}>
-                    <td>
-                      <img src ={r['track_art']} />
-                    </td>
-                    <td>
-                      <p className= "song">{r['track_name']}</p>
-                      <p className = "artist">{r['track_artist']}</p>
-                    </td>
-                    <td className="searchRcol"> 
-                    <button className="addBtn" type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)}> + </button>
-                  </td>
-                </tr>
-              </tbody>
-              )}
-            </table>
-          </div>
-        </div>
+  //       <div className="dropdown">
+  //           <form className="searchbar" onSubmit={search}>
+  //             <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
+  //             <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
+  //           </form>
+  //           <div className="spoop" id="searchTable">
+  //           <table className="searchR">
+  //             {this.state.searchResults.map((r: any) => 
+  //             <tbody>
+  //               <tr key={r['track_id']}>
+  //                   <td>
+  //                     <img src ={r['track_art']} />
+  //                   </td>
+  //                   <td>
+  //                     <p className= "song">{r['track_name']}</p>
+  //                     <p className = "artist">{r['track_artist']}</p>
+  //                   </td>
+  //                   <td className="searchRcol"> 
+  //                   <button className="addBtn" type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)}> + </button>
+  //                 </td>
+  //               </tr>
+  //             </tbody>
+  //             )}
+  //           </table>
+  //         </div>
+  //       </div>
       
 
-        <h3>Queue:</h3>
-        <div>
-          <table className="scrollTable">
-          {this.state.queue.map((q: any) =>
-          <tbody>
-            <tr key={q['track_id']}>
-                  <td>
-                    <img src ={"https://i.scdn.co/image/"+q['track_art']} />
-                  </td>
-                  <td>
-                    <p className= "song">{q['track_name']}</p>
-                    <p className = "artist">{q['track_artist']}</p>
-                  </td>
-                  <td>
-                  <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button> 
-                  </td>
-              </tr>
-              </tbody>
-          )}
-          </table>
-        </div>
+  //       <h3>Queue:</h3>
+  //       <div>
+  //         <table className="scrollTable">
+  //         {this.state.queue.map((q: any) =>
+  //         <tbody>
+  //           <tr key={q['track_id']}>
+  //                 <td>
+  //                   <img src ={"https://i.scdn.co/image/"+q['track_art']} />
+  //                 </td>
+  //                 <td>
+  //                   <p className= "song">{q['track_name']}</p>
+  //                   <p className = "artist">{q['track_artist']}</p>
+  //                 </td>
+  //                 <td>
+  //                 <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button> 
+  //                 </td>
+  //             </tr>
+  //             </tbody>
+  //         )}
+  //         </table>
+  //       </div>
 
-      </div>
-    )
-  }
+  //     </div>
+  //   )
+  // }
 
+  // Outline of routing
   render() {
     return (
       <Router>
@@ -853,7 +771,6 @@ class App extends Component<IProps, IState> {
           <Route exact path="/callback" component={this.CallBack} />
           <Route exact path="/party" component={this.PartyRoom} />
           <Route exact path="/join_party" component={this.JoinParty} />
-          <Route exact path="/playback" component={this.Playback} />
         </div>
       </Router>
     );
