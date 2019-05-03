@@ -480,21 +480,28 @@ class App extends Component<IProps, IState> {
 
     //console.log(this.state)
     return(
-      <body>
-        <div className='playback'>
-          <b>{this.state.partyName}</b> {this.state.roomCode}
-          <button onClick={leaveRoom}>Leave Room</button>
-          <br />
-          <p id='inRoom'>{this.state.inRoom.join(" ")}</p>
-
+      <div className='everything'>
+        <div className="navbar_inner">
+         <a href="/" className="navbar_title">{this.state.partyName}</a>
+         <h1 className="title">AUXY</h1>
+         <ul>
+           <li>
+             <p className="roomCodeText">Room Code:</p>
+             <p className="roomCode">{this.state.roomCode}</p>
+           </li>
+           <li><button className="exit" onClick={leaveRoom}></button> </li>
+         </ul>
+       </div>
+       <section className='bodySection'>
+        <div className="leftSide">
           <div className="dropdown">
             <form className="searchbar" onSubmit={search}>
               <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
-              <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
+              <button type = "button" onClick={search}><i className="fa fa-search"></i></button>
             </form>
             <div className="spoop">
-            <table className= "searchR" id='searchTable'>
-              {this.state.searchResults.map((r: any) => 
+            <table className= "searchR">
+              {this.state.searchResults.map((r: any) =>
               <tbody>
                 <tr key={r['track_id']}>
                     <td>
@@ -504,7 +511,7 @@ class App extends Component<IProps, IState> {
                       <p className= "song">{r['track_name']}</p>
                       <p className = "artist">{r['track_artist']}</p>
                     </td>
-                    <td className="searchRcol"> 
+                    <td className="searchRcol">
                     <button className="addBtn" type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)}> + </button>
                   </td>
                 </tr>
@@ -513,16 +520,10 @@ class App extends Component<IProps, IState> {
             </table>
           </div>
         </div>
-      
-        <div className='progress-bar'>
-          <br />
-          <LinearProgress variant="determinate" value={percent} />
-          <br />
-        </div>
 
-        <h3>Queue:</h3>
+        <h3 className="queueText">UpNext:</h3>
         <div>
-          <table className="scrollTable">
+          <table className="queueTable">
           {this.state.queue.map((q: any) =>
           <tbody>
             <tr key={q['track_id']}>
@@ -533,19 +534,109 @@ class App extends Component<IProps, IState> {
                     <p className= "song">{q['track_name']}</p>
                     <p className = "artist">{q['track_artist']}</p>
                   </td>
-                  <td>
-                  { this.state.isHost &&
-                    <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button>
-                  } 
+                  <td className="queueRcol">
+                  <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button>
                   </td>
               </tr>
               </tbody>
           )}
           </table>
-          {/* <img src ={this.state.currentlyPlaying['track_art']} /> */}
         </div>
-        </div>
-        </body>
+      </div>
+        <section className="rightSide">
+          <div className="topRightSide">
+              <div className="coverArt">
+                <p>This will be cover art</p>
+              </div>
+              <h1 className='songTitle'>Song Title</h1>
+              <h3 className='songArtist'>Artist</h3>
+          </div>
+          <div className="bottomRightSide">
+            <div className="hostCell">
+            {/* first letter of name */}
+            <div className="tagAndName">
+            {/* {this.state.inRoom.join(" ")} */}
+            {/* <img src={crown} alt="crown" /> */}
+              <h1 className="hostTag"><button className="hostPic"> M</button>{this.state.hostName}</h1>
+            </div>
+            </div>
+            <div className="usersInRoom">
+              {this.state.inRoom.map((user: any) => 
+                <div className="user"> <h1 className="userTag"><button className="userPic">M</button>{user}</h1></div>
+              )}
+            </div>
+          </div>
+
+        </section>
+       </section>
+      </div>
+
+      // <body>
+      //   <div className='playback'>
+      //     <b>{this.state.partyName}</b> {this.state.roomCode}
+      //     <button onClick={leaveRoom}>Leave Room</button>
+      //     <br />
+      //     <p id='inRoom'>{this.state.inRoom.join(" ")}</p>
+
+      //     <div className="dropdown">
+      //       <form className="searchbar" onSubmit={search}>
+      //         <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
+      //         <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
+      //       </form>
+      //       <div className="spoop">
+      //       <table className= "searchR" id='searchTable'>
+      //         {this.state.searchResults.map((r: any) => 
+      //         <tbody>
+      //           <tr key={r['track_id']}>
+      //               <td>
+      //                 <img src ={r['track_art']} />
+      //               </td>
+      //               <td>
+      //                 <p className= "song">{r['track_name']}</p>
+      //                 <p className = "artist">{r['track_artist']}</p>
+      //               </td>
+      //               <td className="searchRcol"> 
+      //               <button className="addBtn" type = "button" onClick={() => addToQueue(r['track_id'],r['track_name'],r['track_artist'],r['track_art'],r['track_length'],0)}> + </button>
+      //             </td>
+      //           </tr>
+      //         </tbody>
+      //         )}
+      //       </table>
+      //     </div>
+      //   </div>
+      
+      //   <div className='progress-bar'>
+      //     <br />
+      //     <LinearProgress variant="determinate" value={percent} />
+      //     <br />
+      //   </div>
+
+      //   <h3>Queue:</h3>
+      //   <div>
+      //     <table className="scrollTable">
+      //     {this.state.queue.map((q: any) =>
+      //     <tbody>
+      //       <tr key={q['track_id']}>
+      //             <td>
+      //               <img src ={"https://i.scdn.co/image/"+q['track_art']} />
+      //             </td>
+      //             <td>
+      //               <p className= "song">{q['track_name']}</p>
+      //               <p className = "artist">{q['track_artist']}</p>
+      //             </td>
+      //             <td>
+      //             { this.state.isHost &&
+      //               <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button>
+      //             } 
+      //             </td>
+      //         </tr>
+      //         </tbody>
+      //     )}
+      //     </table>
+      //     {/* <img src ={this.state.currentlyPlaying['track_art']} /> */}
+      //   </div>
+      //   </div>
+      //   </body>
     )
   }
 

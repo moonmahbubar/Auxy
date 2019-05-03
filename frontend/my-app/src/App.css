@@ -395,3 +395,180 @@ p {
   display: block;
   margin: 8px;
 }
+
+/* Party Page CSS */
+
+@import url('https://fonts.googleapis.com/css?family=Gugi');
+.everything{
+  color: white;
+  font-family: 'Gugi', cursive;
+  height: 100%;
+  width:100%;
+  background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
+}
+.title{
+	font-size: 70;
+	font-family: 'Gugi', cursive;
+	color: white;
+}
+.roomCodeText{
+	color:#F94763;
+	font-size: 20px;
+}
+.roomCode{
+	color:white;
+	font-size: 30px;
+}
+.navbar_inner {
+	padding:0;
+	margin: 0;
+  -js-display: flex;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 10%;
+  background:transparent; }
+  
+.navbar_inner ul{
+	margin:0;
+	padding: 3px;
+	list-style:none;
+}
+
+.navbar_inner li{
+	text-align: center;
+	color:#fff;
+	padding: 3px;
+	display: inline-block;
+}
+  
+.navbar_title {
+  font-size: 1.325rem;
+  transition: 0;
+  padding: 10px;
+  color: #fff;
+  text-decoration: none;
+}
+.exit{
+  background: url(./exit.png) no-repeat;
+  height: 30px;
+  width: 30px;
+  border: none;
+  margin: 0px 5px 5px 5px;
+}
+.bodySection{
+  height: 660px;
+  width:100%;
+  margin: auto;
+}
+
+.leftSide{
+  width: 50%;
+  height: 100%;
+  float: left;
+}
+
+.rightSide{
+  margin-left: 50%;
+  height: 100%;
+  text-align: center;
+}
+/* .tagAndName{
+  display: inline;
+} */
+.hostTag{
+  margin-top: 0;
+}
+.queueText{
+  color: white;
+}
+.topRightSide{
+  height: 70%;
+  width: 100%;
+}
+@import url('https://fonts.googleapis.com/css?family=Montserrat');
+
+.songTitle{
+  margin:0;
+  padding:0;
+  font-size: 24;
+  font-family: 'Montserrat', sans-serif;
+}
+.songArtist{
+  margin:0;
+  padding:0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+}
+
+.coverArt{
+  display: inline-block;
+  margin-top: 40px;
+  height: 250px;
+  width: 250px;
+  border: solid 1px blue;
+}
+.bottomRightSide{
+  width: 100%;
+  height: 30%;
+}
+
+.hostCell{
+  text-align: center;
+  width: 100%;
+  height: 25%;
+}
+.tagAndName{
+}
+.hostPic{
+  background-color: #F94763;
+  font-size: 16px;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius:20px;
+  margin-right: 5px;
+  position: relative;
+    top: 0;
+    left: 0;
+}
+.crown
+	{
+    background-image: url(./crown.png);
+		position: absolute;
+		top: 0px;
+    left: 0px;
+	}
+.usersInRoom{
+  height: 72%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  -ms-box-orient: horizontal;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  overflow-y: scroll;
+}
+
+.user{
+  width: 47%;
+  margin: 0 10px;
+  text-align: left;
+}
+.userPic{
+  font-size: 16px;
+  color: white;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius:20px;
+  background-color: #F94763;
+  margin-right: 5px;
+}
