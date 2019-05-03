@@ -17,10 +17,12 @@ html, body{
   flex-direction: column;
   font-size: 72px;
   padding: 40px;
-  font-family:monospace, monospace;
+  /* font-family:monospace, monospace; */
+  font-family: 'Montserrat', sans-serif;
   background-color: black;
   width: 100%;
   height: 100%;
+  min-height: 100%;
   background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
 /*  background: url("image3.svg") transparent 0% 100% no-repeat;*/
   position: absolute;
@@ -47,8 +49,9 @@ html, body{
 
 
 button.main1 {
-  font-family:sans-serif;
-  font-size:14px;
+  /* font-family:sans-serif; */
+  font-family: 'Montserrat', sans-serif;
+  font-size:22px;
   letter-spacing:0px;
   font-weight:700;
   line-height:16px;
@@ -59,15 +62,19 @@ button.main1 {
   border-radius:4px;
   cursor:pointer;
   justify-content:center;
-  padding:16px 32px;
-  height:48px;
+  padding:18px 34px;
+  height:58px;
+  width:160px;
   text-align:center;
   white-space:nowrap;
   margin-right: 15px;
+  border: none;
 }
+
 button.main2 {
-  font-family:sans-serif;
-  font-size:14px;
+  /* font-family:sans-serif; */
+  font-family: 'Montserrat', sans-serif;
+  font-size:22px;
   letter-spacing:0px;
   font-weight:700;
   line-height:16px;
@@ -78,15 +85,17 @@ button.main2 {
   border-radius:4px;
   cursor:pointer;
   justify-content:center;
-  padding:16px 32px;
-  height:48px;
+  padding:18px 34px;
+  height:58px;
+  width:160px;
   text-align:center;
   white-space:nowrap;
   margin-right: 15px;
+  border: none;
 }
 .button{display:inline-flex;font-size:14px;letter-spacing:0px;font-weight:700;line-height:16px;text-decoration:none !important;text-transform:uppercase;background-color:#273C5A;color:#fff !important;border:none;border-radius:2px;cursor:pointer;justify-content:center;padding:16px 32px;height:48px;text-align:center;white-space:nowrap}
 button:hover.main1 {
-  background-color: rgb(131, 11, 167);
+  background-color:#fc6c82;
   color: black;
   transition-duration: 0.4s;
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
@@ -94,26 +103,40 @@ button:hover.main1 {
 }
 
 button:hover.main2 {
-  background-color: rgba(249,66,95,0.35);
+  background-color: #91a7c6;
   transition-duration: 0.4s;
   color: black;
   box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
   cursor: pointer;
 }
 
-
 .hero-title{
-    font-size: 45px;
+    font-size: 80px;
     margin-bottom:5px;
-    font-family:"Playfair Display", serif
+    font-family:"GUGI", italic;
 }
 
 .hero-paragraph{
     margin-bottom:18px;
     font-size:23px;
-    color: #999ea7;
+    color: #d7dae0;
+    font-family: 'Montserrat', sans-serif;
 }
 
+.disclaimer {
+  margin-top: 20px;
+  font-size: 10px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+footer{
+  position: relative;
+  height: 10px;
+  margin-top: -10px;
+  font-size: 12px;
+  color: #d7dae0;
+  font-family: 'Montserrat', sans-serif;
+}
 
 /* Host Login CSS */
 
@@ -137,7 +160,7 @@ div.host {
 div.host input{
     font-size: 30px;
     width: 10%px;
-    background: #556B8B;
+    background: rgb(85,107,139, 0.3);
     border-radius: 5px;
     border: none;
     padding:16px 32px;
@@ -176,6 +199,7 @@ div.host input:focus {
     background-size: 90%;
     flex-grow: 1;
     max-width:70%;
+    align-items: center;
 }
 
 div.host header {
@@ -194,13 +218,14 @@ div.host h5 {
 div.host section {
     text-align: center;
     margin: auto;
-    font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     padding-top: 10px;
 }
 
 div.host button.main3 {
     margin-top: 20px;
-    font-family:sans-serif, ;
+    /* font-family:sans-serif, ; */
+    font-family: 'Montserrat', sans-serif;
     font-size:14px;
     letter-spacing:0px;
     font-weight:700;
@@ -220,9 +245,9 @@ div.host button.main3 {
 }
 
 div.host button:hover.main3 {
-    background-color: rgba(249,66,95,0.35);
+    background-color: #91a7c6;
     transition-duration: 0.4s;
-    color: black;
+    color: white;
     box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
     cursor: pointer;
 }
@@ -231,8 +256,9 @@ div.host button:hover.main3 {
 /* search bar CSS */
 
 .playback{  
-  font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;  color: white;
+  /* font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;  color: white; */
   /* background: linear-gradient(to bottom, black 50%, #f85971 100%); */
+  font-family: 'Montserrat', sans-serif;
   background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
   height: 1000px;
   width: 100%;
@@ -293,6 +319,7 @@ form.searchbar::after {
   border: 0;
   text-align: left;
   font-size: 17px;
+  text-transform: uppercase;
 }
 .coverIcon {
 	height: 50px;
@@ -305,21 +332,23 @@ img {
 }
 
 table {
-	font-family: "proxima-nova", sans-serif;
+  /* font-family: "proxima-nova", sans-serif; */
+  font-family: 'Montserrat', sans-serif;
   overflow: scroll;
   position: absolute;
-  font-family: arial, sans-serif;
+  /* font-family: arial, sans-serif; */
   border-collapse: collapse;
   width: 80%;
 }
 .searchR{  
   background-color: black;
   z-index: 6;
-  font-family: "proxima-nova", sans-serif;
+  /* font-family: "proxima-nova", sans-serif; */
+  font-family: 'Montserrat', sans-serif;
   overflow: scroll;
   margin-left:5px;
   position: absolute;
-  font-family: arial, sans-serif;
+  /* font-family: arial, sans-serif; */
   border-collapse: collapse;
   /* width: 50%; */
 }
@@ -409,7 +438,8 @@ p {
 @import url('https://fonts.googleapis.com/css?family=Gugi');
 .everything{
   color: white;
-  font-family: 'Gugi', cursive;
+  /* font-family: 'Gugi', cursive; */
+  font-family: 'Montserrat', sans-serif;
   height: 100%;
   width:100%;
   background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
@@ -429,7 +459,10 @@ p {
 }
 .roomCode{
 	color:white;
-	font-size: 30px;
+  font-size: 30px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+
 }
 .navbar_inner {
 	padding:0;

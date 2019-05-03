@@ -336,7 +336,7 @@ class App extends Component<IProps, IState> {
           this.state.redirectToJoinPartyPage ? <Redirect to='/join_party' push /> :
           <div className = "main-title">
             <div className = "box">
-              <h1 className="hero-title">Welcome to Auxy!</h1>
+              <h1 className="hero-title">AUXY</h1>
               <p className="hero-paragraph">With Auxy, you can collaborate on Spotify queues with your friends! </p>
               <span>
                 <button className="main1" type = "button" onClick={login}>
@@ -346,7 +346,11 @@ class App extends Component<IProps, IState> {
                 Join
                 </button>
               </span>
+              <p className="disclaimer">You can only host a party if you have Spotify Premium.</p>
             </div>
+            <footer>
+              Passion project created by Mahbubar Moon, Olivia Flynn, Yara Smilde, Marielle Gomez, Tyson Owens, Benjamin Jiang
+            </footer>
           </div>
         }
       </div>
@@ -382,19 +386,23 @@ class App extends Component<IProps, IState> {
         <div className="imagy"> </div>
           <div className="boxy">
             <header className="intro">AUXY</header>
-            <form method="submit" action="php/zhuce.php">
+            <section>
               <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Your name" />
               { this.state.displayName === "" ? 
                 <div className='err-message'>
                   <p>Display name is required</p>
                 </div> : <div></div>
               }
+            </section>
+            <section>
               <input type="text" value={this.state.partyName} onChange={this.setPartyNameFromEvent} name="partyname" className="inp" placeholder="Party name" />
               { this.state.partyName === "" ? 
                 <div className='err-message'>
                   <p>Party name is required</p>
                 </div> : <div></div>
               }
+            </section>
+            <section>
               {
                 this.state.partyName !== '' && this.state.displayName !== '' ?
                 <Link to='/party'> 
@@ -402,11 +410,11 @@ class App extends Component<IProps, IState> {
                     Create Party
                   </button> 
                 </Link> :
-                <button className="main3" type='button' onClick={shameButton}>
-                  Create Party
-                </button> 
+                  <button className="main3" type='button' onClick={shameButton}>
+                    Create Party
+                  </button> 
               }
-            </form>
+            </section>
           </div>
         </div>
     );
@@ -523,7 +531,7 @@ class App extends Component<IProps, IState> {
           </div>
         </div>
 
-        <h3 className="queueText">UpNext:</h3>
+        <h3 className="queueText">UP NEXT:</h3>
         <div>
           <table className="queueTable">
           {this.state.queue.map((q: any) =>
@@ -706,10 +714,10 @@ class App extends Component<IProps, IState> {
               <section>
               {
                   this.state.roomCode !== '' && this.state.displayName !== '' ?
-                  <button onClick={attemptToJoin}>
+                  <button type='button' className='main3' onClick={attemptToJoin}>
                     Join Party
                   </button> :
-                  <button type='button' onClick={shameButton}>
+                  <button type='button' className='main3' onClick={shameButton}>
                     Join Party
                   </button> 
                 }
