@@ -368,7 +368,7 @@ class App extends Component<IProps, IState> {
             <header className="intro">AUXY</header>
             <form method="submit" action="php/zhuce.php">
               <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Your name" />
-              <input type="text" value={this.state.partyName} onChange={this.setPartyName} name="partyname" className="inp" placeholder="Party name" />
+              <input type="text" value={this.state.partyName} onChange={this.setPartyNameFromEvent} name="partyname" className="inp" placeholder="Party name" />
               <Link to='/party'>
               <button className="main3" type="button" onClick={sendPartyInfo}>
                Create party
