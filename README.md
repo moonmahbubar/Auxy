@@ -13,7 +13,7 @@
  After you have the required dependencies, you can run app locally by doing the following:
  
  1. ***Start Django Server*** : Run `python3 manage.py runserver localhost:8000` in the root directory. This will initiate the Django backend server.
- 2. ***Start the Frontend Server***L Run `npm start` in `frontend/my-app`. Then navigate to `localhost:3000` to use the app.
+ 2. ***Start the Frontend Server***: Run `npm start` in `frontend/my-app`. Then navigate to `localhost:3000` to use the app.
  
  ### Building
  
