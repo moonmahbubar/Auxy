@@ -2,11 +2,11 @@
 // https://levelup.gitconnected.com/how-to-build-a-spotify-player-with-react-in-15-minutes-7e01991bc4b6
 
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, Redirect } from "react-router-dom";
 import './App.css';
 import SpotifyLogin from './SpotifyLogin';
 import DjangoCalls from './DjangoCalls';
-import { Redirect } from 'react-router-dom'
+import LinearProgress from "@material-ui/core/LinearProgress";
 
 export const authEndpoint = 'https://accounts.spotify.com/authorize?';
 
@@ -42,7 +42,9 @@ interface IState {
   hostToken: string
   attempt: any,
   isHost: boolean,
+  hostName: string,
   roomActive: boolean,
+  currentlyPlaying: any,
   redirect: boolean,
   redirectToJoinPartyPage: boolean,
   redirectToLanding: boolean, 
@@ -68,7 +70,9 @@ class App extends Component<IProps, IState> {
       hostToken: '',
       attempt: [],
       isHost: false,
+      hostName: '',
       roomActive: true,
+      currentlyPlaying: {},
       redirect: false,
       redirectToJoinPartyPage: false,
       redirectToLanding: false,
@@ -110,7 +114,11 @@ class App extends Component<IProps, IState> {
   }
 
   // Setters
-  setPartyName = (event: any) => {
+  setPartyName = (name: string) => {
+    this.setState({partyName: name});
+  }
+
+  setPartyNameFromEvent = (event: any) => {
     this.setState({partyName: event.target.value});
   }
 
@@ -158,6 +166,14 @@ class App extends Component<IProps, IState> {
     this.setState({roomActive: false})
   }
 
+  setHostName = (name: string) => {
+    this.setState({hostName: name})
+  }
+
+  setCurrentlyPlaying = (playbackObj: any) => {
+    this.setState({currentlyPlaying: playbackObj})
+  }
+
   componentDidMount() {
     // If on the party page, fetch room updates every second
     setInterval(() => {
@@ -165,12 +181,10 @@ class App extends Component<IProps, IState> {
         fetch('http://localhost:8000/get_room_info/' + this.state.roomCode)
           .then(response => response.json())
           .then(data => {
-            //console.log(data)
+            // console.log(data)
             let displaynames = []
 
             displaynames.push(data['host']['display_name'])
-            this.setHostToken(data['host']['host_token'])
-            this.setQueue(data['queue'])
 
             var userList = data['users']
             for (var i = 0; i < userList.length; i++) {
@@ -179,10 +193,17 @@ class App extends Component<IProps, IState> {
 
             // console.log(displaynames)
             this.setInRoom(displaynames)
+            this.setHostToken(data['host']['host_token'])
+            this.setHostName(data['host']['display_name'])
+            this.setPartyName(data['room']['name'])
+            this.setQueue(data['queue'])
 
             //If room has become inactive, reflect in state
             if (!data['room']['is_active']) {
               this.deactivateRoom()
+            }
+            if (data['current_playback'] !== 'None') {
+              this.setCurrentlyPlaying(data['current_playback'])
             }
           })
       }
@@ -350,7 +371,7 @@ class App extends Component<IProps, IState> {
             </section>
             <h5> What do you want to name your party? </h5>
             <section>
-                <input type="text" value={this.state.partyName} onChange={this.setPartyName} name="partyname" className="inp" placeholder="Party Name" />
+                <input type="text" value={this.state.partyName} onChange={this.setPartyNameFromEvent} name="partyname" className="inp" placeholder="Party Name" />
             </section>
             <section>
               <button onClick={sendPartyInfo}><Link to='/party'>
@@ -404,6 +425,14 @@ class App extends Component<IProps, IState> {
       window.location.href = 'https://auxy.netlify.com/'
     }
 
+    // Calculate the progress through the current song
+    let percent = 0
+    if (this.state.currentlyPlaying !== {}) {
+      let length = this.state.currentlyPlaying["track_length"];
+      let progress = this.state.currentlyPlaying["track_progress"];
+      percent = (progress / length) * 100;
+    }
+
     // If the room becomes inactive due to the host leaving, alert users and navigate
     // to landing page
     if (!this.state.roomActive) {
@@ -446,6 +475,11 @@ class App extends Component<IProps, IState> {
           </div>
         </div>
       
+        <div className='progress-bar'>
+          <br />
+          <LinearProgress variant="determinate" value={percent} />
+          <br />
+        </div>
 
         <h3>Queue:</h3>
         <div>
@@ -467,6 +501,7 @@ class App extends Component<IProps, IState> {
               </tbody>
           )}
           </table>
+          {/* <img src ={this.state.currentlyPlaying['track_art']} /> */}
         </div>
         </div>
     )
