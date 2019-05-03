@@ -539,18 +539,17 @@ class App extends Component<IProps, IState> {
           <div className="boxy">
             <header className="intro">AUXY</header>
             <section>
-              <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
+            <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
             </section>
             <section>
-              <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
+            <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
             </section>
             <section>
-              <button className="main3" type="button" onClick={attemptToJoin}>
-                Join Party
-              </button>
+            <button className="main3" type="button" onClick={attemptToJoin}>
+              Join Party
+            </button>
             </section>
           </div>
-        </div>
       </div>
     )
   }
