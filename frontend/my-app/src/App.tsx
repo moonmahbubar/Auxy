@@ -48,6 +48,7 @@ interface IState {
   redirect: boolean,
   redirectToJoinPartyPage: boolean,
   redirectToLanding: boolean,
+  redirectToPartyPage: boolean,
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -76,6 +77,7 @@ class App extends Component<IProps, IState> {
       redirect: false,
       redirectToJoinPartyPage: false,
       redirectToLanding: false,
+      redirectToPartyPage: false,
     };
 
     // this.evtSource = dc.getEventSource()
@@ -112,6 +114,10 @@ class App extends Component<IProps, IState> {
 
   setRedirectToLanding = () => {
     this.setState({redirectToLanding: true})
+  }
+
+  setRedirectToParty = () => {
+    this.setState({redirectToPartyPage: true})
   }
 
   // Setters
@@ -389,10 +395,6 @@ class App extends Component<IProps, IState> {
                   <p>Party name is required</p>
                 </div> : <div></div>
               }
-              {/* <Link to='/party'>
-              <button className="main3" type="button" onClick={sendPartyInfo}>
-               Create party
-              </button></Link> */}
               {
                 this.state.partyName !== '' && this.state.displayName !== '' ?
                 <Link to='/party'> 
@@ -482,7 +484,7 @@ class App extends Component<IProps, IState> {
     return(
       <div className='everything'>
         <div className="navbar_inner">
-         <a href="/" className="navbar_title">{this.state.partyName}</a>
+         <a className="navbar_title">{this.state.partyName}</a>
          <h1 className="title">AUXY</h1>
          <ul>
            <li>
@@ -499,15 +501,15 @@ class App extends Component<IProps, IState> {
               <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
               <button type = "button" onClick={search}><i className="fa fa-search"></i></button>
             </form>
-            <div className="spoop">
+            <div id='searchTable' className="spoop">
             <table className= "searchR">
               {this.state.searchResults.map((r: any) =>
               <tbody>
                 <tr key={r['track_id']}>
                     <td>
-                      <img src ={r['track_art']} />
+                      <img className='coverIcon' src ={r['track_art']} />
                     </td>
-                    <td>
+                    <td id='search-middle'>
                       <p className= "song">{r['track_name']}</p>
                       <p className = "artist">{r['track_artist']}</p>
                     </td>
@@ -528,14 +530,16 @@ class App extends Component<IProps, IState> {
           <tbody>
             <tr key={q['track_id']}>
                   <td>
-                    <img src ={"https://i.scdn.co/image/"+q['track_art']} />
+                    <img className='coverIcon'src={"https://i.scdn.co/image/"+q['track_art']} />
                   </td>
-                  <td>
+                  <td id="queue-middle">
                     <p className= "song">{q['track_name']}</p>
                     <p className = "artist">{q['track_artist']}</p>
                   </td>
                   <td className="queueRcol">
-                  <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button>
+                  { this.state.isHost &&
+                    <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button>
+                  }
                   </td>
               </tr>
               </tbody>
@@ -546,11 +550,12 @@ class App extends Component<IProps, IState> {
         <section className="rightSide">
           <div className="topRightSide">
               <div className="coverArt">
-                <p>This will be cover art</p>
+                <img src={this.state.currentlyPlaying['track_art']} />
               </div>
-              <h1 className='songTitle'>Song Title</h1>
-              <h3 className='songArtist'>Artist</h3>
+              <h1 className='songTitle'>{this.state.currentlyPlaying['track_name']}</h1>
+              <h3 className='songArtist'>{this.state.currentlyPlaying['track_artist']}</h3>
           </div>
+          <LinearProgress className='progressBar' variant="determinate" value={percent} />
           <div className="bottomRightSide">
             <div className="hostCell">
             {/* first letter of name */}
@@ -562,7 +567,7 @@ class App extends Component<IProps, IState> {
             </div>
             <div className="usersInRoom">
               {this.state.inRoom.map((user: any) => 
-                <div className="user"> <h1 className="userTag"><button className="userPic">M</button>{user}</h1></div>
+                <div className="user"> <h1 className="userTag"><button className="userPic">{user[0]}</button>{user}</h1></div>
               )}
             </div>
           </div>
@@ -655,7 +660,7 @@ class App extends Component<IProps, IState> {
         if (typeof this.state.attempt[0] === 'object') {
           // console.log("link")
           // console.log(count)    
-          this.setRedirect()
+          this.setRedirectToParty()
         }
         else if (this.state.attempt[0] === "Room not found!") {
           // console.log("room empt")
@@ -676,40 +681,42 @@ class App extends Component<IProps, IState> {
     } 
 
     return(
-      <div className='host'>
-        <div className="imagy"> </div>
-          <div className="boxy">
-            <header className="intro">AUXY</header>
-            <section>
-                <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
-                { this.state.displayName === "" ? 
-                <div className='err-message'>
-                  <p>Display name is required</p>
-                </div> : <div></div>
-                }
-            </section>
-            <section>
-                <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
-                { this.state.roomCode === "" ? 
-                <div className='err-message'>
-                  <p>Room code is required</p>
-                </div> : <div></div>
-                }
-            </section>
-            <section>
-            {
-                this.state.roomCode !== '' && this.state.displayName !== '' ?
-                <Link to='/party'>
+      <div>
+        { this.state.redirectToPartyPage ? <Redirect to='/party' push /> :
+        <div className='host'>
+          <div className="imagy"> </div>
+            <div className="boxy">
+              <header className="intro">AUXY</header>
+              <section>
+                  <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
+                  { this.state.displayName === "" ? 
+                  <div className='err-message'>
+                    <p>Display name is required</p>
+                  </div> : <div></div>
+                  }
+              </section>
+              <section>
+                  <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
+                  { this.state.roomCode === "" ? 
+                  <div className='err-message'>
+                    <p>Room code is required</p>
+                  </div> : <div></div>
+                  }
+              </section>
+              <section>
+              {
+                  this.state.roomCode !== '' && this.state.displayName !== '' ?
                   <button onClick={attemptToJoin}>
                     Join Party
-                  </button>
-                </Link> :
-                <button type='button' onClick={shameButton}>
-                  Join Party
-                </button> 
-              }
-            </section>
+                  </button> :
+                  <button type='button' onClick={shameButton}>
+                    Join Party
+                  </button> 
+                }
+              </section>
+            </div>
           </div>
+        }
       </div>
     )
   }
