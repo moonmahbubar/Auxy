@@ -181,7 +181,7 @@ class App extends Component<IProps, IState> {
             this.setInRoom(displaynames)
 
             //If room has become inactive, reflect in state
-            if (!data['room_active']) {
+            if (!data['room']['is_active']) {
               this.deactivateRoom()
             }
           })
