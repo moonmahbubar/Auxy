@@ -299,3 +299,11 @@ p {
 .progressBar {
   flex-grow: 1;
 }
+
+/* Error Message CSS */
+.err-message {
+  font-size: 10px;
+  color: red;
+  display: block;
+  margin: 8px;
+}

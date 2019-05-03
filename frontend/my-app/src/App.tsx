@@ -47,7 +47,7 @@ interface IState {
   currentlyPlaying: any,
   redirect: boolean,
   redirectToJoinPartyPage: boolean,
-  redirectToLanding: boolean, 
+  redirectToLanding: boolean,
 }
 
 // Interace for properties of component (needed to make typescript work)
@@ -94,6 +94,7 @@ class App extends Component<IProps, IState> {
     // this.setAttempt = this.setAttempt.bind(this);
   }
 
+  // State redirect setters
   setRedirect = () => {
     this.setState({
       redirect: true
@@ -350,36 +351,63 @@ class App extends Component<IProps, IState> {
   // Host names their party and chooses their display name
   CallBack = () => {
     let sendPartyInfo = () => {
-      dc.createRoom(this.state.partyName, this.state.displayName, authCode)
-        .then(data => {
-          this.setRoomCode(data['created_room_code']);
-          this.setAsHost()
-          
-          let population = this.state.inRoom
-          population.push(this.state.displayName)
-          this.setInRoom(population)
-        })
+      if (this.state.displayName === '' || this.state.partyName === '') {
+        alert('Display name and party name are required :^|')
+      } else {
+        dc.createRoom(this.state.partyName, this.state.displayName, authCode)
+          .then(data => {
+            this.setRoomCode(data['created_room_code']);
+            this.setAsHost()
+            
+            let population = this.state.inRoom
+            population.push(this.state.displayName)
+            this.setInRoom(population)
+          })
+      }
     }
+
+    let shameButton = () => {
+      // e.preventDefault()
+      alert('Display name and party name are required :^|')
+    } 
 
     return(
       <div className="host">
         <header>Welcome to AUXY!</header>
-        <form method="submit" action="php/zhuce.php">
+        <form>
             <h5> Please input your name </h5>
             <section>
                 <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
+                { this.state.displayName === "" ? 
+                <div className='err-message'>
+                  <p>Display name is required</p>
+                </div> : <div></div>
+                }
             </section>
             <h5> What do you want to name your party? </h5>
             <section>
                 <input type="text" value={this.state.partyName} onChange={this.setPartyNameFromEvent} name="partyname" className="inp" placeholder="Party Name" />
+                { this.state.partyName === "" ? 
+                <div className='err-message'>
+                  <p>Party name is required</p>
+                </div> : <div></div>
+                }
             </section>
             <section>
-              <button onClick={sendPartyInfo}><Link to='/party'>
-                party time B-)
-              </Link></button>
+              {
+                this.state.partyName !== '' && this.state.displayName !== '' ?
+                <Link to='/party'> 
+                  <button onClick={sendPartyInfo}>
+                    party time B-)
+                  </button> 
+                </Link> :
+                <button type='button' onClick={shameButton}>
+                  party time B-)
+                </button> 
+              }
             </section>
         </form>
-      </div>
+    </div>
     );
   }
 
@@ -537,6 +565,11 @@ class App extends Component<IProps, IState> {
       })
     }
 
+    let shameButton = () => {
+      // e.preventDefault()
+      alert('Display name and room code is required :^|')
+    } 
+
     return(
       <div className='host'>{
         this.state.redirect === true ? <Redirect to='/party' push /> : 
@@ -545,15 +578,31 @@ class App extends Component<IProps, IState> {
             <h5> Please input your name </h5>
             <section>
                 <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
+                { this.state.displayName === "" ? 
+                <div className='err-message'>
+                  <p>Display name is required</p>
+                </div> : <div></div>
+                }
             </section>
             <h5> Party code </h5>
             <section>
                 <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
+                { this.state.roomCode === "" ? 
+                <div className='err-message'>
+                  <p>Room code is required</p>
+                </div> : <div></div>
+                }
             </section>
             <section>
-              <button onClick={attemptToJoin}>
-              Join Party
-              </button>
+            {
+                this.state.roomCode !== '' && this.state.displayName !== '' ?
+                <button onClick={attemptToJoin}>
+                  Join Party
+                </button> :
+                <button type='button' onClick={shameButton}>
+                  Join Party
+                </button> 
+              }
             </section>
         </div>
       }
