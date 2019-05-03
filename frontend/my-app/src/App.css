@@ -413,6 +413,10 @@ p {
   height: 100%;
   width:100%;
   background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
+  border: solid 1px white;
+  display: block;
+  overflow: auto;
+  position: absolute;
 }
 .title{
 	font-size: 70;
@@ -480,6 +484,7 @@ p {
   margin-left: 50%;
   height: 100%;
   text-align: center;
+  max-height: 80vh;
 }
 /* .tagAndName{
   display: inline;
@@ -588,6 +593,7 @@ p {
   margin-left: 5px;
   display: block;
   overflow-y: scroll;
+  max-height: 80vh;
 }
 
 #queue-middle {
