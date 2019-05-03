@@ -45,6 +45,7 @@ interface IState {
   hostName: string,
   roomActive: boolean,
   currentlyPlaying: any,
+  isCoverArt: boolean,
   redirect: boolean,
   redirectToJoinPartyPage: boolean,
   redirectToLanding: boolean,
@@ -74,6 +75,7 @@ class App extends Component<IProps, IState> {
       hostName: '',
       roomActive: true,
       currentlyPlaying: {},
+      isCoverArt: false,
       redirect: false,
       redirectToJoinPartyPage: false,
       redirectToLanding: false,
@@ -181,24 +183,27 @@ class App extends Component<IProps, IState> {
     this.setState({currentlyPlaying: playbackObj})
   }
 
+  setIsCoverArt= () => {
+    this.setState({isCoverArt: true})
+  }
+
   componentDidMount() {
     // If on the party page, fetch room updates every second
     setInterval(() => {
       if (window.location.pathname === "/party" && this.state.roomCode !== "") {
-        fetch('https://moonmahbubar.pythonanywhere.com/get_room_info/' + this.state.roomCode)
+        fetch('http://localhost:8000/get_room_info/' + this.state.roomCode)
           .then(response => response.json())
           .then(data => {
             // console.log(data)
             let displaynames = []
 
-            displaynames.push(data['host']['display_name'])
+            // displaynames.push(data['host']['display_name'])
 
             var userList = data['users']
             for (var i = 0; i < userList.length; i++) {
               displaynames.push(userList[i]['display_name'])
             }
 
-            // console.log(displaynames)
             this.setInRoom(displaynames)
             this.setHostToken(data['host']['host_token'])
             this.setHostName(data['host']['display_name'])
@@ -211,7 +216,7 @@ class App extends Component<IProps, IState> {
             }
             if (data['current_playback'] !== 'None') {
               this.setCurrentlyPlaying(data['current_playback'])
-            }
+            } 
           })
       }
     }, 1000)
@@ -263,7 +268,7 @@ class App extends Component<IProps, IState> {
         const player = new Spotify.Player({
           name: 'AUXY',
           getOAuthToken: cb => { 
-            fetch('https://moonmahbubar.pythonanywhere.com/refresh_token/${this.state.roomCode}').then(response => console.log('Token refreshed'));
+            fetch('http://localhost:8000/refresh_token/${this.state.roomCode}').then(response => console.log('Token refreshed'));
             cb(token); 
           }
         });
@@ -302,7 +307,7 @@ class App extends Component<IProps, IState> {
           {
             console.log(state);
             if(this.state && ! this.state.paused && state.paused && state.position === 0) {
-              fetch('https://moonmahbubar.pythonanywhere.com/pop_song/${this.state.roomCode}').then(response => console.log('Track ended'));
+              fetch('http://localhost:8000/pop_song/${this.state.roomCode}').then(response => console.log('Track ended'));
               // setTrackEnd(true);
             }
             this.state = state;
@@ -424,16 +429,16 @@ class App extends Component<IProps, IState> {
   PartyRoom = () => {
     let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
       trackArt = trackArt.slice(24)
-      fetch('https://moonmahbubar.pythonanywhere.com/push_song/' + this.state.roomCode + '/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
+      fetch('http://localhost:8000/push_song/' + this.state.roomCode + '/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
     }
 
     let removeFromQueue = (auto_increment_id: string) => {
-      fetch('https://moonmahbubar.pythonanywhere.com/remove_song/' + auto_increment_id)
+      fetch('http://localhost:8000/remove_song/' + auto_increment_id)
         .then(response => response.json())
         .then(data => {
           console.log(auto_increment_id)
         })
-      fetch('https://moonmahbubar.pythonanywhere.com/songs')
+      fetch('http://localhost:8000/songs')
         .then(response => response.json())
         .then(data => {
           console.log(data)
@@ -441,7 +446,7 @@ class App extends Component<IProps, IState> {
     }
 
     let search = () => {
-      fetch('https://moonmahbubar.pythonanywhere.com/search/'  + this.state.roomCode + '/' + this.state.searchTerm)
+      fetch('http://localhost:8000/search/'  + this.state.roomCode + '/' + this.state.searchTerm)
         .then(response => response.json())
         .then(data => {
           this.setSearchResults(data['search_result'])
@@ -450,7 +455,7 @@ class App extends Component<IProps, IState> {
     }
 
     let refreshQueue = () => {
-      fetch('https://moonmahbubar.pythonanywhere.com/get_room_queue/'  + this.state.roomCode)
+      fetch('http://localhost:8000/get_room_queue/'  + this.state.roomCode)
         .then(response => response.json())
         .then(data => {
           this.setQueue(data['songs'])
@@ -506,7 +511,7 @@ class App extends Component<IProps, IState> {
         <div className="leftSide">
           <div className="dropdown">
             <form className="searchbar" onSubmit={search}>
-              <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
+              <input id='searchField' className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search" onKeyPress={(e) => {if (e.key === 'Enter') {e.preventDefault(); search()}}} />
               <button type = "button" onClick={search}><i className="fa fa-search"></i></button>
             </form>
             <div id='searchTable' className="spoop">
@@ -557,11 +562,19 @@ class App extends Component<IProps, IState> {
       </div>
         <section className="rightSide">
           <div className="topRightSide">
-              <div className="coverArt">
-                <img src={this.state.currentlyPlaying['track_art']} />
-              </div>
-              <h1 className='songTitle'>{this.state.currentlyPlaying['track_name']}</h1>
-              <h3 className='songArtist'>{this.state.currentlyPlaying['track_artist']}</h3>
+              {
+                Object.entries(this.state.currentlyPlaying).length !== 0 ? 
+                <div>
+                  <div className="coverArt">
+                    <img src={this.state.currentlyPlaying['track_art']} />
+                  </div>
+                  <h1 className='songTitle'>{this.state.currentlyPlaying['track_name']}</h1>
+                  <h3 className='songArtist'>{this.state.currentlyPlaying['track_artist']}</h3>
+                </div> :
+                <div className='empty-cover-art'>
+                  Use the search bar to add a song!
+                </div>
+              }
           </div>
           <LinearProgress className='progressBar' variant="determinate" value={percent} />
           <div className="bottomRightSide">
@@ -657,7 +670,7 @@ class App extends Component<IProps, IState> {
   JoinParty = () => {
     var count = 0;
     let attemptToJoin = () => {
-      fetch('https://moonmahbubar.pythonanywhere.com/join_room/' + this.state.displayName + '/' + this.state.roomCode)
+      fetch('http://localhost:8000/join_room/' + this.state.displayName + '/' + this.state.roomCode)
         .then(response => response.json())
         .then(data => {
           this.setAttempt(data['created_user'])
@@ -733,16 +746,16 @@ class App extends Component<IProps, IState> {
   Playback = () => {
     let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
       trackArt = trackArt.slice(24)
-      fetch('https://moonmahbubar.pythonanywhere.com/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
+      fetch('http://localhost:8000/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
     }
 
     let removeFromQueue = (auto_increment_id: string) => {
-      fetch('https://moonmahbubar.pythonanywhere.com/remove_song/' + auto_increment_id)
+      fetch('http://localhost:8000/remove_song/' + auto_increment_id)
         .then(response => response.json())
         .then(data => {
           console.log(auto_increment_id)
         })
-      fetch('https://moonmahbubar.pythonanywhere.com/songs')
+      fetch('http://localhost:8000/songs')
         .then(response => response.json())
         .then(data => {
           console.log(data)
@@ -750,7 +763,7 @@ class App extends Component<IProps, IState> {
     }
 
     let search = () => {
-      fetch('https://moonmahbubar.pythonanywhere.com/search/123456/' + this.state.searchTerm)
+      fetch('http://localhost:8000/search/123456/' + this.state.searchTerm)
         .then(response => response.json())
         .then(data => {
           this.setSearchResults(data['search_result'])
@@ -759,7 +772,7 @@ class App extends Component<IProps, IState> {
     }
 
     let refreshQueue = () => {
-      fetch('https://moonmahbubar.pythonanywhere.com/get_room_queue/123456')
+      fetch('http://localhost:8000/get_room_queue/123456')
         .then(response => response.json())
         .then(data => {
           this.setQueue(data['songs'])

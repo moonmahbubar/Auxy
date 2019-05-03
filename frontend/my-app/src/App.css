@@ -605,3 +605,7 @@ iframe{
 #search-middle {
   width: 80%;
 }
+
+.empty-cover-art {
+  padding: 150px 0px;
+}
