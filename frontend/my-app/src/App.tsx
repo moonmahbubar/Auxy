@@ -280,6 +280,14 @@ class App extends Component<IProps, IState> {
         // Ready
         player.addListener('ready', ({ device_id }) => {
           console.log('Ready with Device ID', device_id);
+          const iframe = document.querySelector('iframe[src="https://sdk.scdn.co/embedded/index.html"]');
+
+          if (iframe) {
+            iframe.style.display = 'block !important';
+            iframe.style.position = 'absolute';
+            iframe.style.top = '-1000px';
+            iframe.style.left = '-1000px';
+          }
         });
       
         // Not Ready
@@ -562,12 +570,12 @@ class App extends Component<IProps, IState> {
             <div className="tagAndName">
             {/* {this.state.inRoom.join(" ")} */}
             {/* <img src={crown} alt="crown" /> */}
-              <h1 className="hostTag"><button className="hostPic"> M</button>{this.state.hostName}</h1>
+              <h1 className="hostTag"><button className="hostPic">{this.state.hostName.charAt(0).toUpperCase()}</button>{this.state.hostName}</h1>
             </div>
             </div>
             <div className="usersInRoom">
               {this.state.inRoom.map((user: any) => 
-                <div className="user"> <h1 className="userTag"><button className="userPic">{user[0]}</button>{user}</h1></div>
+                <div className="user"> <h1 className="userTag"><button className="userPic">{user.charAt(0).toUpperCase()}</button>{user}</h1></div>
               )}
             </div>
           </div>
@@ -706,10 +714,10 @@ class App extends Component<IProps, IState> {
               <section>
               {
                   this.state.roomCode !== '' && this.state.displayName !== '' ?
-                  <button onClick={attemptToJoin}>
+                  <button className='main3' onClick={attemptToJoin}>
                     Join Party
                   </button> :
-                  <button type='button' onClick={shameButton}>
+                  <button className='main3' type='button' onClick={shameButton}>
                     Join Party
                   </button> 
                 }
