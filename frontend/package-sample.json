@@ -51,5 +51,5 @@
   },
   "homepage": "https://bitbucket.org/pasqualevitiello/laurel#readme",
   "main": ".eslintrc.js",
-  "proxy": "http://localhost:8000" 
+  "proxy": "https://moonmahbubar.pythonanywhere.com" 
 }

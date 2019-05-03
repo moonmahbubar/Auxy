@@ -185,7 +185,7 @@ class App extends Component<IProps, IState> {
     // If on the party page, fetch room updates every second
     setInterval(() => {
       if (window.location.pathname === "/party" && this.state.roomCode !== "") {
-        fetch('http://localhost:8000/get_room_info/' + this.state.roomCode)
+        fetch('https://moonmahbubar.pythonanywhere.com/get_room_info/' + this.state.roomCode)
           .then(response => response.json())
           .then(data => {
             // console.log(data)
@@ -263,7 +263,7 @@ class App extends Component<IProps, IState> {
         const player = new Spotify.Player({
           name: 'AUXY',
           getOAuthToken: cb => { 
-            fetch('http://localhost:8000/refresh_token/${this.state.roomCode}').then(response => console.log('Token refreshed'));
+            fetch('https://moonmahbubar.pythonanywhere.com/refresh_token/${this.state.roomCode}').then(response => console.log('Token refreshed'));
             cb(token); 
           }
         });
@@ -294,7 +294,7 @@ class App extends Component<IProps, IState> {
           {
             console.log(state);
             if(this.state && ! this.state.paused && state.paused && state.position === 0) {
-              fetch('http://localhost:8000/pop_song/${this.state.roomCode}').then(response => console.log('Track ended'));
+              fetch('https://moonmahbubar.pythonanywhere.com/pop_song/${this.state.roomCode}').then(response => console.log('Track ended'));
               // setTrackEnd(true);
             }
             this.state = state;
@@ -416,16 +416,16 @@ class App extends Component<IProps, IState> {
   PartyRoom = () => {
     let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
       trackArt = trackArt.slice(24)
-      fetch('http://localhost:8000/push_song/' + this.state.roomCode + '/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
+      fetch('https://moonmahbubar.pythonanywhere.com/push_song/' + this.state.roomCode + '/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
     }
 
     let removeFromQueue = (auto_increment_id: string) => {
-      fetch('http://localhost:8000/remove_song/' + auto_increment_id)
+      fetch('https://moonmahbubar.pythonanywhere.com/remove_song/' + auto_increment_id)
         .then(response => response.json())
         .then(data => {
           console.log(auto_increment_id)
         })
-      fetch('http://localhost:8000/songs')
+      fetch('https://moonmahbubar.pythonanywhere.com/songs')
         .then(response => response.json())
         .then(data => {
           console.log(data)
@@ -433,7 +433,7 @@ class App extends Component<IProps, IState> {
     }
 
     let search = () => {
-      fetch('http://localhost:8000/search/'  + this.state.roomCode + '/' + this.state.searchTerm)
+      fetch('https://moonmahbubar.pythonanywhere.com/search/'  + this.state.roomCode + '/' + this.state.searchTerm)
         .then(response => response.json())
         .then(data => {
           this.setSearchResults(data['search_result'])
@@ -442,7 +442,7 @@ class App extends Component<IProps, IState> {
     }
 
     let refreshQueue = () => {
-      fetch('http://localhost:8000/get_room_queue/'  + this.state.roomCode)
+      fetch('https://moonmahbubar.pythonanywhere.com/get_room_queue/'  + this.state.roomCode)
         .then(response => response.json())
         .then(data => {
           this.setQueue(data['songs'])
@@ -649,7 +649,7 @@ class App extends Component<IProps, IState> {
   JoinParty = () => {
     var count = 0;
     let attemptToJoin = () => {
-      fetch('http://localhost:8000/join_room/' + this.state.displayName + '/' + this.state.roomCode)
+      fetch('https://moonmahbubar.pythonanywhere.com/join_room/' + this.state.displayName + '/' + this.state.roomCode)
         .then(response => response.json())
         .then(data => {
           this.setAttempt(data['created_user'])
@@ -725,16 +725,16 @@ class App extends Component<IProps, IState> {
   Playback = () => {
     let addToQueue = (trackId: string, trackName: string, trackArtist: string, trackArt: string, trackLength: string, votes: number) => {
       trackArt = trackArt.slice(24)
-      fetch('http://localhost:8000/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
+      fetch('https://moonmahbubar.pythonanywhere.com/push_song/123456/' + trackId + '/' + trackName + '/' + trackArtist + '/' + trackArt + '/' + trackLength  + '/0')
     }
 
     let removeFromQueue = (auto_increment_id: string) => {
-      fetch('http://localhost:8000/remove_song/' + auto_increment_id)
+      fetch('https://moonmahbubar.pythonanywhere.com/remove_song/' + auto_increment_id)
         .then(response => response.json())
         .then(data => {
           console.log(auto_increment_id)
         })
-      fetch('http://localhost:8000/songs')
+      fetch('https://moonmahbubar.pythonanywhere.com/songs')
         .then(response => response.json())
         .then(data => {
           console.log(data)
@@ -742,7 +742,7 @@ class App extends Component<IProps, IState> {
     }
 
     let search = () => {
-      fetch('http://localhost:8000/search/123456/' + this.state.searchTerm)
+      fetch('https://moonmahbubar.pythonanywhere.com/search/123456/' + this.state.searchTerm)
         .then(response => response.json())
         .then(data => {
           this.setSearchResults(data['search_result'])
@@ -751,7 +751,7 @@ class App extends Component<IProps, IState> {
     }
 
     let refreshQueue = () => {
-      fetch('http://localhost:8000/get_room_queue/123456')
+      fetch('https://moonmahbubar.pythonanywhere.com/get_room_queue/123456')
         .then(response => response.json())
         .then(data => {
           this.setQueue(data['songs'])
