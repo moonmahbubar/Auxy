@@ -2,6 +2,11 @@
 
 body.main, html.main {
   background-color: black;
+  overflow: hidden;
+}
+
+html, body{
+  overflow:hidden;
 }
 
 .main-title {
@@ -153,8 +158,8 @@ div.host section {
   font-family: "Proxima Nova", "Helvetica Neue", Helvetica, Arial, sans-serif;  color: white;
   /* background: linear-gradient(to bottom, black 50%, #f85971 100%); */
   background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
-  height: 750px;
-  width: 600px;
+  height: 1000px;
+  width: 100%;
 }
 
 input:-webkit-autofill,
@@ -171,7 +176,7 @@ input:-webkit-autofill:active {
 form.searchbar input[type=text] {
   font-size: 17px;
   float: left;
-  width: 80%;
+  width: 20%;
   margin-left: 5px;
   background-color: transparent;
   border-bottom: 1px solid #f94763;
@@ -233,7 +238,7 @@ table {
   position: absolute;
   font-family: arial, sans-serif;
   border-collapse: collapse;
-  width: 80%;
+  width: 30%;
 }
 td, th, tr {
   background-color: transparent;
@@ -298,6 +303,13 @@ p {
 /* Progress Bar CSS */
 .progressBar {
   flex-grow: 1;
+}
+
+.scrollTable{
+  display: block;
+  overflow-y: scroll;
+  height: 480px;
+  width: 30%;
 }
 
 /* Error Message CSS */

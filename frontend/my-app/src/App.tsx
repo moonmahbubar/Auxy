@@ -481,6 +481,7 @@ class App extends Component<IProps, IState> {
 
     //console.log(this.state)
     return(
+      <body>
         <div className='playback'>
           <b>{this.state.partyName}</b> {this.state.roomCode}
           <button onClick={leaveRoom}>Leave Room</button>
@@ -522,7 +523,7 @@ class App extends Component<IProps, IState> {
 
         <h3>Queue:</h3>
         <div>
-          <table>
+          <table className="scrollTable">
           {this.state.queue.map((q: any) =>
           <tbody>
             <tr key={q['track_id']}>
@@ -534,7 +535,9 @@ class App extends Component<IProps, IState> {
                     <p className = "artist">{q['track_artist']}</p>
                   </td>
                   <td>
-                  <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button> 
+                  { this.state.isHost &&
+                    <button className="addBtn" type = "button" onClick={() => removeFromQueue(q['auto_increment_id'])}> X </button>
+                  } 
                   </td>
               </tr>
               </tbody>
@@ -543,6 +546,7 @@ class App extends Component<IProps, IState> {
           {/* <img src ={this.state.currentlyPlaying['track_art']} /> */}
         </div>
         </div>
+        </body>
     )
   }
 
@@ -693,7 +697,7 @@ class App extends Component<IProps, IState> {
 
         <h3>Queue:</h3>
         <div>
-          <table>
+          <table className="scrollTable">
           {this.state.queue.map((q: any) =>
           <tbody>
             <tr key={q['track_id']}>
