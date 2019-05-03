@@ -45,6 +45,7 @@ interface IState {
   hostName: string,
   roomActive: boolean,
   currentlyPlaying: any,
+  isCoverArt: boolean,
   redirect: boolean,
   redirectToJoinPartyPage: boolean,
   redirectToLanding: boolean,
@@ -74,6 +75,7 @@ class App extends Component<IProps, IState> {
       hostName: '',
       roomActive: true,
       currentlyPlaying: {},
+      isCoverArt: false,
       redirect: false,
       redirectToJoinPartyPage: false,
       redirectToLanding: false,
@@ -181,6 +183,10 @@ class App extends Component<IProps, IState> {
     this.setState({currentlyPlaying: playbackObj})
   }
 
+  setIsCoverArt= () => {
+    this.setState({isCoverArt: true})
+  }
+
   componentDidMount() {
     // If on the party page, fetch room updates every second
     setInterval(() => {
@@ -191,14 +197,13 @@ class App extends Component<IProps, IState> {
             // console.log(data)
             let displaynames = []
 
-            displaynames.push(data['host']['display_name'])
+            // displaynames.push(data['host']['display_name'])
 
             var userList = data['users']
             for (var i = 0; i < userList.length; i++) {
               displaynames.push(userList[i]['display_name'])
             }
 
-            // console.log(displaynames)
             this.setInRoom(displaynames)
             this.setHostToken(data['host']['host_token'])
             this.setHostName(data['host']['display_name'])
@@ -211,7 +216,7 @@ class App extends Component<IProps, IState> {
             }
             if (data['current_playback'] !== 'None') {
               this.setCurrentlyPlaying(data['current_playback'])
-            }
+            } 
           })
       }
     }, 1000)
@@ -280,6 +285,14 @@ class App extends Component<IProps, IState> {
         // Ready
         player.addListener('ready', ({ device_id }) => {
           console.log('Ready with Device ID', device_id);
+          const iframe = document.querySelector('iframe[src="https://sdk.scdn.co/embedded/index.html"]');
+
+          if (iframe) {
+            iframe.style.display = 'block !important';
+            iframe.style.position = 'absolute';
+            iframe.style.top = '-1000px';
+            iframe.style.left = '-1000px';
+          }
         });
       
         // Not Ready
@@ -506,7 +519,7 @@ class App extends Component<IProps, IState> {
         <div className="leftSide">
           <div className="dropdown">
             <form className="searchbar" onSubmit={search}>
-              <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
+              <input id='searchField' className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search" onKeyPress={(e) => {if (e.key === 'Enter') {e.preventDefault(); search()}}} />
               <button type = "button" onClick={search}><i className="fa fa-search"></i></button>
             </form>
             <div id='searchTable' className="spoop">
@@ -557,11 +570,19 @@ class App extends Component<IProps, IState> {
       </div>
         <section className="rightSide">
           <div className="topRightSide">
-              <div className="coverArt">
-                <img src={this.state.currentlyPlaying['track_art']} />
-              </div>
-              <h1 className='songTitle'>{this.state.currentlyPlaying['track_name']}</h1>
-              <h3 className='songArtist'>{this.state.currentlyPlaying['track_artist']}</h3>
+              {
+                Object.entries(this.state.currentlyPlaying).length !== 0 ? 
+                <div>
+                  <div className="coverArt">
+                    <img src={this.state.currentlyPlaying['track_art']} />
+                  </div>
+                  <h1 className='songTitle'>{this.state.currentlyPlaying['track_name']}</h1>
+                  <h3 className='songArtist'>{this.state.currentlyPlaying['track_artist']}</h3>
+                </div> :
+                <div className='empty-cover-art'>
+                  Use the search bar to add a song!
+                </div>
+              }
           </div>
           <LinearProgress className='progressBar' variant="determinate" value={percent} />
           <div className="bottomRightSide">
@@ -570,12 +591,12 @@ class App extends Component<IProps, IState> {
             <div className="tagAndName">
             {/* {this.state.inRoom.join(" ")} */}
             {/* <img src={crown} alt="crown" /> */}
-              <h1 className="hostTag"><button className="hostPic"> M</button>{this.state.hostName}</h1>
+              <h1 className="hostTag"><button className="hostPic">{this.state.hostName.charAt(0).toUpperCase()}</button>{this.state.hostName}</h1>
             </div>
             </div>
             <div className="usersInRoom">
               {this.state.inRoom.map((user: any) => 
-                <div className="user"> <h1 className="userTag"><button className="userPic">{user[0]}</button>{user}</h1></div>
+                <div className="user"> <h1 className="userTag"><button className="userPic">{user.charAt(0).toUpperCase()}</button>{user}</h1></div>
               )}
             </div>
           </div>

@@ -150,6 +150,7 @@ div.host {
     padding-top: 10px;
     display: inline-flex;
     flex-direction: row;
+    text-align: center;
 }
 
 .intro {
@@ -434,7 +435,9 @@ p {
 }
 
 /* Party Page CSS */
-
+iframe{
+  display: block !important;
+}
 @import url('https://fonts.googleapis.com/css?family=Gugi');
 .everything{
   color: white;
@@ -443,7 +446,7 @@ p {
   height: 100%;
   width:100%;
   background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
-  border: solid 1px white;
+  /* border: solid 1px white; */
   display: block;
   overflow: auto;
   position: absolute;
@@ -634,4 +637,8 @@ p {
 }
 #search-middle {
   width: 80%;
+}
+
+.empty-cover-art {
+  padding: 150px 0px;
 }
