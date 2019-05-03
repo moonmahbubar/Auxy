@@ -373,41 +373,40 @@ class App extends Component<IProps, IState> {
 
     return(
       <div className="host">
-        <header>Welcome to AUXY!</header>
-        <form>
-            <h5> Please input your name </h5>
-            <section>
-                <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
-                { this.state.displayName === "" ? 
+        <div className="imagy"> </div>
+          <div className="boxy">
+            <header className="intro">AUXY</header>
+            <form method="submit" action="php/zhuce.php">
+              <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Your name" />
+              { this.state.displayName === "" ? 
                 <div className='err-message'>
                   <p>Display name is required</p>
                 </div> : <div></div>
-                }
-            </section>
-            <h5> What do you want to name your party? </h5>
-            <section>
-                <input type="text" value={this.state.partyName} onChange={this.setPartyNameFromEvent} name="partyname" className="inp" placeholder="Party Name" />
-                { this.state.partyName === "" ? 
+              }
+              <input type="text" value={this.state.partyName} onChange={this.setPartyNameFromEvent} name="partyname" className="inp" placeholder="Party name" />
+              { this.state.partyName === "" ? 
                 <div className='err-message'>
                   <p>Party name is required</p>
                 </div> : <div></div>
-                }
-            </section>
-            <section>
+              }
+              {/* <Link to='/party'>
+              <button className="main3" type="button" onClick={sendPartyInfo}>
+               Create party
+              </button></Link> */}
               {
                 this.state.partyName !== '' && this.state.displayName !== '' ?
                 <Link to='/party'> 
-                  <button onClick={sendPartyInfo}>
-                    party time B-)
+                  <button className="main3" type="button" onClick={sendPartyInfo}>
+                    Create Party
                   </button> 
                 </Link> :
-                <button type='button' onClick={shameButton}>
-                  party time B-)
+                <button className="main3" type='button' onClick={shameButton}>
+                  Create Party
                 </button> 
               }
-            </section>
-        </form>
-    </div>
+            </form>
+          </div>
+        </div>
     );
   }
 
@@ -586,11 +585,10 @@ class App extends Component<IProps, IState> {
     } 
 
     return(
-      <div className='host'>{
-        this.state.redirect === true ? <Redirect to='/party' push /> : 
-        <div>
-        <header>Welcome to AUXY!</header>
-            <h5> Please input your name </h5>
+      <div className='host'>
+        <div className="imagy"> </div>
+          <div className="boxy">
+            <header className="intro">AUXY</header>
             <section>
                 <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
                 { this.state.displayName === "" ? 
@@ -599,7 +597,6 @@ class App extends Component<IProps, IState> {
                 </div> : <div></div>
                 }
             </section>
-            <h5> Party code </h5>
             <section>
                 <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
                 { this.state.roomCode === "" ? 
@@ -611,17 +608,17 @@ class App extends Component<IProps, IState> {
             <section>
             {
                 this.state.roomCode !== '' && this.state.displayName !== '' ?
-                <button onClick={attemptToJoin}>
-                  Join Party
-                </button> :
+                <Link to='/party'>
+                  <button onClick={attemptToJoin}>
+                    Join Party
+                  </button>
+                </Link> :
                 <button type='button' onClick={shameButton}>
                   Join Party
                 </button> 
               }
             </section>
-        </div>
-      }
-    
+          </div>
       </div>
     )
   }

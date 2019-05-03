@@ -223,6 +223,9 @@ class PushSongView(APIView):
         if not is_song_playing(token):
             play_song_id(token, track_id)
             return Response(data={"pushed_song": "queue is empty"})
+        if is_paused(token) and not middle_song(token) and not songs:
+            play_song_id(token, track_id)
+            return Response(data={"pushed_song": "queue is empty"})
         else:
             song = Song(track_id=track_id, track_name=track_name, track_artist=track_artist, track_art=track_art, track_length=track_length, votes=votes, room=room)
             song.save()
@@ -251,7 +254,7 @@ class PopSongView(APIView):
         #Current scope allows for modifying playback.
         scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
         #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
+        redirect_uri='http://localhost:3000/callback'
         #Create OAuth2 object.
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token.

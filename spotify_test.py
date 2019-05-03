@@ -60,8 +60,8 @@ def get_current_playback(token):
     sp = spotipy.Spotify(auth=token)
     #Make spotify call to get current playback information.
     current_playback = sp.current_playback()
-    if not current_playback:
-            return "None"
+    if current_playback is None:
+        return "None"
     #Create dictionary to return.
     current_playback_parsed = {}
     #Add all the requried values.
@@ -78,3 +78,21 @@ def is_song_playing(token):
     #Authorize
     sp = spotipy.Spotify(auth=token)
     return bool(sp.current_playback())
+
+def is_paused(token):
+    #Authorize
+    sp = spotipy.Spotify(auth=token)
+    #Get current playback information.
+    cp = sp.current_playback()
+    #Check if song is being played.
+    paused = cp["is_playing"]
+    return not paused
+
+def middle_song(token):
+    #Authorize
+    sp = spotipy.Spotify(auth=token)
+    #Get current playback information.
+    current_playback = sp.current_playback()
+    #Check if song is in middle of playback.
+    middle = (current_playback["progress_ms"] > 1000) and (current_playback["progress_ms"] <  (current_playback["item"]["duration_ms"] - 1000))
+    return middle
