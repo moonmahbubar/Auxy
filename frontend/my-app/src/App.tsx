@@ -453,6 +453,17 @@ class App extends Component<IProps, IState> {
       window.location.href = 'https://auxy.netlify.com/'
     }
 
+    var searchTable = document.getElementById('searchTable')
+    window.addEventListener('click', (e: any) => {
+      if (searchTable !== null) {
+        var isClickInside = searchTable!.contains(e!.target as Node);
+      
+        if (!isClickInside && this.state.searchResults.length > 0) {
+          this.setState({searchResults: []})
+        }
+      }
+    })
+
     // Calculate the progress through the current song
     let percent = 0
     if (this.state.currentlyPlaying !== {}) {
@@ -482,7 +493,7 @@ class App extends Component<IProps, IState> {
               <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
             </form>
             <div className="spoop">
-            <table className= "searchR">
+            <table className= "searchR" id='searchTable'>
               {this.state.searchResults.map((r: any) => 
               <tbody>
                 <tr key={r['track_id']}>
@@ -657,8 +668,8 @@ class App extends Component<IProps, IState> {
               <input className="search_input" type="text" placeholder="Search" value={this.state.searchTerm} onChange={this.setSearchTerm} name="searchterm" aria-label="Search"/>
               <button type = "button" onClick={search}><i className="fa fa-search"></i></button> 
             </form>
-            <div className="spoop">
-            <table className= "searchR">
+            <div className="spoop" id="searchTable">
+            <table className="searchR">
               {this.state.searchResults.map((r: any) => 
               <tbody>
                 <tr key={r['track_id']}>
