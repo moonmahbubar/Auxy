@@ -20,6 +20,7 @@ class Room(models.Model):
 
 class Song(models.Model):
     """Model representing a song to be played."""
+    #Model attributes are self explanatory.
     auto_increment_id = models.AutoField(primary_key=True)
     track_id =  models.CharField(max_length=200)
     track_name =  models.CharField(max_length=200)
@@ -28,6 +29,7 @@ class Song(models.Model):
     track_length = models.IntegerField()
     date_added = models.DateTimeField(default=timezone.now)
     votes = models.IntegerField(default=0)
+    #Set up a many to one relationship with room model.
     room = models.ForeignKey(Room, on_delete=models.CASCADE, default=None)
 
 
@@ -37,7 +39,9 @@ class Song(models.Model):
     
 
 class User(models.Model):
+    #Set up attributes.
     display_name = models.CharField(max_length=200, help_text='Enter a your display name.')
+    #Set up many to one relationship with room model.
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -47,9 +51,11 @@ class User(models.Model):
 
 
 class Host(models.Model):
+    #Setup up attributes.
     display_name = models.CharField(max_length=200, help_text='Enter a your display name.')
     host_token = models.CharField(max_length=600)
     host_refresh_token = models.CharField(max_length=600)
+    #Set up a one to one relationship with room model.
     room = models.OneToOneField(Room, on_delete=models.CASCADE, default=None)
 
     def __str__(self):

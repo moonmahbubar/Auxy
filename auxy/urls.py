@@ -19,7 +19,7 @@ from rest_framework import routers
 from room import views
 
 
-
+#Set up pages so we can get see all the objects of a model.
 router = routers.DefaultRouter()
 router.register(r'rooms', views.RoomViewSet)
 router.register(r'hosts', views.HostViewSet)
@@ -27,9 +27,9 @@ router.register(r'users', views.UserViewSet)
 router.register(r'songs', views.SongViewSet)
 
 
+#Define the urls for the rest API.
+#If you wanna see more details about the the API calls, please go to room/views.py and check the corresponding views to the url.
 urlpatterns = [
-    # path(r'play_song/<str:token>', views.play_with_token),
-    # path(r'play_room/<str:code>', views.play_room_song),
     path(r'test/<str:code>', views.SpotifyTestView.as_view()),
     path(r'song/<str:code>/<str:song>', views.PlaySongView.as_view()),
     path(r'search/<str:code>/<str:song>', views.SearchSongView.as_view()),
