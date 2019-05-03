@@ -363,23 +363,19 @@ class App extends Component<IProps, IState> {
 
     return(
       <div className="host">
-        <header>Welcome to AUXY!</header>
-        <form method="submit" action="php/zhuce.php">
-            <h5> Please input your name </h5>
-            <section>
-                <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
-            </section>
-            <h5> What do you want to name your party? </h5>
-            <section>
-                <input type="text" value={this.state.partyName} onChange={this.setPartyNameFromEvent} name="partyname" className="inp" placeholder="Party Name" />
-            </section>
-            <section>
-              <button onClick={sendPartyInfo}><Link to='/party'>
-                party time B-)
-              </Link></button>
-            </section>
-        </form>
-      </div>
+        <div className="imagy"> </div>
+          <div className="boxy">
+            <header className="intro">AUXY</header>
+            <form method="submit" action="php/zhuce.php">
+              <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Your name" />
+              <input type="text" value={this.state.partyName} onChange={this.setPartyName} name="partyname" className="inp" placeholder="Party name" />
+              <Link to='/party'>
+              <button className="main3" type="button" onClick={sendPartyInfo}>
+               Create party
+              </button></Link>
+            </form>
+          </div>
+        </div>
     );
   }
 
@@ -538,26 +534,23 @@ class App extends Component<IProps, IState> {
     }
 
     return(
-      <div className='host'>{
-        this.state.redirect === true ? <Redirect to='/party' push /> : 
-        <div>
-        <header>Welcome to AUXY!</header>
-            <h5> Please input your name </h5>
+      <div className='host'>
+        <div className="imagy"> </div>
+          <div className="boxy">
+            <header className="intro">AUXY</header>
             <section>
-                <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
-            </section>
-            <h5> Party code </h5>
-            <section>
-                <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
+              <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
             </section>
             <section>
-              <button onClick={attemptToJoin}>
-              Join Party
+              <input type="text" value={this.state.roomCode} onChange={this.setRoomCodeFromEvent} name="partycode" className="inp" placeholder="Party Code" />
+            </section>
+            <section>
+              <button className="main3" type="button" onClick={attemptToJoin}>
+                Join Party
               </button>
             </section>
+          </div>
         </div>
-      }
-    
       </div>
     )
   }
