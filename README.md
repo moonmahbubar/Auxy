@@ -1,1 +1,1 @@
-![alt text](https://raw.githubusercontent.com/moonmahbubar/Auxy/master/AUXY.png_
+![alt text](https://raw.githubusercontent.com/moonmahbubar/Auxy/master/AUXY.png)
