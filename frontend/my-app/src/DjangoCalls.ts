@@ -10,22 +10,22 @@ export default class DjangoCalls {
     // }
 
     public playSong(room: string, songID: string) {
-        fetch('http://localhost:8000/song/' + room + '/' + songID)
+        fetch('https://moonmahbubar.pythonanywhere.com/song/' + room + '/' + songID)
             .then(response => console.log(response))
     }
 
     public search(room: string, query: string) {
-        fetch('http://localhost:8000/' + room + '/' + query)
+        fetch('https://moonmahbubar.pythonanywhere.com/' + room + '/' + query)
             .then(response => console.log(response))
     }
 
     public sendAuthCode(code: string) {
-        fetch('http://localhost:8000/send_auth_code/' + code)
+        fetch('https://moonmahbubar.pythonanywhere.com/send_auth_code/' + code)
             .then(response => console.log(response.text()))
     }
 
     public createRoom(roomName: string, hostDisplayName: string, authCode: string) {
-        return fetch('http://localhost:8000/create_host/' + roomName + '/' + hostDisplayName + '/' + authCode)
+        return fetch('https://moonmahbubar.pythonanywhere.com/create_host/' + roomName + '/' + hostDisplayName + '/' + authCode)
             .then(response => response.json())
             // .then(data => {
             //     console.log(data['created_room_code'])
@@ -33,7 +33,7 @@ export default class DjangoCalls {
     }
 
     public getRoomUsers(roomCode: string) {
-        return fetch('http://localhost:8000/get_room_info/' + roomCode)
+        return fetch('https://moonmahbubar.pythonanywhere.com/get_room_info/' + roomCode)
             .then(response => response.json())
     }
 
@@ -43,7 +43,7 @@ export default class DjangoCalls {
             type: 'application/x-www-form-urlencoded'
         };
         let blob = new Blob([data], headers)
-        navigator.sendBeacon('http://localhost:8000/delete_user/', blob)
+        navigator.sendBeacon('https://moonmahbubar.pythonanywhere.com/delete_user/', blob)
     }
 
     public hostLeaveRoom(roomCode: string) {
@@ -52,6 +52,6 @@ export default class DjangoCalls {
             type: 'application/x-www-form-urlencoded'
         };
         let blob = new Blob([data], headers)
-        navigator.sendBeacon('http://localhost:8000/deactivate_room/', blob)
+        navigator.sendBeacon('https://moonmahbubar.pythonanywhere.com/deactivate_room/', blob)
     }
 }
