@@ -17,14 +17,12 @@ html, body{
   flex-direction: column;
   font-size: 72px;
   padding: 40px;
-  /* font-family:monospace, monospace; */
   font-family: 'Montserrat', sans-serif;
   background-color: black;
   width: 100%;
   height: 100%;
   min-height: 100%;
   background: url("image.svg") rgb(0, 13, 26) 100% 0% no-repeat;
-/*  background: url("image3.svg") transparent 0% 100% no-repeat;*/
   position: absolute;
   top: 0;
   left: 0;
@@ -47,9 +45,8 @@ html, body{
 .hi{border-color:#273C5A;color:#7487A3;}
 .input{color:#556B8B} */ 
 
-
+/* button to host */
 button.main1 {
-  /* font-family:sans-serif; */
   font-family: 'Montserrat', sans-serif;
   font-size:22px;
   letter-spacing:0px;
@@ -71,6 +68,7 @@ button.main1 {
   border: none;
 }
 
+/* button to join */
 button.main2 {
   /* font-family:sans-serif; */
   font-family: 'Montserrat', sans-serif;
@@ -93,6 +91,8 @@ button.main2 {
   margin-right: 15px;
   border: none;
 }
+
+/* host button hover */
 .button{display:inline-flex;font-size:14px;letter-spacing:0px;font-weight:700;line-height:16px;text-decoration:none !important;text-transform:uppercase;background-color:#273C5A;color:#fff !important;border:none;border-radius:2px;cursor:pointer;justify-content:center;padding:16px 32px;height:48px;text-align:center;white-space:nowrap}
 button:hover.main1 {
   background-color:#fc6c82;
@@ -102,6 +102,7 @@ button:hover.main1 {
   cursor: pointer;
 }
 
+/* join button hover */
 button:hover.main2 {
   background-color: #91a7c6;
   transition-duration: 0.4s;
@@ -110,12 +111,14 @@ button:hover.main2 {
   cursor: pointer;
 }
 
+/* AUXY */
 .hero-title{
     font-size: 80px;
     margin-bottom:5px;
     font-family:"GUGI", italic;
 }
 
+/* welcome paragraph */
 .hero-paragraph{
     margin-bottom:18px;
     font-size:23px;
@@ -138,7 +141,8 @@ footer{
   font-family: 'Montserrat', sans-serif;
 }
 
-/* Host Login CSS */
+
+/* Host and Join Party Login CSS */
 
 div.host {
     height: 100%;
@@ -153,11 +157,13 @@ div.host {
     text-align: center;
 }
 
+/* AUXY */
 .intro {
     font-size: 55px;
     font-family: 'Gugi', cursive;
 }
 
+/* Input fields */
 div.host input{
     font-size: 30px;
     width: 10%px;
@@ -169,6 +175,7 @@ div.host input{
     margin: 8px;
 }
 
+/* Text in input fields */
 ::placeholder {
     color: white;
     opacity: 0.9;
@@ -181,6 +188,7 @@ div.host input:focus {
     border: solid 1px grey;
 }
 
+/* Phone image to left */
 .imagy {
     background: url("iphone-mockup.png") rgb(0, 13, 26) 10% no-repeat;
     margin-left: 10%;
@@ -189,6 +197,7 @@ div.host input:focus {
     flex-grow: 0;
 }
 
+/* Box with input fields to the right */
 .boxy {
     margin-top: 100px;
     margin-left: 10%;
@@ -223,9 +232,9 @@ div.host section {
     padding-top: 10px;
 }
 
+/* button to go to party room */
 div.host button.main3 {
     margin-top: 20px;
-    /* font-family:sans-serif, ; */
     font-family: 'Montserrat', sans-serif;
     font-size:14px;
     letter-spacing:0px;
@@ -245,6 +254,7 @@ div.host button.main3 {
     border: none;
 }
 
+/* hover for party room buttom */
 div.host button:hover.main3 {
     background-color: #91a7c6;
     transition-duration: 0.4s;
@@ -333,34 +343,33 @@ img {
 }
 
 table {
-  /* font-family: "proxima-nova", sans-serif; */
   font-family: 'Montserrat', sans-serif;
   overflow: scroll;
   position: absolute;
-  /* font-family: arial, sans-serif; */
   border-collapse: collapse;
   width: 80%;
 }
+
 .searchR{  
   background-color: black;
   z-index: 6;
-  /* font-family: "proxima-nova", sans-serif; */
   font-family: 'Montserrat', sans-serif;
   overflow: scroll;
   margin-left:5px;
   position: absolute;
-  /* font-family: arial, sans-serif; */
   border-collapse: collapse;
-  /* width: 50%; */
 }
+
 td, th, tr {
   background-color: transparent;
   text-align: left;
   padding: 8px;
 }
+
 td:first-child{
   width: 40px;
 }
+
 td.searchRcol:last-child{
   text-align: right;
   width: 30px;
@@ -371,10 +380,12 @@ td.searchRcol:last-child{
   position: relative;
   display: inline-block;
 }
+
 p {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
+
 .dropdown-content {
   display: none;
   position: absolute;
@@ -403,6 +414,7 @@ p {
 .dropdown a:hover {background-color: #ddd;}
 
 .show {display: block;}
+
 .song{
 	font-size: 17px;
 }
@@ -435,9 +447,11 @@ p {
 }
 
 /* Party Page CSS */
+
 iframe{
   display: block !important;
 }
+
 @import url('https://fonts.googleapis.com/css?family=Gugi');
 .everything{
   color: white;
@@ -451,31 +465,35 @@ iframe{
   overflow: auto;
   position: absolute;
 }
+
 .title{
 	font-size: 70;
 	font-family: 'Gugi', cursive;
 	color: white;
 }
+
 .roomCodeText{
 	color:#F94763;
 	font-size: 20px;
 }
+
 .roomCode{
 	color:white;
   font-size: 30px;
   font-family: 'Montserrat', sans-serif;
   font-weight: bold;
-
 }
+
 .navbar_inner {
 	padding:0;
-	margin: 0;
+	margin:0;
   -js-display: flex;
   display: flex;
   align-items: center;
   justify-content: space-between;
   height: 10%;
-  background:transparent; }
+  background:transparent;
+}
   
 .navbar_inner ul{
 	margin:0;
@@ -497,13 +515,15 @@ iframe{
   color: #fff;
   text-decoration: none;
 }
-.exit{
+
+.exit {
   background: url(./exit.png) no-repeat;
   height: 30px;
   width: 30px;
   border: none;
   margin: 0px 5px 5px 5px;
 }
+
 .bodySection{
   height: 100%;
   width: 100%;
@@ -522,19 +542,23 @@ iframe{
   text-align: center;
   max-height: 80vh;
 }
+
 /* .tagAndName{
   display: inline;
 } */
 .hostTag{
   margin-top: 15px;
 }
+
 .queueText{
   color: white;
 }
+
 .topRightSide{
   height: 70%;
   width: 100%;
 }
+
 @import url('https://fonts.googleapis.com/css?family=Montserrat');
 
 .songTitle{
@@ -556,6 +580,7 @@ iframe{
   height: 250px;
   width: 250px;
 }
+
 .bottomRightSide{
   width: 100%;
   height: 30%;
@@ -577,16 +602,17 @@ iframe{
   border-radius:20px;
   margin-right: 5px;
   position: relative;
-    top: 0;
-    left: 0;
+  top: 0;
+  left: 0;
 }
-.crown
-	{
-    background-image: url(./crown.png);
-		position: absolute;
-		top: 0px;
-    left: 0px;
-	}
+
+.crown{
+  background-image: url(./crown.png);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
 .usersInRoom{
   height: 220px;
   padding: 0;
@@ -603,7 +629,6 @@ iframe{
   flex-wrap: wrap;
   overflow-y: scroll;
   overflow-x: hidden;
-  /* border: solid 1px white; */
   justify-content: space-around;
 }
 
@@ -611,8 +636,8 @@ iframe{
   width: 25%;
   margin: 0 10px;
   text-align: left;
-  /* border: solid 1px white */
 }
+
 .userPic{
   font-size: 16px;
   color: white;
@@ -623,6 +648,7 @@ iframe{
   background-color: #F94763;
   margin-right: 5px;
 }
+
 .queueTable{
   width: 50%;
   height: 100%;
@@ -635,6 +661,7 @@ iframe{
 #queue-middle {
   width: 76%;
 }
+
 #search-middle {
   width: 80%;
 }

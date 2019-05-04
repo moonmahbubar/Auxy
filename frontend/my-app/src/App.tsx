@@ -213,7 +213,7 @@ class App extends Component<IProps, IState> {
         this.state.hostToken !== prevState.hostToken &&
         prevState.hostToken === "") {
       
-      // Warn host that they will lose host priviledges if they leave the room
+      // Warn host that they will lose host privileges if they leave the room
       if (this.state.isHost) {
           window.addEventListener('beforeunload', (e) => {
               // Cancel the event
@@ -326,14 +326,18 @@ class App extends Component<IProps, IState> {
       dc.playSong('123456', 'gods plan')
     }
 
+    // Landing page HTML code
     return(
       <div>
         {
           this.state.redirectToJoinPartyPage ? <Redirect to='/join_party' push /> :
           <div className = "main-title">
+            {/* Box to center the items */}
             <div className = "box">
+              {/* Title of page and paragraph */}
               <h1 className="hero-title">AUXY</h1>
               <p className="hero-paragraph">With Auxy, you can collaborate on Spotify queues with your friends! </p>
+              {/* Buttons to go to either host login page or join login page */}
               <span>
                 <button className="main1" type = "button" onClick={login}>
                 Host
@@ -342,10 +346,12 @@ class App extends Component<IProps, IState> {
                 Join
                 </button>
               </span>
+              {/* Paragraph disclaimer */}
               <p className="disclaimer">You can only host a party if you have Spotify Premium.</p>
             </div>
+            {/* Contributers name footer */}
             <footer>
-              Passion project created by Mahbubar Moon, Olivia Flynn, Yara Smilde, Marielle Gomez, Tyson Owens, Benjamin Jiang
+              Passion project created by Olivia Flynn, Marielle Gomez, Benjamin Jiang, Mahbubar Moon, Tyson Owens and Yara Smilde.
             </footer>
           </div>
         }
@@ -377,11 +383,15 @@ class App extends Component<IProps, IState> {
       alert('Display name and party name are required :^|')
     } 
 
+    // Host loging HTML code
     return(
       <div className="host">
+        {/* Phone image to the left */}
         <div className="imagy"> </div>
+          {/* Box to center the items to the right */}
           <div className="boxy">
             <header className="intro">AUXY</header>
+            {/* Input sections for display name and party name, section tags to center and align it */}
             <section>
               <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Your name" />
               { this.state.displayName === "" ? 
@@ -398,6 +408,7 @@ class App extends Component<IProps, IState> {
                 </div> : <div></div>
               }
             </section>
+            {/* Button that links to logging in through spotify */}
             <section>
               {
                 this.state.partyName !== '' && this.state.displayName !== '' ?
@@ -485,9 +496,10 @@ class App extends Component<IProps, IState> {
       leaveRoom()
     }
 
-    //console.log(this.state)
+    // Party room HTML code
     return(
       <div className='everything'>
+        {/* Top bar with party name, AUXY, room code and exit button */}
         <div className="navbar_inner">
          <a className="navbar_title">{this.state.partyName}</a>
          <h1 className="title">AUXY</h1>
@@ -499,7 +511,9 @@ class App extends Component<IProps, IState> {
            <li><button className="exit" onClick={leaveRoom}></button> </li>
          </ul>
        </div>
+       {/* Bottom section */}
        <section className='bodySection'>
+        {/* Left section with search bar and queue - up next list of songs */}
         <div className="leftSide">
           <div className="dropdown">
             <form className="searchbar" onSubmit={search}>
@@ -552,6 +566,7 @@ class App extends Component<IProps, IState> {
           </table>
         </div>
       </div>
+        {/* Right section, with song thats currently playing, progressbar and list of people currently in room */}
         <section className="rightSide">
           <div className="topRightSide">
               {
@@ -626,13 +641,17 @@ class App extends Component<IProps, IState> {
       alert('Display name and room code is required :^|')
     } 
 
+    // Join party HTML code
     return(
       <div>
         { this.state.redirectToPartyPage ? <Redirect to='/party' push /> :
         <div className='host'>
+          {/* Phone image to the left */}
           <div className="imagy"> </div>
+          {/* Box to center the items to the right */}
             <div className="boxy">
               <header className="intro">AUXY</header>
+              {/* Input sections for display name and party code, section tags to center and align it */}
               <section>
                   <input type="text" value={this.state.displayName} onChange={this.setDisplayName} name="screenname" className="inp" placeholder="Screen Name" />
                   { this.state.displayName === "" ? 
@@ -649,6 +668,7 @@ class App extends Component<IProps, IState> {
                   </div> : <div></div>
                   }
               </section>
+              {/* Button that links to logging in through spotify */}
               <section>
               {
                   this.state.roomCode !== '' && this.state.displayName !== '' ?
