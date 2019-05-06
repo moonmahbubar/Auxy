@@ -12,7 +12,6 @@ import json
 from urllib.parse import parse_qs
 
 
-
 class RoomViewSet(viewsets.ModelViewSet):
     """Handles the request and serializes the Room object."""
     queryset = Room.objects.all()
