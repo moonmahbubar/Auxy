@@ -234,7 +234,6 @@ class PushSongView(APIView):
             #Return data in json format.
             return Response(data={"pushed_song": serializer.data})
 
-
 class PopSongView(APIView):
     """Call for playing a song from the queue, and updating the queue by removing it."""
     def get(self, request, code):
@@ -270,7 +269,6 @@ class PopSongView(APIView):
         song.delete()
         #Return if song was successfully played.
         return Response(data={"popped_song": "success"})
-
 
 class PlayIDView(APIView):
     """Plays a song given the track id."""
@@ -315,7 +313,6 @@ class GetRoomQueueView(APIView):
         serializer = SongSerializer(songs, many=True, context={'request': request})  
         #Return as json format.
         return Response(data={"songs":serializer.data})
-
 
 class DeleteSongView(APIView):
     """Deletes a song."""
@@ -421,9 +418,3 @@ class GetCurrentPlaybackView(APIView):
         #Get current playback information.
         current_playback = get_current_playback(token)
         return Response(data={"response": current_playback})
-
-
-
-
-
-
