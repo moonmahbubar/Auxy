@@ -10,20 +10,17 @@ from django.utils.crypto import get_random_string
 from authorization_flow import *
 import json
 from urllib.parse import parse_qs
-
+from api_tokens import *
 
 class RoomViewSet(viewsets.ModelViewSet):
     """Handles the request and serializes the Room object."""
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
 
-
-
 class HostViewSet(viewsets.ModelViewSet):
     """Handles the request and serializes the Host object."""
     queryset = Host.objects.all()
     serializer_class = HostSerializer
-
 
 class UserViewSet(viewsets.ModelViewSet):
     """Handles the request and serializes the User object."""
@@ -57,14 +54,6 @@ class PlaySongView(APIView):
         #Get tokens.
         token = host.host_token
         refresh_token = host.host_refresh_token
-        #Client Token
-        cid = 'f694f6f7a1584567948f99d653a9d070' 
-        #Client Secret
-        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
-        #Current scope allows for modifying playback.
-        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
-        #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object.
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token.
@@ -88,14 +77,6 @@ class SearchSongView(APIView):
         #Get tokens.
         token = host.host_token
         refresh_token = host.host_refresh_token
-        #Client Token
-        cid ='f694f6f7a1584567948f99d653a9d070' 
-        #Client Secret
-        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
-        #Current scope allows for modifying playback.
-        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
-        #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object.
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token.
@@ -145,14 +126,6 @@ class GetRoomInfoView(APIView):
         token = host.host_token
         #Get tokens.
         refresh_token = host.host_refresh_token
-        #Client Token
-        cid ='f694f6f7a1584567948f99d653a9d070' 
-        #Client Secret
-        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
-        #Current scope allows for modifying playback.
-        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
-        #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
@@ -245,14 +218,6 @@ class PopSongView(APIView):
         #Get host tokens.
         token = host.host_token
         refresh_token = host.host_refresh_token
-        #Client Token
-        cid ='f694f6f7a1584567948f99d653a9d070' 
-        #Client Secret
-        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
-        #Current scope allows for modifying playback.
-        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
-        #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback'
         #Create OAuth2 object.
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token.
@@ -279,14 +244,6 @@ class PlayIDView(APIView):
         #Get tokens.
         token = host.host_token
         refresh_token = host.host_refresh_token
-        #Client Token
-        cid ='f694f6f7a1584567948f99d653a9d070' 
-        #Client Secret
-        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
-        #Current scope allows for modifying playback.
-        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
-        #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
@@ -334,14 +291,6 @@ class RefreshTokenView(APIView):
         host = room.host
         #Get tokens.
         refresh_token = host.host_refresh_token
-        #Client Token
-        cid ='f694f6f7a1584567948f99d653a9d070' 
-        #Client Secret
-        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
-        #Current scope allows for modifying playback.
-        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
-        #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
@@ -371,10 +320,6 @@ class DeleteUserView(APIView):
         else:
             return Response(data="User not found!")
 
-
-
-
-        
 class DeactivateRoomView(APIView):
     """Deactivate a room and delete its host."""
     def post(self, request, *args, **kwargs):
@@ -398,14 +343,6 @@ class GetCurrentPlaybackView(APIView):
         token = host.host_token
         #Get tokens.
         refresh_token = host.host_refresh_token
-        #Client Token
-        cid ='f694f6f7a1584567948f99d653a9d070' 
-        #Client Secret
-        secret = '0e05c9eeee094a5d8d506d0435a18ee9' 
-        #Current scope allows for modifying playback.
-        scope = 'streaming user-read-birthdate user-read-email user-read-private user-library-read user-library-modify user-read-playback-state user-modify-playback-state'
-        #Once you run the script, copy and paste the link you are redirected to into the terminal.
-        redirect_uri='http://localhost:3000/callback' 
         #Create OAuth2 object
         sp = SpotifyOAuth(cid, secret, redirect_uri, state=None, scope=scope, cache_path=None, proxies=None)
         #Refresh token
